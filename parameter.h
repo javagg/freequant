@@ -1,19 +1,16 @@
-/*
- * parameter.h
- *
- *  Created on: 2012-6-26
- *      Author: alex
- */
-
 #ifndef PARAMETER_H
 #define PARAMETER_H
 
-namespace xh {
+#include <string>
+namespace FreeQuant {
 
 class Parameter {
 public:
 	Parameter();
 	virtual ~Parameter();
+
+    std::string name();
+
 };
 
 } /* namespace Bw */

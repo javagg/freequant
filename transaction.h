@@ -8,12 +8,17 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
-namespace xh {
+namespace FreeQuant {
 
 class Transaction {
 public:
 	Transaction();
 	virtual ~Transaction();
+
+    double cost();
+    double pnl();
+    double qty();
+    double price();
 };
 
 } /* namespace Bw */

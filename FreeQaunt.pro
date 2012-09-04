@@ -28,7 +28,8 @@ SOURCES += freeqaunt.cpp \
     currency.cpp \
     account.cpp \
     exchange.cpp \
-    market.cpp
+    market.cpp \
+    position.cpp
 
 HEADERS += freeqaunt.h \
     datetime.h \
@@ -47,7 +48,8 @@ HEADERS += freeqaunt.h \
     currency.h \
     account.h \
     exchange.h \
-    market.h
+    market.h \
+    position.h
 
 *-g++* {
 #    QMAKE_CXXFLAGS += -std=c++11
@@ -55,11 +57,3 @@ HEADERS += freeqaunt.h \
 
 #QMAKE_CXXFLAGS += -Wc++11-extensions
 
-#unix:!symbian {
-#    maemo5 {
-#        target.path = /opt/usr/lib
-#    } else {
-#        target.path = /usr/lib
-#    }
-#    INSTALLS += target
-#}

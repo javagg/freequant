@@ -10,12 +10,24 @@
 
 #include <string>
 
-namespace xh {
+namespace FreeQuant {
 
 class Currency;
 
 class Instrument {
 public:
+    enum Type {
+        Stock,
+        Future,
+        Option,
+        FutureOption,
+        Bond,
+        Index,
+        ETF,
+        Forex,
+        MultiLeg
+    };
+
 	explicit Instrument(std::string id);
 	virtual ~Instrument();
 

@@ -7,7 +7,7 @@
 
 #include "transaction.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Transaction::Transaction() {
 	// TODO Auto-generated constructor stub

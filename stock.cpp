@@ -7,7 +7,7 @@
 
 #include "stock.h"
 
-namespace xh {
+namespace FreeQuant {
 
 //Stock::Stock() {
 //	// TODO Auto-generated constructor stub

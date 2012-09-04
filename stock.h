@@ -10,9 +10,9 @@
 
 #include "instrument.h"
 
-namespace xh {
+namespace FreeQuant {
 
-class Stock: public xh::Instrument {
+class Stock: public Instrument {
 public:
 	explicit Stock();
 	virtual ~Stock();

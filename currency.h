@@ -13,7 +13,7 @@
 
 #include "instrument.h"
 
-namespace xh {
+namespace FreeQuant {
 
 /*!
     \class Currency

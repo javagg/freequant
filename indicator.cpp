@@ -7,7 +7,7 @@
 
 #include "indicator.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Indicator::Indicator() {
 	// TODO Auto-generated constructor stub

@@ -7,7 +7,7 @@
 
 #include "instrument.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Instrument::Instrument(std::string id) {
 	// TODO Auto-generated constructor stub

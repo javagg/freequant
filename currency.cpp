@@ -7,7 +7,7 @@
 
 #include "currency.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Currency::~Currency() {
 	// TODO Auto-generated destructor stub

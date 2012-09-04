@@ -7,7 +7,7 @@
 
 #include "parameter.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Parameter::Parameter() {
 	// TODO Auto-generated constructor stub

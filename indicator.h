@@ -8,7 +8,7 @@
 #ifndef INDICATOR_H
 #define INDICATOR_H
 
-namespace xh {
+namespace FreeQuant {
 
 class Indicator {
 public:
