@@ -42,7 +42,7 @@ public:
 	double value() const;
 
 	struct Data;
-	std::shared_ptr<Data> data_;
+//	std::shared_ptr<Data> data_;
 };
 
 Currency operator+(const Currency& x, const Currency& y);

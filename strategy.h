@@ -12,24 +12,24 @@
 #include <string>
 #include <vector>
 
-namespace xh {
+namespace FreeQuant {
 
 class Indicator;
 class Rule;
 class Signal;
 class Portfolio;
+class Exchange;
 
 class Strategy {
 public:
-	Strategy();
+    explicit Strategy();
 	virtual ~Strategy();
-
+    Exchange &getExchange(std::string id);
 private:
 	std::vector<Indicator *> mIndictors;
 	std::vector<Signal *> mSignals;
 	std::vector<Rule *> mRrules;
-	std::shared_ptr<Portfolio> mPortfolio;
-
+//	std::shared_ptr<Portfolio> mPortfolio;
 };
 
 } /* namespace Bw */

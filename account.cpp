@@ -7,7 +7,7 @@
 
 #include "account.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Account::Account() {
 	// TODO Auto-generated constructor stub

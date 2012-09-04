@@ -7,7 +7,7 @@
 
 #include "strategy.h"
 
-namespace xh {
+namespace FreeQuant {
 
 Strategy::Strategy() {
 	// TODO Auto-generated constructor stub

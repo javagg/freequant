@@ -11,7 +11,7 @@
 #include <vector>
 
 
-namespace xh {
+namespace FreeQuant {
 
 class Portfolio;
 class Currency;

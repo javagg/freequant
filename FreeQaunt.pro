@@ -13,7 +13,6 @@ DEFINES += FREEQAUNT_LIBRARY
 
 SOURCES += freeqaunt.cpp \
     datetime.cpp \
-    timeseries.cpp \
     transaction.cpp \
     timeseries.cpp \
     strategy.cpp \
@@ -22,18 +21,17 @@ SOURCES += freeqaunt.cpp \
     rule.cpp \
     portfolio.cpp \
     parameter.cpp \
-    order_book.cpp \
+    orderbook.cpp \
     order.cpp \
     instrument.cpp \
     indicator.cpp \
-    freeqaunt.cpp \
-    datetime.cpp \
     currency.cpp \
-    account.cpp
+    account.cpp \
+    exchange.cpp \
+    market.cpp
 
 HEADERS += freeqaunt.h \
     datetime.h \
-    timeseries.h \
     transaction.h \
     timeseries.h \
     strategy.h \
@@ -42,30 +40,26 @@ HEADERS += freeqaunt.h \
     rule.h \
     portfolio.h \
     parameter.h \
-    order_book.h \
+    orderbook.h \
     order.h \
     instrument.h \
     indicator.h \
-    freeqaunt.h \
-    datetime.h \
     currency.h \
-    account.h
+    account.h \
+    exchange.h \
+    market.h
 
-symbian {
-    MMP_RULES += EXPORTUNFROZEN
-    TARGET.UID3 = 0xE0F39D35
-    TARGET.CAPABILITY = 
-    TARGET.EPOCALLOWDLLDATA = 1
-    addFiles.sources = FreeQaunt.dll
-    addFiles.path = !:/sys/bin
-    DEPLOYMENT += addFiles
+*-g++* {
+#    QMAKE_CXXFLAGS += -std=c++11
 }
 
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}
+#QMAKE_CXXFLAGS += -Wc++11-extensions
+
+#unix:!symbian {
+#    maemo5 {
+#        target.path = /opt/usr/lib
+#    } else {
+#        target.path = /usr/lib
+#    }
+#    INSTALLS += target
+#}
