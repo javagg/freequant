@@ -24,7 +24,6 @@ SOURCES += freeqaunt.cpp \
     orderbook.cpp \
     order.cpp \
     instrument.cpp \
-    indicator.cpp \
     currency.cpp \
     account.cpp \
     exchange.cpp \
@@ -32,7 +31,8 @@ SOURCES += freeqaunt.cpp \
     position.cpp \
     fq/marketdata/provider.cpp \
     fq/marketdata/ctp/ctpprovider.cpp \
-    fq/marketdata/csv/csvprovider.cpp
+    fq/marketdata/csv/csvprovider.cpp \
+    fq/indicators/indicator.cpp
 
 HEADERS += freeqaunt.h \
     datetime.h \
@@ -47,7 +47,6 @@ HEADERS += freeqaunt.h \
     orderbook.h \
     order.h \
     instrument.h \
-    indicator.h \
     currency.h \
     account.h \
     exchange.h \
@@ -55,11 +54,8 @@ HEADERS += freeqaunt.h \
     position.h \
     fq/marketdata/provider.h \
     fq/marketdata/ctp/ctpprovider.h \
-    fq/marketdata/csv/csvprovider.h
-
-*-g++* {
-#    QMAKE_CXXFLAGS += -std=c++11
-}
+    fq/marketdata/csv/csvprovider.h \
+    fq/indicators/indicator.h
 
 win32 {
     BOOST_INC = $$(BOOST_HOME)
