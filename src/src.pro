@@ -67,10 +67,19 @@ HEADERS += freeqaunt.h \
 }
 
 win32 {
-    BOOST_INC = $$(BOOST_HOME)
-    BOOST_LIB = $$(BOOST_HOME)/lib
+    DEFINES += BOOST_ALL_NO_LIB
+    BOOST_INC = $$quote($$(BOOST_HOME))
+    BOOST_LIB = $$quote($$(BOOST_HOME))
+    BOOST_LIB = "c:/Program Files/boost/boost_1_51/lib"
     QUICKFIX_INC = $$(QUICKFIX_HOME)/include
     QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
+    INCLUDEPATH += $$BOOST_INC
+
+    LIBS += -L$$BOOST_LIB
+
+    LIBS += -l$${BOOST_LIB}/boost_date_time-vc100-mt-1_51
+
+message($$LIBS)
 }
 
 #unix {
@@ -79,8 +88,4 @@ win32 {
 #    QUICKFIX_INC = /usr/include
 #    QUICKFIX_LIB = /usr/lib
 #}
-
-#INCLUDEPATH += $$BOOST_INC
-#LIBS += -L$$BOOST_LIB -lm
-
 
