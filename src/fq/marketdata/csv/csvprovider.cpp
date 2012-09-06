@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -11,8 +11,16 @@ CsvProvider::CsvProvider() {
 
 }
 
-CsvProvider::connect() {
+void CsvProvider::connect() {
 
+}
+
+void CsvProvider::disconnect() {
+
+}
+
+bool CsvProvider::isConnected() {
+    return false;
 }
 
 

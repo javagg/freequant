@@ -8,6 +8,9 @@ namespace FreeQuant { namespace MarketData {
 class CsvProvider : public Provider {
 public:
     CsvProvider();
+    virtual void connect();
+    virtual void disconnect();
+    virtual bool isConnected();
 };
 
 }}

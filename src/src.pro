@@ -4,7 +4,10 @@
 #
 #-------------------------------------------------
 
-QT -= core gui
+#QT -= core gui
+
+CONFIG += console
+CONFIG -= qt
 
 TARGET = freeqaunt
 TEMPLATE = lib
@@ -68,15 +71,16 @@ win32 {
     BOOST_LIB = $$(BOOST_HOME)/lib
     QUICKFIX_INC = $$(QUICKFIX_HOME)/include
     QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
-} unix {
-    BOOST_INC = /usr/include
-    BOOST_LIB = /usr/lib
-    QUICKFIX_INC = /usr/include
-    QUICKFIX_LIB = /usr/lib
 }
 
-INCLUDEPATH += $$BOOST_INC
-LIBS += -L$$BOOST_LIB -lm
+#unix {
+#    BOOST_INC = /usr/include
+#    BOOST_LIB = /usr/lib
+#    QUICKFIX_INC = /usr/include
+#    QUICKFIX_LIB = /usr/lib
+#}
 
-#QMAKE_CXXFLAGS += -Wc++11-extensions
+#INCLUDEPATH += $$BOOST_INC
+#LIBS += -L$$BOOST_LIB -lm
+
 

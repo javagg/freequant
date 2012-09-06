@@ -18,4 +18,4 @@ Transaction::~Transaction() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace Bw */
+} /* namespace FreeQuant */

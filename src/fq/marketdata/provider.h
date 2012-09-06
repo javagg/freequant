@@ -9,9 +9,9 @@ class Provider {
 public:
     explicit Provider();
     virtual ~Provider();
-    void connect();
-    void disconnect();
-    bool isConnected();
+    virtual void connect() = 0;
+    virtual void disconnect() = 0;
+    virtual bool isConnected() = 0;
 
     std::string name();
 };
