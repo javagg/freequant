@@ -4,14 +4,9 @@
 
 using namespace FreeQuant::Utils;
 
-int main(int, char* []) {
-    std::cout << "Hello, world\n";
-
-//    Provider *p =  new CsvProvider();
-//    p->connect();
-//    sleep(10);
-//    p->disconnect();
-
-//    delete p;
+int main(int argc,char* argv[]) {
+    Timer timer(1);
+    timer.start();
+    sleep(5);
     return 0;
 }

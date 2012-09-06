@@ -7,13 +7,10 @@ namespace FreeQuant { namespace MarketData {
 
 class Provider {
 public:
-//    explicit Provider() = 0;
-//    virtual ~Provider() = 0;
     virtual void connect() = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() = 0;
-
-    std::string name();
+    virtual std::string name() = 0;
 };
 
 }}

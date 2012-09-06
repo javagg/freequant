@@ -1,18 +1,13 @@
 #include <iostream>
 
 #include <boost/test/prg_exec_monitor.hpp>
-//#include <boost/test/included/prg_exec_monitor.hpp>
-//#include <boost/asio.hpp>
-
 #include <fq/marketdata/provider.h>
-#include <fq/marketdata/csv/csvprovider.h>
+#include <fq/marketdata/yahooprovider.h>
 
 using namespace FreeQuant::MarketData;
 
-int cpp_main(int, char* []) {
-    std::cout << "Hello, world\n";
-
-    Provider *p =  new CsvProvider();
+int main(int, char* []) {
+    Provider *p =  new YahooProvider();
     p->connect();
     sleep(10);
     p->disconnect();

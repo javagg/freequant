@@ -35,7 +35,8 @@ SOURCES += freeqaunt.cpp \
     fq/marketdata/bogus/bogusprovoder.cpp \
     fq/utils/timer.cpp \
     fq/marketdata/yahooprovider.cpp \
-    fq/utils/httpclient.cpp
+    fq/utils/httpclient.cpp \
+    fq/utils/csvparser.cpp
 
 HEADERS += freeqaunt.h \
     datetime.h \
@@ -63,7 +64,8 @@ HEADERS += freeqaunt.h \
     fq/marketdata/bogus/bogusprovoder.h \
     fq/utils/timer.h \
     fq/marketdata/yahooprovider.h \
-    fq/utils/httpclient.h
+    fq/utils/httpclient.h \
+    fq/utils/csvparser.h
 
 win32 {
     BOOST_INC = $$quote($$(BOOST_HOME))
@@ -80,5 +82,5 @@ unix {
 }
 
 INCLUDEPATH += $$BOOST_INC
-LIBS += -L$$BOOST_LIB -lboost_system -lcurl
+LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
 
