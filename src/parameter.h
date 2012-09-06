@@ -2,6 +2,7 @@
 #define PARAMETER_H
 
 #include <string>
+
 namespace FreeQuant {
 
 class Parameter {
@@ -13,5 +14,6 @@ public:
 
 };
 
-} /* namespace Bw */
+} /* namespace FreeQuant */
+
 #endif /* PARAMETER_H */

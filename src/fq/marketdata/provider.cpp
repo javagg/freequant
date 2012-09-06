@@ -2,10 +2,6 @@
 
 namespace FreeQuant { namespace MarketData {
 
-Provider::Provider() {
-
-}
-
 }}
 
 

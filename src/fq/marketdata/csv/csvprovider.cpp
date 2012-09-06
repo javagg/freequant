@@ -10,6 +10,11 @@ CsvProvider::CsvProvider() {
 
 }
 
+CsvProvider::~CsvProvider() {
+
+}
+
+
 void CsvProvider::connect() {
 
 }

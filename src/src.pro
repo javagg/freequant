@@ -4,12 +4,7 @@
 #
 #-------------------------------------------------
 
-#QT -= core gui
-
-CONFIG += console
-CONFIG -= qt
-
-TARGET = freeqaunt
+TARGET = freequant
 TEMPLATE = lib
 
 DEFINES += FREEQAUNT_LIBRARY
@@ -36,7 +31,11 @@ SOURCES += freeqaunt.cpp \
     fq/marketdata/ctp/ctpprovider.cpp \
     fq/marketdata/csv/csvprovider.cpp \
     fq/indicators/indicator.cpp \
-    fq/bar.cpp
+    fq/bar.cpp \
+    fq/marketdata/bogus/bogusprovoder.cpp \
+    fq/utils/timer.cpp \
+    fq/marketdata/yahooprovider.cpp \
+    fq/utils/httpclient.cpp
 
 HEADERS += freeqaunt.h \
     datetime.h \
@@ -60,32 +59,26 @@ HEADERS += freeqaunt.h \
     fq/marketdata/ctp/ctpprovider.h \
     fq/marketdata/csv/csvprovider.h \
     fq/indicators/indicator.h \
-    fq/bar.h
-
-*-g++* {
-#    QMAKE_CXXFLAGS += -std=c++11
-}
+    fq/bar.h \
+    fq/marketdata/bogus/bogusprovoder.h \
+    fq/utils/timer.h \
+    fq/marketdata/yahooprovider.h \
+    fq/utils/httpclient.h
 
 win32 {
-    DEFINES += BOOST_ALL_NO_LIB
     BOOST_INC = $$quote($$(BOOST_HOME))
     BOOST_LIB = $$quote($$(BOOST_HOME))
     BOOST_LIB = "c:/Program Files/boost/boost_1_51/lib"
     QUICKFIX_INC = $$(QUICKFIX_HOME)/include
     QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
-    INCLUDEPATH += $$BOOST_INC
-
-    LIBS += -L$$BOOST_LIB
-
-    LIBS += -l$${BOOST_LIB}/boost_date_time-vc100-mt-1_51
-
-message($$LIBS)
+}
+unix {
+    BOOST_INC = /usr/include
+    BOOST_LIB = /usr/lib
+    QUICKFIX_INC = /usr/include
+    QUICKFIX_LIB = /usr/lib
 }
 
-#unix {
-#    BOOST_INC = /usr/include
-#    BOOST_LIB = /usr/lib
-#    QUICKFIX_INC = /usr/include
-#    QUICKFIX_LIB = /usr/lib
-#}
+INCLUDEPATH += $$BOOST_INC
+LIBS += -L$$BOOST_LIB -lboost_system -lcurl
 
