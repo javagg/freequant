@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
+QT -= core gui
 
-TARGET = FreeQaunt
+TARGET = freeqaunt
 TEMPLATE = lib
 
 DEFINES += FREEQAUNT_LIBRARY
