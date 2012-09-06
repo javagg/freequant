@@ -25,6 +25,13 @@ public:
     explicit Strategy();
 	virtual ~Strategy();
     Exchange &getExchange(std::string id);
+
+    void onStart();
+    void onExit();
+    void onBar();
+    void onTick();
+    void onTask();
+
 private:
 	std::vector<Indicator *> mIndictors;
 	std::vector<Signal *> mSignals;

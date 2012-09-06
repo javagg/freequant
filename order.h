@@ -12,6 +12,13 @@ namespace xt {
 
 class Order {
 public:
+    enum Type {
+        Market,
+        Limit,
+        Stop,
+        StopLimit
+    };
+
     enum OrderSide { Buy , Sell };
 
     enum OrderStatus {
@@ -48,5 +55,5 @@ public:
 
 };
 
-} /* namespace xt */
-#endif /* ORDER_H_ */
+} /* namespace FreeQuant */
+#endif /* ORDER_H */

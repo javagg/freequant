@@ -39,6 +39,6 @@ private:
 	double mTickSize;
 };
 
-} /* namespace Bw */
+} /* namespace FreeQuant */
 
 #endif /* INSTRUMENT_H */

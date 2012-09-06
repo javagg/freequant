@@ -32,7 +32,8 @@ SOURCES += freeqaunt.cpp \
     position.cpp \
     fq/marketdata/provider.cpp \
     fq/marketdata/ctp/ctpprovider.cpp \
-    fq/marketdata/csv/csvprovider.cpp
+    fq/marketdata/csv/csvprovider.cpp \
+    fq/bar.cpp
 
 HEADERS += freeqaunt.h \
     datetime.h \
@@ -55,7 +56,8 @@ HEADERS += freeqaunt.h \
     position.h \
     fq/marketdata/provider.h \
     fq/marketdata/ctp/ctpprovider.h \
-    fq/marketdata/csv/csvprovider.h
+    fq/marketdata/csv/csvprovider.h \
+    fq/bar.h
 
 *-g++* {
 #    QMAKE_CXXFLAGS += -std=c++11
@@ -64,13 +66,17 @@ HEADERS += freeqaunt.h \
 win32 {
     BOOST_INC = $$(BOOST_HOME)
     BOOST_LIB = $$(BOOST_HOME)/lib
+    QUICKFIX_INC = $$(QUICKFIX_HOME)/include
+    QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
 } unix {
     BOOST_INC = /usr/include
     BOOST_LIB = /usr/lib
+    QUICKFIX_INC = /usr/include
+    QUICKFIX_LIB = /usr/lib
 }
 
 INCLUDEPATH += $$BOOST_INC
-LIBS += -L$$BOOST_LIB
+LIBS += -L$$BOOST_LIB -lm
 
 #QMAKE_CXXFLAGS += -Wc++11-extensions
 
