@@ -73,6 +73,8 @@ win32 {
     BOOST_LIB = "c:/Program Files/boost/boost_1_51/lib"
     QUICKFIX_INC = $$(QUICKFIX_HOME)/include
     QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
+    CURL_INC = $$quote($$(CURL_HOME))/include
+    CURL_LIB = $$quote($$(CURL_HOME))/lib/release
 }
 unix {
     BOOST_INC = /usr/include
@@ -81,6 +83,6 @@ unix {
     QUICKFIX_LIB = /usr/lib
 }
 
-INCLUDEPATH += $$BOOST_INC
+INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC
 LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
 
