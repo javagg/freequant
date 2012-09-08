@@ -30,7 +30,10 @@ public:
 
 	explicit Instrument(std::string id);
 	virtual ~Instrument();
-
+    double multipler() const;
+    double margin() const;
+    double tickSize() const;
+    std::string symbol() const;
 	std::string getId() const;
 private:
 	std::string mId;

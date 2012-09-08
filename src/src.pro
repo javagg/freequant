@@ -10,9 +10,9 @@ TEMPLATE = lib
 DEFINES += FREEQAUNT_LIBRARY
 
 SOURCES += freeqaunt.cpp \
-    datetime.cpp \
+    fq/utils/datetime.cpp \
     transaction.cpp \
-    timeseries.cpp \
+    fq/utils/timeseries.cpp \
     strategy.cpp \
     stock.cpp \
     signal.cpp \
@@ -36,12 +36,13 @@ SOURCES += freeqaunt.cpp \
     fq/utils/timer.cpp \
     fq/marketdata/yahooprovider.cpp \
     fq/utils/httpclient.cpp \
-    fq/utils/csvparser.cpp
+    fq/utils/csvparser.cpp \
+    fq/quote.cpp
 
 HEADERS += freeqaunt.h \
-    datetime.h \
+    fq/utils/datetime.h \
     transaction.h \
-    timeseries.h \
+    fq/utils/timeseries.h \
     strategy.h \
     stock.h \
     signal.h \
@@ -65,7 +66,8 @@ HEADERS += freeqaunt.h \
     fq/utils/timer.h \
     fq/marketdata/yahooprovider.h \
     fq/utils/httpclient.h \
-    fq/utils/csvparser.h
+    fq/utils/csvparser.h \
+    fq/quote.h
 
 win32 {
     BOOST_INC = $$quote($$(BOOST_HOME))
@@ -86,3 +88,6 @@ unix {
 INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC
 LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
 
+unix {
+    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/linux64/lib -lthostmduserapi
+}

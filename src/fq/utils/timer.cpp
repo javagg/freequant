@@ -19,6 +19,10 @@ Timer::~Timer() {
     delete io;
 }
 
+void Timer::connect(const Timeout::slot_type &subscriber) {
+    timeout.connect(subscriber);
+}
+
 void Timer::start() {
     timer->expires_from_now( boost::posix_time::seconds(interval));
     timer->async_wait(boost::bind(&Timer::handler, this, boost::asio::placeholders::error));
@@ -26,7 +30,7 @@ void Timer::start() {
 }
 
 void Timer::handler(const boost::system::error_code& error) {
-    std::cout << "handler!" << std::endl;
+    timeout();
 //    if (error == boost::asio::error::operation_aborted) {
 //        std::cout << "Timer was canceled" << std::endl;
 //        return;

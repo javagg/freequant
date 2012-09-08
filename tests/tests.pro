@@ -2,7 +2,8 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     test_provider \
-    test_timer
+    test_timer \
+    test_ctpprovider
 
 #win32 {
 #    BOOST_INC = $$(BOOST_HOME)

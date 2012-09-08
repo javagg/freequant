@@ -5,8 +5,8 @@
  *      Author: alex
  */
 
-#ifndef STRATEGY_H_
-#define STRATEGY_H_
+#ifndef FQ_STRATEGY_H
+#define FQ_STRATEGY_H
 
 #include <memory>
 #include <string>
@@ -19,6 +19,11 @@ class Rule;
 class Signal;
 class Portfolio;
 class Exchange;
+class Bar;
+class Quote;
+class Trade;
+class Order;
+class Position;
 
 class Strategy {
 public:
@@ -28,17 +33,30 @@ public:
 
     void onStart();
     void onExit();
-    void onBar();
-    void onTick();
+    void onBar(const FreeQuant::Bar& bar);
+    void onQuote(const FreeQuant::Quote& quote);
+    void onTrade(const FreeQuant::Trade& trade);
     void onTask();
+    void onOrderCreated(const FreeQuant::Order& order);
+    void onOrderFilled(const FreeQuant::Order& order);
+    void onOrderPartiallyFilled(const FreeQuant::Order& order);
+    void onOrderCancelled(const FreeQuant::Order& order);
+    void onOrderExpired(const FreeQuant::Order& order);
+    void onOrderRejected(const FreeQuant::Order& order);
+    void onOrderReplaced(const FreeQuant::Order& order);
+
+    void onPositionOpened(const FreeQuant::Position& position);
+    void onPositionClosed(const FreeQuant::Position& position);
+    void onPositionValueChanged(const FreeQuant::Position& position);
+
+    void addIndicator(const Indicator &indicator);
 
 private:
 	std::vector<Indicator *> mIndictors;
 	std::vector<Signal *> mSignals;
 	std::vector<Rule *> mRrules;
-//	std::shared_ptr<Portfolio> mPortfolio;
 };
 
-} /* namespace Bw */
+} /* namespace FreeQuant */
 
-#endif /* STRATEGY_H_ */
+#endif /* FQ_STRATEGY_H */
