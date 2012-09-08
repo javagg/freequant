@@ -35,8 +35,8 @@ public:
     virtual ~CtpProvider();
     virtual void connect();
     virtual void disconnect();
-    virtual bool isConnected();
-    std::string name() { return "CTP"; }
+    virtual bool isConnected() const;
+    virtual std::string name() const { return "CTP"; }
 
 private:
     MdSpi *spi;

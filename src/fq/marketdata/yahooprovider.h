@@ -12,8 +12,8 @@ public:
     YahooProvider();
     virtual void connect();
     virtual void disconnect();
-    virtual bool isConnected() { return true; }
-    virtual std::string name() { return "yahoo"; }
+    virtual bool isConnected() const { return true; }
+    virtual std::string name() const { return "yahoo"; }
 private:
     FreeQuant::Utils::Timer *timer;
     void getQuota();

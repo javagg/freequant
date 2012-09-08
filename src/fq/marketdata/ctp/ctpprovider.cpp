@@ -212,7 +212,7 @@ void CtpProvider::disconnect() {
 //    userApi->UnSubscribeMarketData(instuments, 1);
 }
 
-bool CtpProvider::isConnected() {
+bool CtpProvider::isConnected() const {
     return true;
 }
 
