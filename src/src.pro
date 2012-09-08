@@ -37,7 +37,10 @@ SOURCES += freeqaunt.cpp \
     fq/marketdata/yahooprovider.cpp \
     fq/utils/httpclient.cpp \
     fq/utils/csvparser.cpp \
-    fq/quote.cpp
+    fq/quote.cpp \
+    fq/marketdata/twsprovider.cpp \
+    fq/marketdata/tws/EPosixClientSocket.cpp \
+    fq/marketdata/tws/EClientSocketBase.cpp
 
 HEADERS += freeqaunt.h \
     fq/utils/datetime.h \
@@ -67,7 +70,10 @@ HEADERS += freeqaunt.h \
     fq/marketdata/yahooprovider.h \
     fq/utils/httpclient.h \
     fq/utils/csvparser.h \
-    fq/quote.h
+    fq/quote.h \
+    fq/marketdata/twsprovider.h \
+    fq/marketdata/tws/EPosixClientSocketPlatform.h \
+    fq/marketdata/tws/EPosixClientSocket.h
 
 win32 {
     BOOST_INC = $$quote($$(BOOST_HOME))
@@ -77,15 +83,19 @@ win32 {
     QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
     CURL_INC = $$quote($$(CURL_HOME))/include
     CURL_LIB = $$quote($$(CURL_HOME))/lib/release
+    TWS_INC = $$PWD/../vendors/tws/Shared
+#    TWS_LIB
 }
 unix {
     BOOST_INC = /usr/include
     BOOST_LIB = /usr/lib
     QUICKFIX_INC = /usr/include
     QUICKFIX_LIB = /usr/lib
+    TWS_INC = $$PWD/../vendors/tws/Shared
+    DEFINES += IB_USE_STD_STRING
 }
 
-INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC
+INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC $$TWS_INC
 LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
 
 unix {
