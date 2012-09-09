@@ -9,7 +9,7 @@ TEMPLATE = lib
 
 DEFINES += FREEQAUNT_LIBRARY
 
-SOURCES += freeqaunt.cpp \
+SOURCES += \
     fq/utils/datetime.cpp \
     transaction.cpp \
     fq/utils/timeseries.cpp \
@@ -42,7 +42,7 @@ SOURCES += freeqaunt.cpp \
     fq/marketdata/tws/EPosixClientSocket.cpp \
     fq/marketdata/tws/EClientSocketBase.cpp
 
-HEADERS += freeqaunt.h \
+HEADERS += \
     fq/utils/datetime.h \
     transaction.h \
     fq/utils/timeseries.h \
@@ -76,15 +76,29 @@ HEADERS += freeqaunt.h \
     fq/marketdata/tws/EPosixClientSocket.h
 
 win32 {
+    BOOST_LIB_SUFFIX = -vc100-mt-1_51
+} unix {
+    BOOST_LIB_SUFFIX =
+}
+
+win32 {
     BOOST_INC = $$quote($$(BOOST_HOME))
-    BOOST_LIB = $$quote($$(BOOST_HOME))
-    BOOST_LIB = "c:/Program Files/boost/boost_1_51/lib"
+    BOOST_LIB = $$quote($$(BOOST_HOME))/lib
+#    BOOST_LIB = "c:/Program Files/boost/boost_1_51/lib"
     QUICKFIX_INC = $$(QUICKFIX_HOME)/include
     QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
     CURL_INC = $$quote($$(CURL_HOME))/include
     CURL_LIB = $$quote($$(CURL_HOME))/lib/release
+
+    BOOST_LIB_SUFFIX = -vc100-mt-1_51
+
+    # for tws
+    DEFINES += _AFXDLL IB_USE_STD_STRING
+    DEFINES -= UNICODE
     TWS_INC = $$PWD/../vendors/tws/Shared
-#    TWS_LIB
+
+    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/win/lib -lthostmduserapi
+    LIBS += -L$$BOOST_LIB -L$$CURL_LIB -lcurllib -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_LIB_SUFFIX
 }
 unix {
     BOOST_INC = /usr/include
@@ -92,12 +106,9 @@ unix {
     QUICKFIX_INC = /usr/include
     QUICKFIX_LIB = /usr/lib
     TWS_INC = $$PWD/../vendors/tws/Shared
-    DEFINES += IB_USE_STD_STRING
+    LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
+    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/linux64/lib -lthostmduserapi
+    LIBS += -L$$BOOST_LIB -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_LIB_SUFFIX
 }
 
 INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC $$TWS_INC
-LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
-
-unix {
-    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/linux64/lib -lthostmduserapi
-}

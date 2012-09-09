@@ -1,10 +1,15 @@
 TEMPLATE = app
 SOURCES += main.cpp
 
-INCLUDEPATH += $$PWD/../../src
-DEPENDPATH += $$PWD/../../src
+win32 {
+    CURL_INC = $$quote($$(CURL_HOME))/include
+    CURL_LIB = $$quote($$(CURL_HOME))/lib/release
+    CTP_INC = $$PWD/../../vendors/ctp/trade/win/public
 
-LIBS += -L$$PWD/../../src/fq/marketdata/ctp/api/trade/linux64/lib/ -lthostmduserapi
+    INCLUDEPATH += $$PWD/../../src
+    INCLUDEPATH += $$CURL_INC
+    LIBS += -L$$OUT_PWD/../../src/release/ -lfreequant
+    LIBS += -L$$PWD/../../vendors/ctp/trade/win/lib/ -lthostmduserapi
 
-LIBS += -L$$OUT_PWD/../../src/ -lfreequant
-LIBS += -lboost_system
+    LIBS += -lboost_system
+}

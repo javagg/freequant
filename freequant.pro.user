@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by Qt Creator 2.5.2, 2012-09-07T09:04:13. -->
+<!-- Written by Qt Creator 2.5.2, 2012-09-09T08:22:22. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -58,7 +58,7 @@
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="ProjectExplorer.BuildCOnfiguration.ToolChain">ProjectExplorer.ToolChain.Msvc:{1272db75-0a86-4bd1-b67d-39d23f8271e7}</value>
+    <value type="QString" key="ProjectExplorer.BuildCOnfiguration.ToolChain">ProjectExplorer.ToolChain.Msvc:{511b013d-24c5-4dc2-8221-503b1ca7a8b4}</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="bool" key="ProjectExplorer.BuildStep.Enabled">true</value>
@@ -271,7 +271,101 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
    </valuemap>
-   <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">2</value>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
+    <value type="bool" key="Analyzer.Project.UseGlobal">true</value>
+    <valuelist type="QVariantList" key="Analyzer.Valgrind.AddedSuppressionFiles"/>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.CollectBusEvents">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.CollectSystime">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.EnableBranchSim">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.EnableCacheSim">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.EnableEventToolTips">true</value>
+    <value type="double" key="Analyzer.Valgrind.Callgrind.MinimumCostRatio">0.01</value>
+    <value type="double" key="Analyzer.Valgrind.Callgrind.VisualisationMinimumCostRatio">10</value>
+    <value type="bool" key="Analyzer.Valgrind.FilterExternalIssues">true</value>
+    <value type="int" key="Analyzer.Valgrind.NumCallers">25</value>
+    <valuelist type="QVariantList" key="Analyzer.Valgrind.RemovedSuppressionFiles"/>
+    <value type="bool" key="Analyzer.Valgrind.TrackOrigins">true</value>
+    <value type="QString" key="Analyzer.Valgrind.ValgrindExecutable">valgrind</value>
+    <valuelist type="QVariantList" key="Analyzer.Valgrind.VisibleErrorKinds">
+     <value type="int">0</value>
+     <value type="int">1</value>
+     <value type="int">2</value>
+     <value type="int">3</value>
+     <value type="int">4</value>
+     <value type="int">5</value>
+     <value type="int">6</value>
+     <value type="int">7</value>
+     <value type="int">8</value>
+     <value type="int">9</value>
+     <value type="int">10</value>
+     <value type="int">11</value>
+     <value type="int">12</value>
+     <value type="int">13</value>
+     <value type="int">14</value>
+    </valuelist>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">test_ctpprovider</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration</value>
+    <value type="int" key="Qt4ProjectManager.Qt4RunConfiguration.BaseEnvironmentBase">2</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">tests/test_ctpprovider/test_ctpprovider.pro</value>
+    <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
+    <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseTerminal">false</value>
+    <valuelist type="QVariantList" key="Qt4ProjectManager.Qt4RunConfiguration.UserEnvironmentChanges"/>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
+    <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+   </valuemap>
+   <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.3">
+    <value type="bool" key="Analyzer.Project.UseGlobal">true</value>
+    <valuelist type="QVariantList" key="Analyzer.Valgrind.AddedSuppressionFiles"/>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.CollectBusEvents">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.CollectSystime">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.EnableBranchSim">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.EnableCacheSim">false</value>
+    <value type="bool" key="Analyzer.Valgrind.Callgrind.EnableEventToolTips">true</value>
+    <value type="double" key="Analyzer.Valgrind.Callgrind.MinimumCostRatio">0.01</value>
+    <value type="double" key="Analyzer.Valgrind.Callgrind.VisualisationMinimumCostRatio">10</value>
+    <value type="bool" key="Analyzer.Valgrind.FilterExternalIssues">true</value>
+    <value type="int" key="Analyzer.Valgrind.NumCallers">25</value>
+    <valuelist type="QVariantList" key="Analyzer.Valgrind.RemovedSuppressionFiles"/>
+    <value type="bool" key="Analyzer.Valgrind.TrackOrigins">true</value>
+    <value type="QString" key="Analyzer.Valgrind.ValgrindExecutable">valgrind</value>
+    <valuelist type="QVariantList" key="Analyzer.Valgrind.VisibleErrorKinds">
+     <value type="int">0</value>
+     <value type="int">1</value>
+     <value type="int">2</value>
+     <value type="int">3</value>
+     <value type="int">4</value>
+     <value type="int">5</value>
+     <value type="int">6</value>
+     <value type="int">7</value>
+     <value type="int">8</value>
+     <value type="int">9</value>
+     <value type="int">10</value>
+     <value type="int">11</value>
+     <value type="int">12</value>
+     <value type="int">13</value>
+     <value type="int">14</value>
+    </valuelist>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">test_twsprovider</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration</value>
+    <value type="int" key="Qt4ProjectManager.Qt4RunConfiguration.BaseEnvironmentBase">2</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">tests/test_twsprovider/test_twsprovider.pro</value>
+    <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
+    <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseTerminal">false</value>
+    <valuelist type="QVariantList" key="Qt4ProjectManager.Qt4RunConfiguration.UserEnvironmentChanges"/>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
+    <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
+    <value type="bool" key="RunConfiguration.UseCppDebugger">true</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
+    <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
+   </valuemap>
+   <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">4</value>
   </valuemap>
  </data>
  <data>

@@ -4,4 +4,5 @@ SOURCES += main.cpp
 INCLUDEPATH += $$PWD/../../src
 DEPENDPATH += $$PWD/../../src
 
-LIBS += -L$$OUT_PWD/../../src/ -lfreequant -lboost_system
+LIBS += -lboost_system
+LIBS += -L$$OUT_PWD/../../src/ -lfreequant

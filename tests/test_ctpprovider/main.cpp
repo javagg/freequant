@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <boost/test/prg_exec_monitor.hpp>
 #include <fq/marketdata/provider.h>
 #include <fq/marketdata/ctp/ctpprovider.h>
 
