@@ -5,4 +5,5 @@ INCLUDEPATH += $$PWD/../../src
 DEPENDPATH += $$PWD/../../src
 
 LIBS += -lboost_system
-LIBS += -L$$OUT_PWD/../../src/ -lfreequant
+unix:LIBS += -L$$OUT_PWD/../../src/ -lfreequant
+

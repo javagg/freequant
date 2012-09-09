@@ -7,8 +7,10 @@ using namespace FreeQuant::MarketData;
 
 int main(int, char* []) {
     Provider *p =  new CtpProvider();
+//    sleep(5);
     p->connect();
-//    p->disconnect();
+    sleep(5);
+    p->disconnect();
     delete p;
 
     return 0;

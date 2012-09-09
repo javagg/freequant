@@ -3,9 +3,9 @@
 
 #include <fq/marketdata/provider.h>
 
-class EWrapper;
-
 namespace FreeQuant { namespace MarketData {
+
+class TwsEWrapper;
 
 class TwsProvider : public Provider {
 public:
@@ -13,11 +13,11 @@ public:
     ~TwsProvider();
     virtual void connect();
     virtual void disconnect();
-    virtual bool isConnected() const { return false; }
+    virtual bool isConnected() const;
     virtual std::string name() const { return "TWS"; }
 
 private:
-    EWrapper *wrapper;
+    TwsEWrapper *wrapper;
 };
 
 }}

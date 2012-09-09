@@ -105,7 +105,11 @@ unix {
     BOOST_LIB = /usr/lib
     QUICKFIX_INC = /usr/include
     QUICKFIX_LIB = /usr/lib
+
+    # for tws
+    DEFINES += IB_USE_STD_STRING
     TWS_INC = $$PWD/../vendors/tws/Shared
+
     LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
     LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/linux64/lib -lthostmduserapi
     LIBS += -L$$BOOST_LIB -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_LIB_SUFFIX

@@ -18,21 +18,21 @@ static int requestId = 0;
 class MdSpi : public CThostFtdcMdSpi {
 public:
     MdSpi() {
-              cout << "ok" << endl;
         char *mdFront = "tcp://asp-sim1-front1.financial-trading-platform.com:41213";
         api = CThostFtdcMdApi::CreateFtdcMdApi();
         api->RegisterSpi(this);
         api->RegisterFront(mdFront);
+        cout << "registerFront" << endl;
         api->Init();
-
     }
 
     ~MdSpi() {
+        api->RegisterSpi(0);
         api->Release();
     }
 
     virtual void OnRspError(CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
-
+        cout << "RspError" << endl;
     }
 
     virtual void OnFrontDisconnected(int reason) {
@@ -44,12 +44,13 @@ public:
     }
 
     virtual void OnFrontConnected() {
-
+        cout << "FrontConnected" << endl;
     }
 
     virtual void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin,	CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
-        boost::unique_lock<boost::mutex> lock(mutex);
-        condition.notify_all();
+          cout << "OnRspUserLogin" << endl;
+//        boost::unique_lock<boost::mutex> lock(mutex);
+//        condition.notify_one();
     }
 
     virtual void OnRspSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
@@ -66,34 +67,36 @@ public:
 
     void connect() {
         CThostFtdcReqUserLoginField req = {};
-    //    memset(&req, 0, sizeof(req));
-
         string appId = "2030";
         appId.copy(req.BrokerID, appId.size());
         string userId = "0000000624";
         userId.copy(req.UserID, userId.size());
         string passwd = "asdfgh";
         passwd.copy(req.Password, passwd.size());
-    //    strcpy(req.BrokerID, appId);
-    //    strcpy(req.UserID, userId);
-    //    strcpy(req.Password, passwd);
-        cout << req.BrokerID  << endl;
-//        int ret = api->ReqUserLogin(&req, ++requestId);
-    //    int ret = pUserApi->ReqUserLogin(&req, ++requestId);
+//        cout << req.BrokerID  << endl;
+        int ret = api->ReqUserLogin(&req, ++requestId);
+        cerr << "request: logging in..." << ((ret == 0) ? "y" :"n") << endl;
 
-//        cerr<<"  | ͵¼..."<<((ret == 0) ? "ɹ" :"ʧ") << endl;
-
-//      boost::unique_lock<boost::mutex> lock(mutex);
-//      condition.wait(mutex);
+//        boost::unique_lock<boost::mutex> lock(mutex);
+//        condition.wait(lock);
 
 //      vector<string> instruments;
 //      char *instrs[1];
 //      api->SubscribeMarketData(instrs, instruments.size());
 
     }
+
+    void disconnect() {
+
+    }
+
+    bool isConnected() const {
+        return false;
+    }
+
     CThostFtdcMdApi *api;
 private:
-    boost::condition condition;
+    boost::condition_variable condition;
     boost::mutex mutex;
 };
 
@@ -207,13 +210,11 @@ void CtpProvider::connect() {
 }
 
 void CtpProvider::disconnect() {
-//    spi->disconnect();
-//     char *instuments[100];
-//    userApi->UnSubscribeMarketData(instuments, 1);
+    spi->disconnect();
 }
 
 bool CtpProvider::isConnected() const {
-    return true;
+    return spi->isConnected();
 }
 
 }}

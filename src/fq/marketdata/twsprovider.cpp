@@ -1,6 +1,10 @@
+#include <iostream>
+
 #include "twsprovider.h"
 #include "EWrapper.h"
 #include "tws/EPosixClientSocket.h"
+
+using namespace std;
 
 namespace FreeQuant { namespace MarketData {
 
@@ -12,6 +16,23 @@ public:
     virtual ~TwsEWrapper() {
         delete socket;
     }
+
+    void connect() {
+        bool ret = socket->eConnect("127.0.0.1", 7496, 0);
+        if (ret) {
+            cout << "Connected" << endl;
+        }
+    }
+
+    void disconnect() {
+        socket->eDisconnect();
+        cout <<  "Disconnected" << endl;
+    }
+
+    bool isConnected() const {
+        return socket->isConnected();
+    }
+
 
     virtual void tickPrice(TickerId tickerId, TickType field, double price, int canAutoExecute) {
 
@@ -43,7 +64,9 @@ public:
     virtual void contractDetailsEnd( int reqId) {}
     virtual void execDetails( int reqId, const Contract& contract, const Execution& execution){}
     virtual void execDetailsEnd( int reqId) {}
-    virtual void error(const int id, const int errorCode, const IBString errorString) {}
+    virtual void error(const int id, const int errorCode, const IBString errorString) {
+        cout << errorString << endl;
+    }
     virtual void updateMktDepth(TickerId id, int position, int operation, int side,
        double price, int size){}
     virtual void updateMktDepthL2(TickerId id, int position, IBString marketMaker, int operation,
@@ -78,14 +101,15 @@ TwsProvider::~TwsProvider() {
 }
 
 void TwsProvider::connect() {
-//    char *host = "127.0.0.1";
-//    int port = 3020;
-//    int clientId = 10000;
-//    bool bRes = client->eConnect( host, port, clientId);
+    wrapper->connect();
 }
 
 void TwsProvider::disconnect() {
+    wrapper->disconnect();
+}
 
+bool TwsProvider::isConnected() const {
+    return wrapper->isConnected();
 }
 
 }}
