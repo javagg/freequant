@@ -26,7 +26,7 @@ void Timer::connect(const Timeout::slot_type &subscriber) {
 void Timer::start() {
     timer->expires_from_now( boost::posix_time::seconds(interval));
     timer->async_wait(boost::bind(&Timer::handler, this, boost::asio::placeholders::error));
-    boost::thread t(boost::bind(&boost::asio::io_service::run, io));
+    boost::thread thread(boost::bind(&boost::asio::io_service::run, io));
 }
 
 void Timer::handler(const boost::system::error_code& error) {

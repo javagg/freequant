@@ -14,11 +14,10 @@ win32 {
     DEFINES -= UNICODE
     TWS_INC = $$PWD/../vendors/tws/Shared
 
-    LIBS += -L$$PWD/../vendors/ctp/trade/win/lib -lthostmduserapi
+    LIBS += -L$$PWD/../vendors/ctp/trade/win/lib -lthostmduserapi -lthosttraderapi
     LIBS += -L$$CURL_LIB -lcurllib
     LIBS += -L$$BOOST_LIB
     LIBS += -L$$OUT_PWD/src/debug -lfreequant
-#    LIBS += -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread-vc100-mt-gd-1_51
 }
 unix {
     BOOST_INC = /usr/include
@@ -30,9 +29,9 @@ unix {
     DEFINES += IB_USE_STD_STRING
     TWS_INC = $$PWD/../vendors/tws/Shared
 
-    LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
-    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/linux64/lib -lthostmduserapi
-#    LIBS += -L$$BOOST_LIB -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_LIB_SUFFIX
+    LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lboost_date_time
+    LIBS += -lcurl
+    LIBS += -L$$PWD/../vendors/ctp/trade/linux64/lib -lthostmduserapi -lthosttraderapi
 }
 
 INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC $$TWS_INC $$PWD/../src

@@ -21,6 +21,10 @@ YahooProvider::YahooProvider() {
 
 }
 
+YahooProvider::~YahooProvider() {
+
+}
+
 void YahooProvider::connect() {
     if (timer == 0) {
         timer = new FreeQuant::Utils::Timer(1);

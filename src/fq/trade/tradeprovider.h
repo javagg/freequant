@@ -1,10 +1,13 @@
-#ifndef FQ_TRADE_PROVIDER_H
-#define FQ_TRADE_PROVIDER_H
+#ifndef FQ_TRADE_TRADEPROVIDER_H
+#define FQ_TRADE_TRADEPROVIDER_H
+
+#include <string>
 
 namespace FreeQuant { namespace Trade {
 
-class Provider {
+class TradeProvider {
 public:
+    virtual ~TradeProvider() {}
     virtual void connect() = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() const = 0;
@@ -13,4 +16,4 @@ public:
 
 }}
 
-#endif // FQ_TRADE_PROVIDER_H
+#endif // FQ_TRADE_TRADEPROVIDER_H

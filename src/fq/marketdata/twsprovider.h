@@ -10,7 +10,7 @@ class TwsEWrapper;
 class TwsProvider : public Provider {
 public:
     TwsProvider();
-    ~TwsProvider();
+    virtual ~TwsProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected() const;

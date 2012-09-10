@@ -10,6 +10,7 @@ namespace FreeQuant { namespace MarketData {
 class YahooProvider : public Provider {
 public:
     YahooProvider();
+    virtual ~YahooProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected() const { return true; }

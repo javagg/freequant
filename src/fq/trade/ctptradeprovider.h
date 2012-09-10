@@ -1,24 +1,25 @@
-#ifndef FQ_TRADE_CTPPROVIDER_H
-#define FQ_TRADE_CTPPROVIDER_H
+#ifndef FQ_TRADE_CTPTRADEPROVIDER_H
+#define FQ_TRADE_CTPTRADEPROVIDER_H
 
-#include <fq/trade/provider.h>
+#include <fq/trade/tradeprovider.h>
 
 namespace FreeQuant { namespace Trade {
 
 class TraderSpi;
 
-class CtpProvider : public Provider {
+class CtpTradeProvider : public TradeProvider {
 public:
-    explicit CtpProvider();
-    virtual ~CtpProvider();
+    CtpTradeProvider();
+    virtual ~CtpTradeProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected() const;
     virtual std::string name() const { return "CTP"; }
+
 private:
     TraderSpi *spi;
 };
 
 }}
 
-#endif // FQ_TRADE_CTPPROVIDER_H
+#endif // FQ_TRADE_CTPTRADEPROVIDER_H
