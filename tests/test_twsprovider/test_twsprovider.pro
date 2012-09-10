@@ -1,9 +1,8 @@
 TEMPLATE = app
 SOURCES += main.cpp
 
-INCLUDEPATH += $$PWD/../../src
-DEPENDPATH += $$PWD/../../src
+include(../../misc/common.pri)
 
-LIBS += -lboost_system
-unix:LIBS += -L$$OUT_PWD/../../src/ -lfreequant
-
+win32 {
+    LIBS += -L$$OUT_PWD/../../src/debug -lfreequant
+}

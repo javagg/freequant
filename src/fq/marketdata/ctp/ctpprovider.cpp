@@ -1,4 +1,3 @@
-
 #include <cstring>
 #include <iostream>
 #include <vector>
@@ -22,8 +21,6 @@ public:
         api = CThostFtdcMdApi::CreateFtdcMdApi();
         api->RegisterSpi(this);
         api->RegisterFront(mdFront);
-        cout << "registerFront" << endl;
-        api->Init();
     }
 
     ~MdSpi() {
@@ -44,17 +41,35 @@ public:
     }
 
     virtual void OnFrontConnected() {
-        cout << "FrontConnected" << endl;
+        cerr << "--->>> " << __FUNCTION__ << endl;
+
+        string appId = "2030";
+        string userId = "00092";
+        string passwd = "888888";
+
+        CThostFtdcReqUserLoginField req = {};
+        appId.copy(req.BrokerID, appId.size());
+        userId.copy(req.UserID, userId.size());
+        passwd.copy(req.Password, passwd.size());
+        int ret = api->ReqUserLogin(&req, ++requestId);
+        cerr << "--->>> call ReqUserLogin " << ((ret==0) ? "success" : "failed") << endl;
     }
 
     virtual void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin,	CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
-          cout << "OnRspUserLogin" << endl;
-//        boost::unique_lock<boost::mutex> lock(mutex);
-//        condition.notify_one();
+        cerr << "--->>> " << __FUNCTION__ << endl;
+        if (!errorOccurred(rspInfo) && last) {
+            cerr << "--->>> TradingDay " << api->GetTradingDay() << endl;
+            vector<char *> instruments;
+            instruments.push_back("IF1209");
+            instruments.push_back("cu0909");
+            int ret = api->SubscribeMarketData(&instruments[0], instruments.size());
+            cerr << "--->>> Subscribe MarketData " << ((ret == 0) ? "success" : "failed") << endl;
+        }
     }
 
     virtual void OnRspSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
-
+       cerr << __FUNCTION__ << endl;
+       cout << specificInstrument->InstrumentID << endl;
     }
 
     virtual void OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
@@ -62,28 +77,20 @@ public:
     }
 
     virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *depthMarketData) {
-
+        cerr<<" mardate | symbol:"<<depthMarketData->InstrumentID
+          <<" lastprice:"<<depthMarketData->LastPrice
+          <<" high:" << depthMarketData->HighestPrice
+          <<" low:" << depthMarketData->LowestPrice
+          <<" ask1:" << depthMarketData->AskPrice1
+          <<" asksize1:" << depthMarketData->AskVolume1
+          <<" bid1:" << depthMarketData->BidPrice1
+          <<" bidsize1:" << depthMarketData->BidVolume1
+          <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
     }
 
     void connect() {
-        CThostFtdcReqUserLoginField req = {};
-        string appId = "2030";
-        appId.copy(req.BrokerID, appId.size());
-        string userId = "0000000624";
-        userId.copy(req.UserID, userId.size());
-        string passwd = "asdfgh";
-        passwd.copy(req.Password, passwd.size());
-//        cout << req.BrokerID  << endl;
-        int ret = api->ReqUserLogin(&req, ++requestId);
-        cerr << "request: logging in..." << ((ret == 0) ? "y" :"n") << endl;
-
-//        boost::unique_lock<boost::mutex> lock(mutex);
-//        condition.wait(lock);
-
-//      vector<string> instruments;
-//      char *instrs[1];
-//      api->SubscribeMarketData(instrs, instruments.size());
-
+        api->Init();
+        api->Join();
     }
 
     void disconnect() {
@@ -98,16 +105,15 @@ public:
 private:
     boost::condition_variable condition;
     boost::mutex mutex;
+
+    bool errorOccurred(CThostFtdcRspInfoField *rspInfo) {
+        bool occurred = rspInfo && rspInfo->ErrorID != 0;
+        if (occurred) {
+            cerr << "--->>> ErrorID=" << rspInfo->ErrorID << ", ErrorMsg=" << rspInfo->ErrorMsg << endl;
+        }
+        return (rspInfo && rspInfo->ErrorID != 0);
+    }
 };
-
-//void CtpMdSpi::OnRspError(CThostFtdcRspInfoField *rspInfo, int requestID, bool last) {
-//    IsErrorRspInfo(rspInfo);
-//}
-
-//void CtpMdSpi::OnFrontDisconnected(int reason) {
-//  cerr<<" Ӧ | ж..."
-//    << " reason=" << reason << endl;
-//}
 
 //void CtpMdSpi::OnHeartBeatWarning(int nTimeLapse)
 //{

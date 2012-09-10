@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    test_provider \
     test_timer \
     test_ctpprovider \
     test_twsprovider

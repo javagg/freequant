@@ -7,6 +7,8 @@
 TARGET = freequant
 TEMPLATE = lib
 
+CONFIG += debug_and_release staticlib
+
 DEFINES += FREEQAUNT_LIBRARY
 
 SOURCES += \
@@ -27,7 +29,6 @@ SOURCES += \
     exchange.cpp \
     market.cpp \
     position.cpp \
-    fq/marketdata/provider.cpp \
     fq/marketdata/ctp/ctpprovider.cpp \
     fq/marketdata/csv/csvprovider.cpp \
     fq/indicators/indicator.cpp \
@@ -40,7 +41,8 @@ SOURCES += \
     fq/quote.cpp \
     fq/marketdata/twsprovider.cpp \
     fq/marketdata/tws/EPosixClientSocket.cpp \
-    fq/marketdata/tws/EClientSocketBase.cpp
+    fq/marketdata/tws/EClientSocketBase.cpp \
+    fq/trade/ctpprovider.cpp
 
 HEADERS += \
     fq/utils/datetime.h \
@@ -73,46 +75,10 @@ HEADERS += \
     fq/quote.h \
     fq/marketdata/twsprovider.h \
     fq/marketdata/tws/EPosixClientSocketPlatform.h \
-    fq/marketdata/tws/EPosixClientSocket.h
+    fq/marketdata/tws/EPosixClientSocket.h \
+    fq/trade/provider.h \
+    fq/trade/ctpprovider.h
 
-win32 {
-    BOOST_LIB_SUFFIX = -vc100-mt-1_51
-} unix {
-    BOOST_LIB_SUFFIX =
-}
 
-win32 {
-    BOOST_INC = $$quote($$(BOOST_HOME))
-    BOOST_LIB = $$quote($$(BOOST_HOME))/lib
-#    BOOST_LIB = "c:/Program Files/boost/boost_1_51/lib"
-    QUICKFIX_INC = $$(QUICKFIX_HOME)/include
-    QUICKFIX_LIB = $$(QUICKFIX_HOME)/lib
-    CURL_INC = $$quote($$(CURL_HOME))/include
-    CURL_LIB = $$quote($$(CURL_HOME))/lib/release
+include(../misc/common.pri)
 
-    BOOST_LIB_SUFFIX = -vc100-mt-1_51
-
-    # for tws
-    DEFINES += _AFXDLL IB_USE_STD_STRING
-    DEFINES -= UNICODE
-    TWS_INC = $$PWD/../vendors/tws/Shared
-
-    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/win/lib -lthostmduserapi
-    LIBS += -L$$BOOST_LIB -L$$CURL_LIB -lcurllib -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_LIB_SUFFIX
-}
-unix {
-    BOOST_INC = /usr/include
-    BOOST_LIB = /usr/lib
-    QUICKFIX_INC = /usr/include
-    QUICKFIX_LIB = /usr/lib
-
-    # for tws
-    DEFINES += IB_USE_STD_STRING
-    TWS_INC = $$PWD/../vendors/tws/Shared
-
-    LIBS += -L$$BOOST_LIB -lboost_system -lboost_thread -lcurl
-    LIBS += -L$$PWD/fq/marketdata/ctp/api/trade/linux64/lib -lthostmduserapi
-    LIBS += -L$$BOOST_LIB -lboost_system$$BOOST_LIB_SUFFIX -lboost_thread$$BOOST_LIB_SUFFIX
-}
-
-INCLUDEPATH += $$BOOST_INC $$CURL_INC $$QUICKFIX_INC $$TWS_INC
