@@ -12,6 +12,12 @@ public:
     virtual void disconnect() = 0;
     virtual bool isConnected() const = 0;
     virtual std::string name() const = 0;
+
+    virtual void login() {}
+    virtual void onLogin() {}
+    virtual void logout() {}
+    virtual void onLogout() {}
+
 };
 
 }}

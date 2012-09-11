@@ -42,7 +42,8 @@ SOURCES += \
     fq/marketdata/twsprovider.cpp \
     fq/marketdata/tws/EPosixClientSocket.cpp \
     fq/marketdata/tws/EClientSocketBase.cpp \
-    fq/trade/ctptradeprovider.cpp
+    fq/trade/ctptradeprovider.cpp \
+    fq/trade/fixtradeprovider.cpp
 
 HEADERS += \
     fq/utils/datetime.h \
@@ -77,7 +78,8 @@ HEADERS += \
     fq/marketdata/tws/EPosixClientSocketPlatform.h \
     fq/marketdata/tws/EPosixClientSocket.h \
     fq/trade/tradeprovider.h \
-    fq/trade/ctptradeprovider.h
+    fq/trade/ctptradeprovider.h \
+    fq/trade/fixtradeprovider.h
 
 
 include(../misc/common.pri)

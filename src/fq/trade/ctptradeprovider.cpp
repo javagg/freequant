@@ -18,7 +18,11 @@ public:
 
     void connect() {
         if (api == 0) {
-            char *front = "tcp://asp-sim1-front1.financial-trading-platform.com:41205";
+            char *front = "tcp://asp-sim2-front1.financial-trading-platform.com:26213";
+            TThostFtdcBrokerIDType brokerId = "4070";
+            TThostFtdcInvestorIDType userId = "888888";
+            TThostFtdcPasswordType password = "888888";
+
             api = CThostFtdcTraderApi::CreateFtdcTraderApi("");
             api->RegisterSpi(this);
             api->SubscribePublicTopic(THOST_TERT_RESTART);
@@ -26,7 +30,7 @@ public:
             api->RegisterFront(front);
             api->Init();
 
-            cerr << "connect..." << endl;
+            cout << "connect..." << endl;
             api->Join();
         }
     }
@@ -55,6 +59,7 @@ public:
     ///        0x2002 ʧ
     ///        0x2003 յ
     virtual void OnFrontDisconnected(int reason) {
+        cerr << "OnFrontDisconnected" << reason << endl;
     }
 
     ///ʱ档ʱδյʱ÷á
