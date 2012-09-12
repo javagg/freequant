@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+FQ_ROOT = $${PWD}/..
+
 TARGET = freequant
 TEMPLATE = lib
 
@@ -13,73 +15,69 @@ DEFINES += FREEQAUNT_LIBRARY
 
 SOURCES += \
     fq/utils/datetime.cpp \
-    transaction.cpp \
     fq/utils/timeseries.cpp \
-    strategy.cpp \
-    stock.cpp \
-    signal.cpp \
-    rule.cpp \
-    portfolio.cpp \
-    parameter.cpp \
-    orderbook.cpp \
-    order.cpp \
-    instrument.cpp \
-    currency.cpp \
-    account.cpp \
-    exchange.cpp \
-    market.cpp \
-    position.cpp \
     fq/marketdata/ctp/ctpprovider.cpp \
     fq/marketdata/csv/csvprovider.cpp \
     fq/indicators/indicator.cpp \
-    fq/bar.cpp \
+    fq/marketdata/bar.cpp \
     fq/marketdata/bogus/bogusprovoder.cpp \
     fq/utils/timer.cpp \
     fq/marketdata/yahooprovider.cpp \
     fq/utils/httpclient.cpp \
     fq/utils/csvparser.cpp \
-    fq/quote.cpp \
+    fq/marketdata/quote.cpp \
     fq/marketdata/twsprovider.cpp \
     fq/marketdata/tws/EPosixClientSocket.cpp \
     fq/marketdata/tws/EClientSocketBase.cpp \
     fq/trade/ctptradeprovider.cpp \
-    fq/trade/fixtradeprovider.cpp
+    fq/trade/fixtradeprovider.cpp \
+    fq/strategy/strategy.cpp \
+    fq/strategy/transaction.cpp \
+    fq/strategy/stock.cpp \
+    fq/strategy/rule.cpp \
+    fq/strategy/position.cpp \
+    fq/strategy/portfolio.cpp \
+    fq/strategy/parameter.cpp \
+    fq/strategy/orderbook.cpp \
+    fq/strategy/order.cpp \
+    fq/strategy/instrument.cpp \
+    fq/strategy/exchange.cpp \
+    fq/strategy/currency.cpp \
+    fq/strategy/account.cpp
 
 HEADERS += \
     fq/utils/datetime.h \
-    transaction.h \
     fq/utils/timeseries.h \
-    strategy.h \
-    stock.h \
-    signal.h \
-    rule.h \
-    portfolio.h \
-    parameter.h \
-    orderbook.h \
-    order.h \
-    instrument.h \
-    currency.h \
-    account.h \
-    exchange.h \
-    market.h \
-    position.h \
     fq/marketdata/provider.h \
     fq/marketdata/ctp/ctpprovider.h \
     fq/marketdata/csv/csvprovider.h \
     fq/indicators/indicator.h \
-    fq/bar.h \
+    fq/marketdata/bar.h \
     fq/marketdata/bogus/bogusprovoder.h \
     fq/utils/timer.h \
     fq/marketdata/yahooprovider.h \
     fq/utils/httpclient.h \
     fq/utils/csvparser.h \
-    fq/quote.h \
+    fq/marketdata/quote.h \
     fq/marketdata/twsprovider.h \
     fq/marketdata/tws/EPosixClientSocketPlatform.h \
     fq/marketdata/tws/EPosixClientSocket.h \
     fq/trade/tradeprovider.h \
     fq/trade/ctptradeprovider.h \
-    fq/trade/fixtradeprovider.h
+    fq/trade/fixtradeprovider.h \
+    fq/strategy/strategy.h \
+    fq/strategy/transaction.h \
+    fq/strategy/stock.h \
+    fq/strategy/rule.h \
+    fq/strategy/position.h \
+    fq/strategy/portfolio.h \
+    fq/strategy/parameter.h \
+    fq/strategy/orderbook.h \
+    fq/strategy/order.h \
+    fq/strategy/instrument.h \
+    fq/strategy/exchange.h \
+    fq/strategy/currency.h \
+    fq/strategy/account.h
 
 
 include(../misc/common.pri)

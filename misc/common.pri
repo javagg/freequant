@@ -1,3 +1,6 @@
+
+FQ_INSTALL_PREFIX = $$[QT_INSTALL_PREFIX]
+
 win32 {
     BOOST_INC = $$quote($$(BOOST_HOME))
     BOOST_LIB = $$quote($$(BOOST_HOME))/lib
