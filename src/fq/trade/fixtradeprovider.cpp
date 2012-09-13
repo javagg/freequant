@@ -54,7 +54,7 @@ private:
 //            GetPrivateProfileString("testdata","ResetSeqNumFlag" ,"Y", szResetSeqNumFlag, sizeof(szResetSeqNumFlag)-1,g_pszCfgFileName);
 
             char szValue[1024] = {0};
-            _snprintf(szValue, sizeof(szValue)-1, "%s:%s:%s:",szInputType, szUserName,szPassword);
+//            _snprintf(szValue, sizeof(szValue)-1, "%s:%s:%s:",szInputType, szUserName,szPassword);
             msg.setField(FIX::FIELD::RawData, szValue);
             msg.setField(FIX::FIELD::ResetSeqNumFlag,szResetSeqNumFlag);
             msg.setField(FIX::FIELD::EncryptMethod,"0");

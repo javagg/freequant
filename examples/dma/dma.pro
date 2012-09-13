@@ -1,5 +1,5 @@
-CONFIG += console
+include($$PWD/../examples.pri)
 
 SOURCES += main.cpp
 
-include($$PWD/../examples.pri)
+LIBS += -L$$BOOST_LIB -lboost_thread

@@ -4,8 +4,6 @@
 #include "EWrapper.h"
 #include "tws/EPosixClientSocket.h"
 
-using namespace std;
-
 namespace FreeQuant { namespace MarketData {
 
 class TwsEWrapper : public EWrapper {
@@ -20,13 +18,13 @@ public:
     void connect() {
         bool ret = socket->eConnect("127.0.0.1", 7496, 0);
         if (ret) {
-            cout << "Connected" << endl;
+            std::cout << "Connected" << std::endl;
         }
     }
 
     void disconnect() {
         socket->eDisconnect();
-        cout <<  "Disconnected" << endl;
+        std::cout <<  "Disconnected" << std::endl;
     }
 
     bool isConnected() const {
@@ -65,7 +63,7 @@ public:
     virtual void execDetails( int reqId, const Contract& contract, const Execution& execution){}
     virtual void execDetailsEnd( int reqId) {}
     virtual void error(const int id, const int errorCode, const IBString errorString) {
-        cout << errorString << endl;
+        std::cout << errorString << std::endl;
     }
     virtual void updateMktDepth(TickerId id, int position, int operation, int side,
        double price, int size){}
@@ -110,6 +108,14 @@ void TwsProvider::disconnect() {
 
 bool TwsProvider::isConnected() const {
     return wrapper->isConnected();
+}
+
+void TwsProvider::subscribe(std::vector<std::string> symbols) {
+
+}
+
+void TwsProvider::unsubscribe(std::vector<std::string> symbols) {
+
 }
 
 }}

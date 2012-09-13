@@ -8,6 +8,8 @@
 #ifndef FQ_STRATEGY_ORDER_H
 #define FQ_STRATEGY_ORDER_H
 
+#include <fq/trade/tradeprovider.h>
+
 namespace FreeQuant { namespace Strategy {
 
 class Order {
@@ -16,12 +18,13 @@ public:
         Market,
         Limit,
         Stop,
-        StopLimit
+        StopLimit,
+        StopTrailing
     };
 
-    enum OrderSide { Buy , Sell };
+    enum Side { Buy , Sell };
 
-    enum OrderStatus {
+    enum Status {
         PendingNew,
          New,
          PartiallyFilled,
@@ -33,7 +36,8 @@ public:
          Replaced,
          Rejected
     };
-	Order();
+
+    explicit Order();
 	virtual ~Order();
 
     void cancel();
@@ -52,7 +56,10 @@ public:
     double qty();
     void side();
 
-
+    typedef FreeQuant::Trade::TradeProvider TradeProvider;
+    TradeProvider *tradeProvider() const;
+private:
+    TradeProvider *m_tradeProvider;
 };
 
 }} /* namespace FreeQuant */

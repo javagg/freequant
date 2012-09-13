@@ -1,13 +1,13 @@
 #ifndef FQ_MARKETDATA_YAHOOPROVIDER_H
 #define FQ_MARKETDATA_YAHOOPROVIDER_H
 
+#include <fq/marketdata/marketdataprovider.h>
 #include <fq/utils/httpclient.h>
 #include <fq/utils/timer.h>
-#include <fq/marketdata/provider.h>
 
 namespace FreeQuant { namespace MarketData {
 
-class YahooProvider : public Provider {
+class YahooProvider : public MarketDataProvider {
 public:
     YahooProvider();
     virtual ~YahooProvider();

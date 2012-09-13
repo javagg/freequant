@@ -5,7 +5,9 @@
 #include <boost/thread/condition.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "ctpprovider.h"
+#include <fq/marketdata/bar.h>
+
+#include "ctpmarketdataprovider.h"
 #include "api/trade/win/public/ThostFtdcMdApi.h"
 
 using namespace std;
@@ -86,11 +88,12 @@ public:
           <<" bid1:" << depthMarketData->BidPrice1
           <<" bidsize1:" << depthMarketData->BidVolume1
           <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
+//        Bar bar;
+//        onBar(bar);
     }
 
     void connect() {
         api->Init();
-        api->Join();
     }
 
     void disconnect() {
@@ -99,6 +102,18 @@ public:
 
     bool isConnected() const {
         return false;
+    }
+
+    void subscribe(std::vector<std::string> symbols) {
+        vector<const char *> items(symbols.size());
+        transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
+//        api->SubscribeMarketData(&items[0], items.size());
+    }
+
+    void unsubscribe(std::vector<std::string> symbols) {
+        vector<const char *> items(symbols.size());
+        transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
+//        api->UnSubscribeMarketData(&items[0], items.size());
     }
 
     CThostFtdcMdApi *api;
@@ -204,23 +219,31 @@ private:
 //  return ret;
 //}
 
-CtpProvider::CtpProvider() : spi(new MdSpi()) {
+CtpMarketDataProvider::CtpMarketDataProvider() : spi(new MdSpi()) {
 }
 
-CtpProvider::~CtpProvider() {
+CtpMarketDataProvider::~CtpMarketDataProvider() {
     delete spi;
 }
 
-void CtpProvider::connect() {
+void CtpMarketDataProvider::connect() {
     spi->connect();
 }
 
-void CtpProvider::disconnect() {
+void CtpMarketDataProvider::disconnect() {
     spi->disconnect();
 }
 
-bool CtpProvider::isConnected() const {
+bool CtpMarketDataProvider::isConnected() const {
     return spi->isConnected();
+}
+
+void CtpMarketDataProvider::subscribe(std::vector<std::string> symbols) {
+    spi->subscribe(symbols);
+}
+
+void CtpMarketDataProvider::unsubscribe(std::vector<std::string> symbols) {
+    spi->unsubscribe(symbols);
 }
 
 }}

@@ -16,7 +16,6 @@ DEFINES += FREEQAUNT_LIBRARY
 SOURCES += \
     fq/utils/datetime.cpp \
     fq/utils/timeseries.cpp \
-    fq/marketdata/ctp/ctpprovider.cpp \
     fq/marketdata/csv/csvprovider.cpp \
     fq/indicators/indicator.cpp \
     fq/marketdata/bar.cpp \
@@ -43,13 +42,14 @@ SOURCES += \
     fq/strategy/instrument.cpp \
     fq/strategy/exchange.cpp \
     fq/strategy/currency.cpp \
-    fq/strategy/account.cpp
+    fq/strategy/account.cpp \
+    fq/strategy/engine.cpp \
+    fq/marketdata/ctp/ctpmarketdataprovider.cpp \
+    fq/indicators/ma.cpp
 
 HEADERS += \
     fq/utils/datetime.h \
     fq/utils/timeseries.h \
-    fq/marketdata/provider.h \
-    fq/marketdata/ctp/ctpprovider.h \
     fq/marketdata/csv/csvprovider.h \
     fq/indicators/indicator.h \
     fq/marketdata/bar.h \
@@ -77,7 +77,11 @@ HEADERS += \
     fq/strategy/instrument.h \
     fq/strategy/exchange.h \
     fq/strategy/currency.h \
-    fq/strategy/account.h
+    fq/strategy/account.h \
+    fq/strategy/engine.h \
+    fq/marketdata/marketdataprovider.h \
+    fq/marketdata/ctp/ctpmarketdataprovider.h \
+    fq/indicators/ma.h
 
 
 include(../misc/common.pri)

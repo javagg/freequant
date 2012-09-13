@@ -1,11 +1,11 @@
 #ifndef FQ_MARKETDATA_CSV_CTPPROVIDER_H
 #define FQ_MARKETDATA_CSV_CTPPROVIDER_H
 
-#include <fq/marketdata/provider.h>
+#include <fq/marketdata/marketdataprovider.h>
 
 namespace FreeQuant { namespace MarketData {
 
-class CsvProvider : public Provider {
+class CsvProvider : public MarketDataProvider {
 public:
     CsvProvider();
     virtual ~CsvProvider();
