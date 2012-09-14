@@ -1,12 +1,13 @@
 #include "executor.h"
 #include "quickfix/Session.h"
 
-#include "quickfix/fix40/ExecutionReport.h"
-#include "quickfix/fix41/ExecutionReport.h"
-#include "quickfix/fix42/ExecutionReport.h"
-#include "quickfix/fix43/ExecutionReport.h"
-#include "quickfix/fix44/ExecutionReport.h"
-#include "quickfix/fix50/ExecutionReport.h"
+#include <quickfix/fix40/ExecutionReport.h>
+#include <quickfix/fix41/ExecutionReport.h>
+#include <quickfix/fix42/ExecutionReport.h>
+#include <quickfix/fix43/ExecutionReport.h>
+#include <quickfix/fix44/ExecutionReport.h>
+#include <quickfix/fix50/ExecutionReport.h>
+#include <quickfix/fix42/MarketDataRequest.h>
 
 namespace FreeQuant { namespace Server {
 
@@ -328,7 +329,7 @@ void Executor::onMessage(const FIX42::OrderCancelRequest& message, const FIX::Se
     } catch (std::exception&) {}
 }
 
-void Application::onMessage(const FIX42::MarketDataRequest& message, const FIX::SessionID& sessionID) {
+void Executor::onMessage(const FIX42::MarketDataRequest& message, const FIX::SessionID& sessionID) {
     FIX::MDReqID mdReqID;
     FIX::SubscriptionRequestType subscriptionRequestType;
     FIX::MarketDepth marketDepth;
@@ -349,8 +350,8 @@ void Application::onMessage(const FIX42::MarketDataRequest& message, const FIX::
     }
 }
 
-void Executor::updateOrder(const Order& order, char status) {
-    FIX::TargetCompID targetCompID(order.getOwner());
+//void Executor::updateOrder(const Order& order, char status) {
+/*    FIX::TargetCompID targetCompID(order.getOwner());
     FIX::SenderCompID senderCompID(order.getTarget());
 
   FIX42::ExecutionReport fixOrder
@@ -379,11 +380,12 @@ void Executor::updateOrder(const Order& order, char status) {
   {
     FIX::Session::sendToTarget( fixOrder, senderCompID, targetCompID );
   }
-  catch ( FIX::SessionNotFound& ) {}}
+  catch ( FIX::SessionNotFound& ) {}*/
+//}
 
-void Executor::rejectOrder(const FIX::SenderCompID& sender, const FIX::TargetCompID& target,
-        const FIX::ClOrdID& clOrdID, const FIX::Symbol& symbol,
-        const FIX::Side& side, const std::string& message) {
+//void Executor::rejectOrder(const FIX::SenderCompID& sender, const FIX::TargetCompID& target,
+//        const FIX::ClOrdID& clOrdID, const FIX::Symbol& symbol,
+//        const FIX::Side& side, const std::string& message) {
 //    FIX::TargetCompID targetCompID(sender.getValue());
 //    FIX::SenderCompID senderCompID(target.getValue());
 
@@ -396,29 +398,29 @@ void Executor::rejectOrder(const FIX::SenderCompID& sender, const FIX::TargetCom
 //    try {
 //        FIX::Session::sendToTarget(fixOrder, senderCompID, targetCompID);
 //    } catch (FIX::SessionNotFound&) {}
-}
+//}
 
-void Application::processOrder(const Order& order) {
-    if (m_orderMatcher.insert(order)) {
-        acceptOrder(order);
-        std::queue <Order> orders;
-        m_orderMatcher.match(order.getSymbol(), orders);
+//void Executor::processOrder(const Order& order) {
+//    if (m_orderMatcher.insert(order)) {
+//        acceptOrder(order);
+//        std::queue <Order> orders;
+//        m_orderMatcher.match(order.getSymbol(), orders);
 
 
-        while (orders.size()) {
-            fillOrder(orders.front());
-            orders.pop();
-        }
-    } else {
-        rejectOrder(order);
-    }
-}
+//        while (orders.size()) {
+//            fillOrder(orders.front());
+//            orders.pop();
+//        }
+//    } else {
+//        rejectOrder(order);
+//    }
+//}
 
-void Executor::processCancel(const std::string& id, const std::string& symbol, Order::Side side) {
-//    Order& order = m_orderMatcher.find(symbol, side, id);
-//    order.cancel();
-//    cancelOrder(order);
-//    m_orderMatcher.erase(order);
-}
+//void Executor::processCancel(const std::string& id, const std::string& symbol, Order::Side side) {
+////    Order& order = m_orderMatcher.find(symbol, side, id);
+////    order.cancel();
+////    cancelOrder(order);
+////    m_orderMatcher.erase(order);
+//}
 
 }}

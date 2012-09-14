@@ -2,7 +2,7 @@
 
 #include "twsprovider.h"
 #include "EWrapper.h"
-#include "tws/EPosixClientSocket.h"
+#include "EPosixClientSocket.h"
 
 namespace FreeQuant { namespace MarketData {
 
