@@ -1,3 +1,0 @@
-include($$PWD/../examples.pri)
-
-
