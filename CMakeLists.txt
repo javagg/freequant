@@ -1,8 +1,7 @@
-cmake_minimum_required (VERSION 2.6)
+project(freequant)
+cmake_minimum_required(VERSION 2.6)
 
-project (FREEQUANT)
+#add_subdirectory(src)
+subdirs(src examples server tests)
 
-add_subdirectory (examples)
-add_subdirectory (src)
-
-add_library(freequant src/fq/strategy.h)
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
