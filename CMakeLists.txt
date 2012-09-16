@@ -4,10 +4,12 @@ cmake_minimum_required(VERSION 2.6)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
+#Find external dependencies
 find_package(Boost REQUIRED COMPONENTS date_time system thread)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 
+# Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/tws)
 set(CTP_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp)
 
@@ -19,16 +21,10 @@ else(UNIX)
     set(CTP_LIBRARIES thostmduserapi thosttraderapi)
 endif()
 
-include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QuickFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
-set(CTP_LIBRARIES thostmduserapi thosttraderapi)
-
-find_library(CTP_LIBRARIES NAMES thostmduserapi thosttraderapi PATHS ${CTP_LIBRARY_DIRS})
-
-link_directories(${CTP_LIBRARY_DIRS})
-
-message(${CTP_LIBRARY_DIRS})
+link_directories(${Boost_LIBRARY_DIRS} ${CTP_LIBRARY_DIRS})
 
 add_subdirectory(src lib)
 add_subdirectory(examples)
