@@ -10,7 +10,7 @@
 
 class Application : public FreeQuant::Server::Executor {
 public:
-    Application();
+    Application() {}
 };
 
 void wait() {

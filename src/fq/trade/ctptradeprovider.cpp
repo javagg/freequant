@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../../../vendors/ctp/trade/win/public/ThostFtdcTraderApi.h"
+#include "api/trade/win/public/ThostFtdcTraderApi.h"
 #include "ctptradeprovider.h"
 
 using namespace std;

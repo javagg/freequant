@@ -1,3 +1,4 @@
-
-
-
+file(GLOB_RECURSE SRC_LIST *.cpp)
+add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${CURL_LIBRARIES} ${QuickFIX_LIBRARIES} ${CTP_LIBRARIES})
+add_definitions(-D_AFX_DLL -DIB_USE_STD_STRING)

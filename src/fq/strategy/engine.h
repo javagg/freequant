@@ -10,7 +10,7 @@ public:
     Engine();
     virtual ~Engine() {}
     void start();
-    void stop();
+    void stop() {}
     void run();
 
 private:
