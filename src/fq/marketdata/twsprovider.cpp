@@ -173,4 +173,8 @@ void TwsProvider::reqFundamentalData(string symbol) {
     wrapper->reqFundamentalData(symbol);
 }
 
+void TwsProvider::testMe() {
+
+}
+
 }}
