@@ -1,13 +1,18 @@
 #include <iostream>
+#include <string>
 
 #include "twsprovider.h"
 #include "EWrapper.h"
 #include "EPosixClientSocket.h"
+#include "Contract.h"
+
+using namespace std;
 
 namespace FreeQuant { namespace MarketData {
 
 class TwsEWrapper : public EWrapper {
 public:
+    static int ticker;
     TwsEWrapper() {
         socket = new EPosixClientSocket(this);
     }
@@ -30,7 +35,32 @@ public:
     bool isConnected() const {
         return socket->isConnected();
     }
+    void subscribe(std::vector<std::string> symbols) {
+        m_tickerId = ticker++;
+        Contract contract;
+        contract.symbol = "MSFT";
+        contract.secType = "STK";
+        contract.exchange = "SMART";
+        contract.currency = "USD";
+        const IBString genericTicks ="100;101;104";
+        socket->reqMktData(m_tickerId, contract, genericTicks, false);
+    }
 
+    void unsubscribe(std::vector<std::string> symbols) {
+        socket->cancelMktData(m_tickerId);
+    }
+
+    void currentTime() const {
+        socket->reqCurrentTime();
+    }
+
+    void reqHistoricalData() {
+//         socket->reqHistoricalData();
+    }
+
+    void reqFundamentalData(std::string symbol) {
+//        socket->reqFundamentalData();
+    }
 
     virtual void tickPrice(TickerId tickerId, TickType field, double price, int canAutoExecute) {
 
@@ -81,14 +111,28 @@ public:
     virtual void scannerDataEnd(int reqId) {}
     virtual void realtimeBar(TickerId reqId, long time, double open, double high, double low, double close,
         long volume, double wap, int count) {}
-    virtual void currentTime(long time){}
+    virtual void currentTime(long time) {
+//        if ( m_state == ST_PING_ACK) {
+//            time_t t = ( time_t)time;
+//            struct tm * timeinfo = localtime ( &t);
+//            printf( "The current date/time is: %s", asctime( timeinfo));
+
+//            time_t now = ::time(NULL);
+//            m_sleepDeadline = now + SLEEP_BETWEEN_PINGS;
+
+//            m_state = ST_IDLE;
+//        }
+    }
     virtual void fundamentalData(TickerId reqId, const IBString& data) {}
     virtual void deltaNeutralValidation(int reqId, const UnderComp& underComp){}
     virtual void tickSnapshotEnd( int reqId){}
     virtual void marketDataType( TickerId reqId, int marketDataType){}
-
+private:
     EPosixClientSocket *socket;
+    TickerId m_tickerId;
 };
+
+int TwsEWrapper::ticker = 0;
 
 TwsProvider::TwsProvider() {
     wrapper = new TwsEWrapper();
@@ -110,12 +154,23 @@ bool TwsProvider::isConnected() const {
     return wrapper->isConnected();
 }
 
-void TwsProvider::subscribe(std::vector<std::string> symbols) {
-
+void TwsProvider::subscribe(vector<string> symbols) {
+    wrapper->subscribe(symbols);
 }
 
-void TwsProvider::unsubscribe(std::vector<std::string> symbols) {
+void TwsProvider::unsubscribe(vector<string> symbols) {
+    wrapper->unsubscribe(symbols);
+}
 
+void TwsProvider::currentTime() const {
+    wrapper->currentTime();
+}
+void TwsProvider::reqHistoricalData(FreeQuant::Utils::DateTime startTime, FreeQuant::Utils::DateTime endTime) {
+    wrapper->reqHistoricalData();
+}
+
+void TwsProvider::reqFundamentalData(string symbol) {
+    wrapper->reqFundamentalData(symbol);
 }
 
 }}

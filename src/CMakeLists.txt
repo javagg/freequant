@@ -1,7 +1,10 @@
 file(GLOB_RECURSE SRC_LIST *.cpp)
+file(GLOB_RECURSE TWS_SRC ${PROJECT_SOURCE_DIR}/vendors/tws/*.cpp)
+set(SRC_LIST ${SRC_LIST} ${TWS_SRC})
+
 add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${CURL_LIBRARIES} ${QuickFIX_LIBRARIES} ${CTP_LIBRARIES})
-add_definitions(-D_AFX_DLL -DIB_USE_STD_STRING)
+add_definitions(-D_AFXDLL -DIB_USE_STD_STRING)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 

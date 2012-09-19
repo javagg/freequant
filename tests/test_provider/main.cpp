@@ -1,16 +1,23 @@
 #include <iostream>
 
+#include <boost/thread.hpp>
 #include <fq/marketdata/marketdataprovider.h>
 #include <fq/marketdata/yahooprovider.h>
+#include <fq/marketdata/twsprovider.h>
 
 using namespace FreeQuant::MarketData;
 
-int main(int, char* []) {
-    MarketDataProvider *p =  new YahooProvider();
+void test_tws() {
+    MarketDataProvider *p =  new TwsProvider();
     p->connect();
-    sleep(10);
+    boost::this_thread::sleep(boost::posix_time::seconds(2));
     p->disconnect();
 
     delete p;
+}
+
+int main(int, char* []) {
+    test_tws();
+
     return 0;
 }
