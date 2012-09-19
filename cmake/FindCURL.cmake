@@ -25,7 +25,17 @@ FIND_PATH(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS /usr/include $ENV{CURL_HOME}/
 MARK_AS_ADVANCED(CURL_INCLUDE_DIR)
 
 # Look for the library.
-FIND_LIBRARY(CURL_LIBRARY NAMES curl curllib libcurl_imp curllib_static PATHS /usr/lib $ENV{CURL_HOME}/lib/Release)
+if(WIN32)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(CURL_LIB_SEARCHPATH $ENV{CURL_HOME}/lib/Release)
+    elseif()
+        set(CURL_LIB_SEARCHPATH $ENV{CURL_HOME}/lib/Debug)
+    endif()
+endif()
+
+#message(${CURL_LIB_SEARCHPATH})
+
+FIND_LIBRARY(CURL_LIBRARY NAMES curl curllib libcurl_imp curllib_static PATHS /usr/lib ${CURL_LIB_SEARCHPATH})
 MARK_AS_ADVANCED(CURL_LIBRARY)
 
 IF(CURL_INCLUDE_DIR)
