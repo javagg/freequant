@@ -2,8 +2,7 @@
 
 namespace FreeQuant {
 
-Bar::Bar()
-{
+Bar::Bar() {
 }
 
 }

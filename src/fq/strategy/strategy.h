@@ -1,8 +1,7 @@
-/*
- * strategy.h
- *
- *  Created on: 2012-6-25
- *      Author: alex
+/*!
+ * \file strategy.h
+ * \brief
+ * \author
  */
 
 #ifndef FQ_STRATEGY_STRATEGY_H
@@ -34,7 +33,6 @@ namespace FreeQuant {
 
 namespace FreeQuant { namespace Strategy {
 
-
 class Rule;
 class Portfolio;
 class Exchange;
@@ -44,8 +42,19 @@ class OrderBook;
 class Position;
 class Instrument;
 
+/*!
+ * \class Strategy
+ * \brief dddddddddd
+ *
+ * Detailed description starts here.
+ */
 class Strategy : public Engine {
 public:
+    /*!
+     * \enum RunningMode
+     * An enum type.
+     * The documentation block cannot be put after the enum!
+     */
     enum RunningMode {
         Simulation,
         Paper,
@@ -55,6 +64,12 @@ public:
     explicit Strategy();
 	virtual ~Strategy();
 
+    /*!
+     * A pure virtual member.
+     * \see testMe()
+     * \param c1 the first argument.
+     * \param c2 the second argument.
+     */
     virtual void onInit() {}
     virtual void onExit() {}
     virtual void onStart() {}

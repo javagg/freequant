@@ -2,12 +2,18 @@ project(freequant)
 
 cmake_minimum_required(VERSION 2.6)
 
+set(CMAKE_BUILD_TPYE Release)
+set(CMAKE_VERBOSE_MAKEFILE on)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 #Find external dependencies
 find_package(Boost REQUIRED COMPONENTS date_time system thread)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+    add_subdirectory(doc)
+endif()
 
 # Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/tws)
@@ -26,7 +32,16 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 link_directories(${Boost_LIBRARY_DIRS} ${CTP_LIBRARY_DIRS})
 
-add_subdirectory(src lib)
+add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(server)
+
+configure_file(${PROJECT_SOURCE_DIR}/config.h.cmake ${PROJECT_BINARY_DIR}/config.h)
+include_directories(${PROJECT_BINARY_DIR})
+
+option(BUILD_TESTS "Build tests." TRUE)
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
 
