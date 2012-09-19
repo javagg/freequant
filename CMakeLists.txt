@@ -1,6 +1,5 @@
-project(freequant)
-
 cmake_minimum_required(VERSION 2.6)
+project(freequant)
 
 set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
@@ -18,13 +17,30 @@ endif()
 set(TWS_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/tws)
 set(CTP_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp)
 
+#if(WIN32)
+#    set(CTP_LIBRARY_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/win/lib ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/risk/lib)
+#    set(CTP_LIBRARIES thostmduserapi thosttraderapi riskuserapi)
+#else(UNIX)
+#    set(CTP_LIBRARY_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/linux64/lib)
+#    set(CTP_LIBRARIES thostmduserapi thosttraderapi)
+#endif()
+
 if(WIN32)
-    set(CTP_LIBRARY_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/win/lib ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/risk/lib)
-    set(CTP_LIBRARIES thostmduserapi thosttraderapi riskuserapi)
+    set(CTP_LIBRARY_DIR ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/win/lib)
 else(UNIX)
-    set(CTP_LIBRARY_DIRS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/linux64/lib)
-    set(CTP_LIBRARIES thostmduserapi thosttraderapi)
+    set(CTP_LIBRARY_DIR ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/linux64/lib)
 endif()
+
+find_library(CTP_MDUSER_LIBRARY NAMES thostmduserapi PATHS ${CTP_LIBRARY_DIR})
+message(${CTP_MDUSER_LIBRARY})
+#find_library(CTP_TRADE_LIBRARY NAMES thosttraderapi PATHS ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/linux64/lib)
+
+#if(CTP_MDUSER_LIBRARY AND CTP_TRADE_LIBRARY)
+#    set(CTP_LIBRARIES ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/win/lib/thostmduserapi ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/win/lib/thosttraderapi)
+#endif()
+
+set(CTP_LIBRARIES ${CTP_MDUSER_LIBRARY} ${CTP_TRADE_LIBRARY})
+set(CTP_LIBRARIES ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/linux64/lib/thostmduserapi ${CMAKE_CURRENT_LIST_DIR}/vendors/ctp/api/trade/linux64/lib/thosttraderapi)
 
 include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
