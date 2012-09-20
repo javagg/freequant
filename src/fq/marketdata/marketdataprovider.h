@@ -15,6 +15,7 @@ public:
     virtual std::string name() const = 0;
     virtual void subscribe(std::vector<std::string> symbols) = 0;
     virtual void unsubscribe(std::vector<std::string> symbols) = 0;
+    virtual void testMe() {}
 };
 
 }}

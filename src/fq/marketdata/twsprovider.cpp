@@ -43,6 +43,7 @@ public:
         contract.exchange = "SMART";
         contract.currency = "USD";
         const IBString genericTicks ="100;101;104";
+        cout << contract.symbol << endl;
         socket->reqMktData(m_tickerId, contract, genericTicks, false);
     }
 
@@ -112,6 +113,7 @@ public:
     virtual void realtimeBar(TickerId reqId, long time, double open, double high, double low, double close,
         long volume, double wap, int count) {}
     virtual void currentTime(long time) {
+        cout << "server time" << time << endl;
 //        if ( m_state == ST_PING_ACK) {
 //            time_t t = ( time_t)time;
 //            struct tm * timeinfo = localtime ( &t);
@@ -174,7 +176,19 @@ void TwsProvider::reqFundamentalData(string symbol) {
 }
 
 void TwsProvider::testMe() {
+    string word;
+    while (cin.good()) {
+        cout << "Choose: ";
+        cin >> word;
 
+        if (word == "1") {
+            vector<string> symbols;
+            symbols.push_back("MSFT");
+            this->subscribe(symbols);
+        } else if (word == "2") {
+            this->currentTime();
+        }
+    }
 }
 
 }}
