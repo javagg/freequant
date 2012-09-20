@@ -5,8 +5,6 @@
 
 # Compiled Dynamic libraries
 *.so
-!vendors/ctp/api/trade/linux64/lib/*.so
-
 
 # Compiled Static libraries
 *.lai
