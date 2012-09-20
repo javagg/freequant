@@ -28,12 +28,10 @@ MARK_AS_ADVANCED(CURL_INCLUDE_DIR)
 if(WIN32)
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(CURL_LIB_SEARCHPATH $ENV{CURL_HOME}/lib/Release)
-    elseif()
+    elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(CURL_LIB_SEARCHPATH $ENV{CURL_HOME}/lib/Debug)
     endif()
 endif()
-
-#message(${CURL_LIB_SEARCHPATH})
 
 FIND_LIBRARY(CURL_LIBRARY NAMES curl curllib libcurl_imp curllib_static PATHS /usr/lib ${CURL_LIB_SEARCHPATH})
 MARK_AS_ADVANCED(CURL_LIBRARY)

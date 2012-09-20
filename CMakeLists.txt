@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(freequant)
 
+set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_VERBOSE_MAKEFILE true)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
