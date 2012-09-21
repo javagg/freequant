@@ -5,7 +5,7 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 
-set(SOURCES main.cpp mainwindow.cpp)
+set(SOURCES main.cpp mainwindow.cpp TWS/EClientSocketBase.cpp TWS/EPosixClientSocket.cpp)
 set(HEADERS mainwindow.h)
 set(UIS mainwindow.ui)
 
@@ -18,4 +18,4 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${UIS_HEADERS} ${MOC_HEADERS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
-add_definitions(-Wall)
+add_definitions(-Wall -DIB_USE_STD_STRING)
