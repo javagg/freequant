@@ -102,7 +102,7 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="connectButton">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
@@ -742,5 +742,25 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>connectButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onConnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>688</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>367</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>onConnect()</slot>
+ </slots>
 </ui>
