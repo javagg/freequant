@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 #include "TWS/EClient.h"
 #include "TWS/EWrapper.h"
@@ -179,33 +180,11 @@ public:
     }
 
 public slots:
-    void onConnect() {
-
-    }
-
-//{
-//        // connect to TWS
-//        {
-//            CString displayString;
-//            displayString.Format( "Connecting to Tws using clientId %d ...", dlg.m_clientId);
-//            int i = m_orderStatus.AddString( displayString);
-//            m_orderStatus.SetTopIndex( i);
-//        }
-
-//        m_pClient->eConnect( dlg.m_ipAddress, dlg.m_port, dlg.m_clientId);
-
-//        if( m_pClient->serverVersion() > 0)	{
-//            CString displayString;
-//            displayString.Format( "Connected to Tws server version %d at %s.",
-//                m_pClient->serverVersion(), m_pClient->TwsConnectionTime());
-//            int i = m_orderStatus.AddString( displayString);
-//            m_orderStatus.SetTopIndex( i);
-//        }
-//    }
+    void onConnect();
 
 private:
     Ui::MainWindow *ui;
-    EClient *client;
+    EClient *m_client;
 };
 
 #endif // MAINWINDOW_H
