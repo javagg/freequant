@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = fqclient
 TEMPLATE = app
-
+CONFIG += uitools
 DEFINES += _AFXDLL IB_USE_STD_STRING
 DEFINES -= UNICODE
 
@@ -19,7 +19,7 @@ SOURCES += main.cpp\
     TWS/EClientSocketBase.cpp \
     commondialog.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS += mainwindow.h \
     TWS/TwsSocketClientErrors.h \
     TWS/StdAfx.h \
     TWS/shared_ptr.h \
@@ -38,14 +38,15 @@ HEADERS  += mainwindow.h \
     TWS/CommonDefs.h \
     commondialog.h
 
-FORMS    += mainwindow.ui \
+FORMS += \
+    mainwindow.ui \
     orderdialog.ui \
     marketscannerdialog.ui \
     orderattributesdialog.ui \
     accoutupdatedialog.ui \
     executionreportfilterdialog.ui \
     newsbulletinsdialog.ui \
-    logconfigurationdialog.ui \
-    commondialog.ui
+    logconfigurationdialog.ui
 
-OTHER_FILES +=
+RESOURCES += \
+    forms.qrc

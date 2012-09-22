@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/forms">
+        <file>accoutupdatedialog.ui</file>
+        <file>executionreportfilterdialog.ui</file>
+        <file>logconfigurationdialog.ui</file>
+        <file>marketscannerdialog.ui</file>
+        <file>newsbulletinsdialog.ui</file>
+        <file>orderattributesdialog.ui</file>
+        <file>orderdialog.ui</file>
+    </qresource>
+</RCC>

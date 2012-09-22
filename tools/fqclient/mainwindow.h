@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <string>
 #include <QDebug>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -11,6 +12,9 @@
 #include "commondialog.h"
 
 #include "TWS/EPosixClientSocket.h"
+
+#include "TWS/Contract.h"
+Q_DECLARE_METATYPE(Contract)
 
 class MainWindow : public QMainWindow, public EWrapper
 {
@@ -207,19 +211,25 @@ public slots:
 
     void onReqMktData() {
         CommonDialog dialog(this);
-        dialog.show();
+        dialog.exec();
 
+        QMap<QString, QVariant> params;
+        params.insert("qty", QVariant(123));
+
+        qDebug() << params;
+
+        qDebug() << params.value("qty").toInt();
 //        QMessageBox::about(NULL, "", "");
 
         // run dlg box
 //        m_dlgOrder->init( this, "Request Market Data", CDlgOrder::REQ_MKT_DATA, m_managedAccounts);
 //        if( m_dlgOrder->DoModal() != IDOK) return;
 
-
-//        // request ticker
-//        m_client->reqMktData( m_dlgOrder->m_id, m_dlgOrder->getContract(),
-//            m_dlgOrder->m_genericTicks, m_dlgOrder->m_snapshotMktData);
-
+        TickerId id = 222;
+        Contract contract = params.value("contract").value<Contract>();
+        std::string genericTicks = "123";
+        bool snapshot = false;
+        m_client->reqMktData(id, contract, genericTicks, snapshot);
     }
 
 private:
