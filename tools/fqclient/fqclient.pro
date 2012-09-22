@@ -15,7 +15,6 @@ DEFINES += _AFXDLL IB_USE_STD_STRING
 DEFINES -= UNICODE
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     TWS/EPosixClientSocket.cpp \
     TWS/EClientSocketBase.cpp
 
@@ -37,4 +36,5 @@ HEADERS  += mainwindow.h \
     TWS/Contract.h \
     TWS/CommonDefs.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    orderdialog.ui

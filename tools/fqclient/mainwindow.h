@@ -1,23 +1,31 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDebug>
 #include <QMainWindow>
 #include <QMessageBox>
 
 #include "TWS/EClient.h"
 #include "TWS/EWrapper.h"
+#include "ui_mainwindow.h"
 
-namespace Ui {
-class MainWindow;
-}
+#include "TWS/EPosixClientSocket.h"
 
 class MainWindow : public QMainWindow, public EWrapper
 {
     Q_OBJECT
     
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MainWindow(QWidget *parent = 0): QMainWindow(parent), ui(new Ui::MainWindow) {
+        ui->setupUi(this);
+        m_client = new EPosixClientSocket(this);
+    }
+
+    ~MainWindow() {
+        delete m_client;
+        delete ui;
+    }
+
     virtual void tickPrice( TickerId tickerId, TickType field, double price, int canAutoExecute) {
 
     }
@@ -63,7 +71,7 @@ public:
     }
 
     virtual void connectionClosed() {
-
+        qDebug("connectionClosed");
     }
 
     virtual void updateAccountValue(const IBString& key, const IBString& val,
@@ -160,7 +168,7 @@ public:
     }
 
     virtual void currentTime(long time) {
-
+        qDebug("currentTime:",time);
     }
 
     virtual void fundamentalData(TickerId reqId, const IBString& data) {
@@ -180,7 +188,35 @@ public:
     }
 
 public slots:
-    void onConnect();
+    void onConnect() {
+        QString ip = "127.0.0.1";
+        unsigned int port = 7496;
+        int clientId = 0;
+        QString message = QString("Connecting to Tws using clientId %1 ...").arg(clientId);
+        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
+        if (success) {
+            QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
+            qDebug() << message;
+        }
+    }
+
+    void onDisconnect() {
+        m_client->eDisconnect();
+    }
+
+    void onReqMktData() {
+//        QMessageBox::about(NULL, "", "");
+
+        // run dlg box
+        m_dlgOrder->init( this, "Request Market Data", CDlgOrder::REQ_MKT_DATA, m_managedAccounts);
+        if( m_dlgOrder->DoModal() != IDOK) return;
+
+
+        // request ticker
+        m_client->reqMktData( m_dlgOrder->m_id, m_dlgOrder->getContract(),
+            m_dlgOrder->m_genericTicks, m_dlgOrder->m_snapshotMktData);
+
+    }
 
 private:
     Ui::MainWindow *ui;

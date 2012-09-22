@@ -84,7 +84,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit">
+       <widget class="QTextEdit" name="messageTextEdit">
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -114,7 +114,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="disconnectButton">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
@@ -554,7 +554,7 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QPushButton" name="pushButton_87">
+        <widget class="QPushButton" name="reqMktDataButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -759,9 +759,42 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>disconnectButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onDisconnect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>684</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>reqMktDataButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onReqMktData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>476</x>
+     <y>34</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
-  <slot>slot1()</slot>
+  <slot>onDisconnect()</slot>
+  <slot>onReqMktData()</slot>
  </slots>
 </ui>
