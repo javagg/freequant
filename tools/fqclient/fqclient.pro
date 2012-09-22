@@ -16,7 +16,8 @@ DEFINES -= UNICODE
 
 SOURCES += main.cpp\
     TWS/EPosixClientSocket.cpp \
-    TWS/EClientSocketBase.cpp
+    TWS/EClientSocketBase.cpp \
+    commondialog.cpp
 
 HEADERS  += mainwindow.h \
     TWS/TwsSocketClientErrors.h \
@@ -34,7 +35,17 @@ HEADERS  += mainwindow.h \
     TWS/EClientSocketBase.h \
     TWS/EClient.h \
     TWS/Contract.h \
-    TWS/CommonDefs.h
+    TWS/CommonDefs.h \
+    commondialog.h
 
 FORMS    += mainwindow.ui \
-    orderdialog.ui
+    orderdialog.ui \
+    marketscannerdialog.ui \
+    orderattributesdialog.ui \
+    accoutupdatedialog.ui \
+    executionreportfilterdialog.ui \
+    newsbulletinsdialog.ui \
+    logconfigurationdialog.ui \
+    commondialog.ui
+
+OTHER_FILES +=

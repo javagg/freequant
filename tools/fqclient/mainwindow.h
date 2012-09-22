@@ -8,6 +8,7 @@
 #include "TWS/EClient.h"
 #include "TWS/EWrapper.h"
 #include "ui_mainwindow.h"
+#include "commondialog.h"
 
 #include "TWS/EPosixClientSocket.h"
 
@@ -205,16 +206,19 @@ public slots:
     }
 
     void onReqMktData() {
+        CommonDialog dialog(this);
+        dialog.show();
+
 //        QMessageBox::about(NULL, "", "");
 
         // run dlg box
-        m_dlgOrder->init( this, "Request Market Data", CDlgOrder::REQ_MKT_DATA, m_managedAccounts);
-        if( m_dlgOrder->DoModal() != IDOK) return;
+//        m_dlgOrder->init( this, "Request Market Data", CDlgOrder::REQ_MKT_DATA, m_managedAccounts);
+//        if( m_dlgOrder->DoModal() != IDOK) return;
 
 
-        // request ticker
-        m_client->reqMktData( m_dlgOrder->m_id, m_dlgOrder->getContract(),
-            m_dlgOrder->m_genericTicks, m_dlgOrder->m_snapshotMktData);
+//        // request ticker
+//        m_client->reqMktData( m_dlgOrder->m_id, m_dlgOrder->getContract(),
+//            m_dlgOrder->m_genericTicks, m_dlgOrder->m_snapshotMktData);
 
     }
 
