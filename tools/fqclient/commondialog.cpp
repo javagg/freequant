@@ -11,9 +11,9 @@ CommonDialog::CommonDialog(QWidget *parent) : QDialog(parent) {
     file.open(QFile::ReadOnly);
     QWidget *widget = loader.load(&file, this);
     file.close();
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(widget);
-    qDebug() << widget->children();
-    setLayout(layout);
-    setWindowTitle(tr("Text Finder"));
+//    QVBoxLayout *layout = new QVBoxLayout;
+//    layout->addWidget(widget);
+//    qDebug() << widget->children();
+//    setLayout(layout);
+//    setWindowTitle(tr("Text Finder"));
 }
