@@ -3,6 +3,11 @@
 
 #include <QDialog>
 
+namespace Ui {
+class CommonDialog;
+}
+
+
 class CommonDialog : public QDialog
 {
     Q_OBJECT
@@ -10,6 +15,9 @@ class CommonDialog : public QDialog
 public:
     explicit CommonDialog(QWidget *parent = 0);
     ~CommonDialog() {}
+
+private:
+    Ui::CommonDialog *ui;
 };
 
 #endif // COMMONDIALOG_H

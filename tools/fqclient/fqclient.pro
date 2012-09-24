@@ -43,7 +43,8 @@ FORMS += \
     accoutupdatedialog.ui \
     executionreportfilterdialog.ui \
     newsbulletinsdialog.ui \
-    logconfigurationdialog.ui
+    logconfigurationdialog.ui \
+    commondialog.ui
 
 RESOURCES += \
     forms.qrc
