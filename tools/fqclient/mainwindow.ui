@@ -42,7 +42,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_3">
+       <widget class="QTextEdit" name="dataTextEdit">
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -63,7 +63,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="textEdit_2">
+       <widget class="QTextEdit" name="responseTextEdit">
         <property name="font">
          <font>
           <pointsize>8</pointsize>
@@ -84,7 +84,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="messageTextEdit">
+       <widget class="QTextEdit" name="errorsTextEdit">
         <property name="font">
          <font>
           <pointsize>8</pointsize>
