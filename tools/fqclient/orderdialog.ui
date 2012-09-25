@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
-    <height>760</height>
+    <width>634</width>
+    <height>619</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -284,22 +284,8 @@
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="5" column="1">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
              <item row="4" column="1">
               <widget class="QLabel" name="label_11">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label_8">
                <property name="text">
                 <string>TextLabel</string>
                </property>
@@ -325,6 +311,9 @@
                </property>
               </widget>
              </item>
+             <item row="2" column="2">
+              <widget class="QLineEdit" name="lineEdit_3"/>
+             </item>
              <item row="2" column="1">
               <widget class="QLabel" name="label_9">
                <property name="text">
@@ -332,26 +321,37 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="2">
-              <widget class="QLineEdit" name="lineEdit_6"/>
-             </item>
-             <item row="2" column="2">
-              <widget class="QLineEdit" name="lineEdit_3"/>
-             </item>
              <item row="0" column="2">
               <widget class="QLineEdit" name="lineEdit_4"/>
              </item>
-             <item row="1" column="2">
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_8">
+               <property name="text">
+                <string>TextLabel</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
               <widget class="QLineEdit" name="lineEdit_2"/>
              </item>
-             <item row="3" column="1">
+             <item row="2" column="3">
               <widget class="QLabel" name="label_10">
                <property name="text">
                 <string>TextLabel</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="2">
+             <item row="2" column="4">
+              <widget class="QLineEdit" name="lineEdit_6"/>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>TextLabel</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="4">
               <widget class="QLineEdit" name="lineEdit_8"/>
              </item>
             </layout>
@@ -413,27 +413,6 @@
           <string>Historical Data</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_37">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_38">
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_16">
             <property name="text">
@@ -461,16 +440,37 @@
           <item row="0" column="1">
            <widget class="QLineEdit" name="lineEdit_11"/>
           </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="lineEdit_12"/>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="lineEdit_13"/>
-          </item>
           <item row="4" column="1">
            <widget class="QLineEdit" name="lineEdit_14"/>
           </item>
-          <item row="5" column="1">
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_37">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="lineEdit_13"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_38">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QLineEdit" name="lineEdit_12"/>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="3">
            <widget class="QLineEdit" name="lineEdit_15"/>
           </item>
          </layout>
