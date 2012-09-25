@@ -32,36 +32,14 @@ public:
         delete ui;
     }
 
-    virtual void tickPrice( TickerId tickerId, TickType field, double price, int canAutoExecute) {
-        QString str = QString("id=%1 %2=%3 canAutoExecute=%4").arg(tickerId).arg(field).arg(price).arg(canAutoExecute);
+    virtual void tickPrice( TickerId tickerId, TickType tickType, double price, int canAutoExecute) {
+        QString str = QString("id=%1 %2=%3 canAutoExecute=%4").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(price).arg(canAutoExecute);
         ui->dataTextEdit->append(str);
-//                    mat( "id=%i  %s=%f  canAutoExecute=%d",
-//            tickerId, (const char*)getField( tickType), price, canAutoExecute);
-//        int i = m_ticks.AddString( str);
-
-//        int top = i - N < 0 ? 0 : i - N;
-//        m_ticks.SetTopIndex( top);
-
-
-//        str.Format( "id=%i  %s=%f  canAutoExecute=%d",
-//            tickerId, (const char*)getField( tickType), price, canAutoExecute);
-//        int i = m_ticks.AddString( str);
-
-//        int top = i - N < 0 ? 0 : i - N;
-//        m_ticks.SetTopIndex( top);
-
     }
 
-    virtual void tickSize( TickerId tickerId, TickType field, int size){
-        QString str = QString("id=%1 %2=%3").arg(tickerId).arg(field).arg(size);
+    virtual void tickSize( TickerId tickerId, TickType tickType, int size){
+        QString str = QString("id=%1 %2=%3").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(size);
         ui->dataTextEdit->append(str);
-//        CString str;
-//        str.Format( "id=%i  %s=%i",
-//            tickerId, (const char*)getField( tickType), size);
-//        int i = m_ticks.AddString( str);
-
-//        int top = i - N < 0 ? 0 : i - N;
-//        m_ticks.SetTopIndex( top);
     }
 
     virtual void tickOptionComputation( TickerId tickerId, TickType tickType, double impliedVol, double delta,
@@ -70,22 +48,28 @@ public:
     }
 
     virtual void tickGeneric(TickerId tickerId, TickType tickType, double value){
-
-    }
+        QString str = QString("id=%1 %2=%3").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(value);
+        ui->dataTextEdit->append(str);
+   }
 
     virtual void tickString(TickerId tickerId, TickType tickType, const IBString& value){
-
+        QString str = QString("id=%1 %2=%3").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(value.c_str());
+        ui->dataTextEdit->append(str);
     }
 
     virtual void tickEFP(TickerId tickerId, TickType tickType, double basisPoints, const IBString& formattedBasisPoints,
         double totalDividends, int holdDays, const IBString& futureExpiry, double dividendImpact, double dividendsToExpiry) {
-
+        QString str = QString("id=%1  %2: basisPoints=%3 / %4 impliedFuture=%5 holdDays=%6 futureExpiry=%7 dividendImpact=%8 dividendsToExpiry=%9").
+                arg(tickerId).arg(tickTypeToTickField(tickType)).arg(basisPoints).arg(formattedBasisPoints.c_str()).arg(totalDividends).arg(holdDays).arg(futureExpiry.c_str()).arg(dividendImpact).arg(dividendsToExpiry);
+        ui->dataTextEdit->append(str);
     }
 
     virtual void orderStatus( OrderId orderId, const IBString &status, int filled,
         int remaining, double avgFillPrice, int permId, int parentId,
         double lastFillPrice, int clientId, const IBString& whyHeld) {
-
+        QString str = QString("orderId=%1 clientId=%2 permId=%3 status=%4  filled=%5  remaining=%6  avgFillPrice=%7 lastFillPrice=%8 parentId=%9 whyHeld=%10")
+                .arg(orderId).arg(clientId).arg(permId).arg(status.c_str()).arg(filled).arg(remaining).arg(avgFillPrice).arg(lastFillPrice).arg(parentId).arg(whyHeld.c_str());
+        ui->dataTextEdit->append(str);
     }
 
     virtual void openOrder( OrderId orderId, const Contract&, const Order&, const OrderState&){
@@ -97,34 +81,11 @@ public:
     }
 
     virtual void winError(const IBString& str, int lastError) {
-        // get windows error msg text
-//        void *lpMsgBuf;
-//        FormatMessage(
-//            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-//            NULL,
-//            GetLastError(),
-//            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-//            (LPTSTR)&lpMsgBuf,
-//            0,
-//            NULL);
-
-//        // format msg
-//        CString fullMsg;
-//        if( lpMsgBuf && strlen( (const char *)lpMsgBuf) > 0)
-//            fullMsg.Format( "%s - %s (%i)", (const char *)str, lpMsgBuf, lastError);
-//        else
-//            fullMsg.Format( "%s (%i)", (const char *)str, lastError);
-
-//        // free the buffer.
-//        LocalFree( lpMsgBuf);
-
-//        // display it
-//        error( NO_VALID_ID, SYSTEM_ERROR, str);
 
     }
 
     virtual void connectionClosed() {
-        qDebug("connectionClosed");
+        qDebug() << "connectionClosed";
     }
 
     virtual void updateAccountValue(const IBString& key, const IBString& val,
@@ -172,18 +133,6 @@ public:
 
     virtual void error(const int id, const int errorCode, const IBString errorString) {
         QString errorStr = QString("Id: %1 | Errro Code: %2 | Error Msg: %3").arg(id).arg(errorCode).arg(errorString.c_str());
-
-//        char buf[20];
-//        itoa(id, buf, 10);
-//        errorStr += CString(buf);
-//        errorStr += " | ";
-//        errorStr += "Error Code: ";
-//        itoa(errorCode, buf, 10);
-//        errorStr += CString(buf);
-//        errorStr += " | ";
-//        errorStr += "Error Msg: ";
-//        errorStr += errorMsg;
-//        error(errorStr);
         ui->errorsTextEdit->append(errorStr);
 //        int i = m_errors.AddString( errorMsg);
 //        int top = i - N < 0 ? 0 : i - N;
@@ -265,51 +214,29 @@ public:
     }
 
 public slots:
-    void onConnect() {
-        QString ip = "127.0.0.1";
-        unsigned int port = 7496;
-        int clientId = 0;
-        QString message = QString("Connecting to Tws using clientId %1 ...").arg(clientId);
-        ui->responseTextEdit->append(message);
-
-        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
-        if (success) {
-            QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
-            qDebug() << message;
-        }
-    }
-
-    void onDisconnect() {
-        m_client->eDisconnect();
-    }
-
-    void onReqMktData() {
-        CommonDialog dialog(this);
-        dialog.exec();
-
-        QMap<QString, QVariant> params;
-        params.insert("qty", QVariant(123));
-
-        qDebug() << params;
-
-        qDebug() << params.value("qty").toInt();
-//        QMessageBox::about(NULL, "", "");
-
-        // run dlg box
-//        m_dlgOrder->init( this, "Request Market Data", CDlgOrder::REQ_MKT_DATA, m_managedAccounts);
-//        if( m_dlgOrder->DoModal() != IDOK) return;
-
-        TickerId id = 222;
-        Contract contract = params.value("contract").value<Contract>();
-        std::string genericTicks = "123";
-        bool snapshot = false;
-        m_client->reqMktData(id, contract, genericTicks, snapshot);
-    }
+    void onConnect();
+    void onDisconnect();
+    void onClear();
+    void onReqMktData();
+    void onExtord();
+    void onReqCurrentTime();
+    void onPlaceOrder();
+    void onReqOpenOrders();
+    void onReqAllOpenOrders();
+    void onReqAutoOpenOrders();
+    void onReqAccountUpdate();
+    void onReqContractDetails();
+    void onReqIds();
+    void onFinancialAdvisor();
 
 private:
     Ui::MainWindow *ui;
     EClient *m_client;
-    bool faError ;
+    bool faError;
+    std::string faGroupsXML;
+    std::string faProfilesXML;
+    std::string faAliasesXML;
+    QString tickTypeToTickField(TickType field);
 };
 
 #endif // MAINWINDOW_H

@@ -126,7 +126,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="clearButton">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
@@ -138,7 +138,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="closeButton">
            <property name="font">
             <font>
              <pointsize>8</pointsize>
@@ -428,7 +428,7 @@
         </widget>
        </item>
        <item row="9" column="1">
-        <widget class="QPushButton" name="pushButton_93">
+        <widget class="QPushButton" name="extendedButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -482,7 +482,7 @@
         </widget>
        </item>
        <item row="8" column="0">
-        <widget class="QPushButton" name="pushButton_72">
+        <widget class="QPushButton" name="placeOrderButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -791,10 +791,60 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>335</x>
+     <y>684</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>extendedButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onExtord()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>643</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>placeOrderButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onPlaceOrder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>476</x>
+     <y>358</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
   <slot>onDisconnect()</slot>
   <slot>onReqMktData()</slot>
+  <slot>onExtord()</slot>
+  <slot>onPlaceOrder()</slot>
  </slots>
 </ui>

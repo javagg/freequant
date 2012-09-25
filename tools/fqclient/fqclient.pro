@@ -14,7 +14,8 @@ DEFINES -= UNICODE
 SOURCES += main.cpp\
     TWS/EPosixClientSocket.cpp \
     TWS/EClientSocketBase.cpp \
-    commondialog.cpp
+    commondialog.cpp \
+    mainwindow.cpp
 
 HEADERS += mainwindow.h \
     TWS/TwsSocketClientErrors.h \
@@ -37,14 +38,15 @@ HEADERS += mainwindow.h \
 
 FORMS += \
     mainwindow.ui \
-    orderdialog.ui \
-    marketscannerdialog.ui \
-    orderattributesdialog.ui \
-    accoutupdatedialog.ui \
-    executionreportfilterdialog.ui \
-    newsbulletinsdialog.ui \
-    logconfigurationdialog.ui \
-    commondialog.ui
+    commondialog.ui \
+    orderattributes.ui \
+    order.ui \
+    newsbulletins.ui \
+    marketscanner.ui \
+    logconfiguration.ui \
+    executionreportfilter.ui \
+    accoutupdate.ui \
+    connection.ui
 
 RESOURCES += \
     forms.qrc

@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OrderAttributes</class>
+ <widget class="QWidget" name="OrderAttributes">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>739</width>
+    <height>553</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="margin">
+       <number>1</number>
+      </property>
+      <property name="spacing">
+       <number>1</number>
+      </property>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Trail Stop Price</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="1">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Rule 80 A</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7">
+       <widget class="QLineEdit" name="lineEdit_22"/>
+      </item>
+      <item row="11" column="1">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Parent Id</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>BOX: Auction Strategy</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Transmit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QLineEdit" name="lineEdit_3">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>OCA Group</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Clearing Accout</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="2">
+       <widget class="QLineEdit" name="lineEdit_17"/>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLineEdit" name="lineEdit_9"/>
+      </item>
+      <item row="5" column="2">
+       <widget class="QLineEdit" name="lineEdit_7"/>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Clearing Intent</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Sweep To Fill</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="2">
+       <widget class="QLineEdit" name="lineEdit_19"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+      <item row="18" column="2">
+       <widget class="QLineEdit" name="lineEdit_20"/>
+      </item>
+      <item row="15" column="1">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>Designated Location</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="2">
+       <widget class="QLineEdit" name="lineEdit_14"/>
+      </item>
+      <item row="10" column="2">
+       <widget class="QLineEdit" name="lineEdit_12"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLineEdit" name="lineEdit_4"/>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Open/Close</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>Order Ref</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="2">
+       <widget class="QLineEdit" name="lineEdit_15">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Origin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="5">
+       <widget class="QLineEdit" name="lineEdit_25"/>
+      </item>
+      <item row="5" column="5">
+       <widget class="QLineEdit" name="lineEdit_26"/>
+      </item>
+      <item row="16" column="2">
+       <widget class="QLineEdit" name="lineEdit_18"/>
+      </item>
+      <item row="14" column="2">
+       <widget class="QLineEdit" name="lineEdit_16">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="4">
+       <widget class="QLabel" name="label_34">
+        <property name="text">
+         <string>Scale Init Level Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="4">
+       <widget class="QLabel" name="label_35">
+        <property name="text">
+         <string>Scale Subs Level Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="5">
+       <widget class="QLineEdit" name="lineEdit_39"/>
+      </item>
+      <item row="4" column="4">
+       <widget class="QLabel" name="label_23">
+        <property name="text">
+         <string>Minimun Quantity</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Time in force</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLineEdit" name="lineEdit_2"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Setting Firm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>All or None</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="4">
+       <widget class="QLabel" name="label_28">
+        <property name="text">
+         <string>Display Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="4">
+       <widget class="QLabel" name="label_27">
+        <property name="text">
+         <string>NBBO Price Cap</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QLineEdit" name="lineEdit_23">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="4">
+       <widget class="QLabel" name="label_29">
+        <property name="text">
+         <string>Trigger Method</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="4">
+       <widget class="QLabel" name="label_26">
+        <property name="text">
+         <string>Firm Quote Only</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="2">
+       <widget class="QLineEdit" name="lineEdit_13"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Account</string>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="1">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string>Exempt Code</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLineEdit" name="lineEdit_11">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="4">
+       <widget class="QLabel" name="label_32">
+        <property name="text">
+         <string>Discretionary Amount</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Block Order</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>OCA Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label_38">
+        <property name="text">
+         <string>BOX: Starting Price</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QLabel" name="label_39">
+        <property name="text">
+         <string>BOX: Stock Ref Price</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="7">
+       <widget class="QLineEdit" name="lineEdit_24"/>
+      </item>
+      <item row="6" column="5">
+       <widget class="QLineEdit" name="lineEdit_27">
+        <property name="text">
+         <string>1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="5">
+       <widget class="QLineEdit" name="lineEdit_29"/>
+      </item>
+      <item row="7" column="5">
+       <widget class="QLineEdit" name="lineEdit_28">
+        <property name="text">
+         <string>1</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QLineEdit" name="lineEdit_21">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QLabel" name="label_21">
+        <property name="text">
+         <string>Override Percent Constr.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="5">
+       <widget class="QLineEdit" name="lineEdit_38"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="lineEdit_6"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="lineEdit_5"/>
+      </item>
+      <item row="18" column="1">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>HEDGE: Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLineEdit" name="lineEdit_8"/>
+      </item>
+      <item row="14" column="4">
+       <widget class="QLabel" name="label_33">
+        <property name="text">
+         <string>Short Sale Slot</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="6">
+       <widget class="QLabel" name="label_43">
+        <property name="text">
+         <string>VOL: Volatility</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="6">
+       <widget class="QLabel" name="label_44">
+        <property name="text">
+         <string>VOL: Volatility Type (1 or 2)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="4">
+       <widget class="QLabel" name="label_24">
+        <property name="text">
+         <string>Percent Offset</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="4">
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>Outside RTH</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="4">
+       <widget class="QLabel" name="label_36">
+        <property name="text">
+         <string>Scale Price Increment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="4">
+       <widget class="QLabel" name="label_37">
+        <property name="text">
+         <string>HEDGE: Param</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="4">
+       <widget class="QLabel" name="label_25">
+        <property name="text">
+         <string>Electronic Exchage Only</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="5">
+       <widget class="QLineEdit" name="lineEdit_32">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="5">
+       <widget class="QLineEdit" name="lineEdit_33">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="5">
+       <widget class="QLineEdit" name="lineEdit_34">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="5">
+       <widget class="QLineEdit" name="lineEdit_35">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLineEdit" name="lineEdit_10">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="6">
+       <widget class="QLabel" name="label_40">
+        <property name="text">
+         <string>BOX: Delta</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="6">
+       <widget class="QLabel" name="label_41">
+        <property name="text">
+         <string>BOX/VOL: Stock Range Lower</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="6">
+       <widget class="QLabel" name="label_45">
+        <property name="text">
+         <string>VOL: Hedge Delta Order Type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="6">
+       <widget class="QLabel" name="label_46">
+        <property name="text">
+         <string>VOL: Hedge Delta Con Id</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="6">
+       <widget class="QLabel" name="label_47">
+        <property name="text">
+         <string>VOL: Hedge Delta Setting Firm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="6">
+       <widget class="QLabel" name="label_42">
+        <property name="text">
+         <string>BOX/VOL: Stock Range Upper</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="4">
+       <widget class="QLabel" name="label_31">
+        <property name="text">
+         <string>Hidden</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="5">
+       <widget class="QLineEdit" name="lineEdit_36"/>
+      </item>
+      <item row="16" column="5">
+       <widget class="QLineEdit" name="lineEdit_37"/>
+      </item>
+      <item row="9" column="5">
+       <widget class="QLineEdit" name="lineEdit_30">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="5">
+       <widget class="QLineEdit" name="lineEdit_31">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="6">
+       <widget class="QLabel" name="label_48">
+        <property name="text">
+         <string>VOL: Hedge Delta clearing Account</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="6">
+       <widget class="QLabel" name="label_49">
+        <property name="text">
+         <string>VOL: Hedge Delta Clearing Intent</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="6">
+       <widget class="QLabel" name="label_50">
+        <property name="text">
+         <string>VOL: Continuous Update</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="7">
+       <widget class="QLineEdit" name="lineEdit_40"/>
+      </item>
+      <item row="5" column="7">
+       <widget class="QLineEdit" name="lineEdit_41"/>
+      </item>
+      <item row="6" column="7">
+       <widget class="QLineEdit" name="lineEdit_42"/>
+      </item>
+      <item row="7" column="7">
+       <widget class="QLineEdit" name="lineEdit_43"/>
+      </item>
+      <item row="8" column="7">
+       <widget class="QLineEdit" name="lineEdit_44"/>
+      </item>
+      <item row="9" column="7">
+       <widget class="QLineEdit" name="lineEdit_45"/>
+      </item>
+      <item row="10" column="7">
+       <widget class="QLineEdit" name="lineEdit_46"/>
+      </item>
+      <item row="11" column="7">
+       <widget class="QLineEdit" name="lineEdit_47"/>
+      </item>
+      <item row="12" column="7">
+       <widget class="QLineEdit" name="lineEdit_48"/>
+      </item>
+      <item row="13" column="7">
+       <widget class="QLineEdit" name="lineEdit_49"/>
+      </item>
+      <item row="14" column="7">
+       <widget class="QLineEdit" name="lineEdit_50">
+        <property name="text">
+         <string>0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="6">
+       <widget class="QLabel" name="label_51">
+        <property name="text">
+         <string>VOL: Ref Price Type (1 or 2)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="7">
+       <widget class="QLineEdit" name="lineEdit_51"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>Opting out of SMART routing</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
