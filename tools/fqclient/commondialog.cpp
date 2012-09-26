@@ -13,8 +13,6 @@ Q_DECLARE_METATYPE(Contract)
 #include "TWS/Order.h"
 Q_DECLARE_METATYPE(Order)
 
-using namespace std;
-
 CommonDialog::CommonDialog(QWidget *parent, Type type) : QDialog(parent), ui(new Ui::CommonDialog), type(type) {
     ui->setupUi(this);
     QUiLoader loader;
@@ -66,6 +64,7 @@ void CommonDialog::acceptForOrder() {
     contract.secType = ui->frame->findChild<QLineEdit*>("typeLineEdit")->text().toStdString();
     contract.expiry = ui->frame->findChild<QLineEdit*>("expiryLineEdit")->text().toStdString();
     contract.strike = ui->frame->findChild<QLineEdit*>("strikeLineEdit")->text().toDouble();
+    contract.exchange = ui->frame->findChild<QLineEdit*>("exchangeLineEdit")->text().toStdString();
     contract.right = ui->frame->findChild<QLineEdit*>("rightLineEdit")->text().toStdString();
     contract.multiplier = ui->frame->findChild<QLineEdit*>("multiplierLineEdit")->text().toStdString();
     contract.primaryExchange = ui->frame->findChild<QLineEdit*>("primaryExchangeLineEdit")->text().toStdString();

@@ -8,8 +8,12 @@ QT += core gui
 TARGET = fqclient
 TEMPLATE = app
 CONFIG += uitools
+
 DEFINES += _AFXDLL IB_USE_STD_STRING
 DEFINES -= UNICODE
+
+QMAKE_CFLAGS_DEBUG += -MTd
+QMAKE_CFLAGS_RELEASE += -MT
 
 SOURCES += main.cpp\
     TWS/EPosixClientSocket.cpp \

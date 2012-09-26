@@ -839,6 +839,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>clearButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onClear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>270</x>
+     <y>688</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -846,5 +862,6 @@
   <slot>onReqMktData()</slot>
   <slot>onExtord()</slot>
   <slot>onPlaceOrder()</slot>
+  <slot>onClear()</slot>
  </slots>
 </ui>

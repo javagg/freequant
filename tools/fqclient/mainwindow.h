@@ -32,12 +32,13 @@ public:
         delete ui;
     }
 
-    virtual void tickPrice( TickerId tickerId, TickType tickType, double price, int canAutoExecute) {
+    virtual void tickPrice(TickerId tickerId, TickType tickType, double price, int canAutoExecute) {
         QString str = QString("id=%1 %2=%3 canAutoExecute=%4").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(price).arg(canAutoExecute);
         ui->dataTextEdit->append(str);
+        q
     }
 
-    virtual void tickSize( TickerId tickerId, TickType tickType, int size){
+    virtual void tickSize(TickerId tickerId, TickType tickType, int size){
         QString str = QString("id=%1 %2=%3").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(size);
         ui->dataTextEdit->append(str);
     }
@@ -77,11 +78,12 @@ public:
     }
 
     virtual void openOrderEnd() {
-
+        ui->errorsTextEdit->append(" =============== end ===============");
     }
 
     virtual void winError(const IBString& str, int lastError) {
-
+        QString errorStr = QString("[winError]Error Code: %1 | Error Msg: %2 ").arg(lastError).arg(str.c_str());
+        ui->errorsTextEdit->append(errorStr);
     }
 
     virtual void connectionClosed() {
@@ -120,10 +122,12 @@ public:
     }
 
     virtual void contractDetailsEnd( int reqId) {
-
+        ui->errorsTextEdit->append(QString("id =%1 =============== end ===============").arg(reqId));
     }
 
     virtual void execDetails( int reqId, const Contract& contract, const Execution& execution) {
+//        ui->errorsTextEdit->append("---- Execution Details begin ----");
+//        ui->errorsTextEdit->append(QString("execDetails: reqId=%1").arg(reqId));
 
     }
 
@@ -154,11 +158,14 @@ public:
     }
 
     virtual void updateNewsBulletin(int msgId, int msgType, const IBString& newsMessage, const IBString& originExch) {
-
+        QMessageBox::information(this, "", QString("MsgId=%1 :: MsgType = %2 :: Origin= %3 :: Message= %4").arg(msgId).arg(msgType).arg(originExch.c_str()).arg(newsMessage.c_str()));
     }
 
-    virtual void managedAccounts( const IBString& accountsList){
-
+    virtual void managedAccounts(const IBString& accountsList){
+        m_financialAdvisor = true;
+        m_managedAccounts = accountsList;
+        QString message = QString("Connected : The list of managed accounts are : [%1]").arg(accountsList.c_str());
+        ui->responseTextEdit->append(message);
     }
 
     virtual void receiveFA(faDataType pFaDataType, const IBString& cxml){
@@ -202,11 +209,22 @@ public:
     }
 
     virtual void tickSnapshotEnd( int reqId) {
-
+        ui->responseTextEdit->append(QString("id=%i =============== end ===============").arg(reqId));
     }
 
     virtual void marketDataType( TickerId reqId, int marketDataType) {
-
+        QString dataType = QString();
+        switch (marketDataType){
+            case REALTIME:
+                dataType = "Real-Time";
+                break;
+            case FROZEN:
+                dataType = "Frozen";
+                break;
+            default:
+                dataType = "Unknown";
+        }
+        ui->responseTextEdit->append(QString("id=%1 marketDataType=%2").arg(reqId).arg(dataType));
     }
 
 public slots:
@@ -229,6 +247,10 @@ private:
     Ui::MainWindow *ui;
     EClient *m_client;
     bool faError;
+
+    bool m_financialAdvisor;
+    std::string m_managedAccounts;
+
     std::string faGroupsXML;
     std::string faProfilesXML;
     std::string faAliasesXML;

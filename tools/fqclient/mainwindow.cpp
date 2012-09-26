@@ -99,9 +99,9 @@ void MainWindow::onReqAccountUpdate() {
 }
 
 void MainWindow::onClear() {
-    ui->responseTextEdit->setText("");
-    ui->dataTextEdit->setText("");
-    ui->errorsTextEdit->setText("");
+    ui->responseTextEdit->clear();
+    ui->dataTextEdit->clear();
+    ui->errorsTextEdit->clear();
 }
 
 void MainWindow::onConnect() {
