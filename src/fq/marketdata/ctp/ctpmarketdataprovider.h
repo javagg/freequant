@@ -23,4 +23,5 @@ private:
 };
 
 }}
+
 #endif // FQ_MARKETDATA_CTP_CTPPROVIDER_H
