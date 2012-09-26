@@ -82,15 +82,15 @@ void CommonDialog::acceptForOrder() {
     m_params.insert("genericTicks", QVariant(genericTicks));
     m_params.insert("snapshot", QVariant(snapshot));
 
-    Order order;
-    order.orderId = ui->frame->findChild<QLineEdit*>("orderIdLineEdit")->text().toLong();
-    order.action = ui->frame->findChild<QLineEdit*>("actionLineEdit")->text().toStdString();
-    order.totalQuantity = ui->frame->findChild<QLineEdit*>("totalQuantityLineEdit")->text().toLong();
-    order.orderType = ui->frame->findChild<QLineEdit*>("orderTypeLineEdit")->text().toStdString();
-    order.lmtPrice = ui->frame->findChild<QLineEdit*>("lmtPriceLineEdit")->text().toDouble();
-    order.auxPrice = ui->frame->findChild<QLineEdit*>("auxPriceLineEdit")->text().toDouble();
-    QVariant o; o.setValue(order);
-    m_params.insert("order", o);
+//    Order order;
+//    order.orderId = ui->frame->findChild<QLineEdit*>("orderIdLineEdit")->text().toLong();
+//    order.action = ui->frame->findChild<QLineEdit*>("actionLineEdit")->text().toStdString();
+//    order.totalQuantity = ui->frame->findChild<QLineEdit*>("totalQuantityLineEdit")->text().toLong();
+//    order.orderType = ui->frame->findChild<QLineEdit*>("orderTypeLineEdit")->text().toStdString();
+//    order.lmtPrice = ui->frame->findChild<QLineEdit*>("lmtPriceLineEdit")->text().toDouble();
+//    order.auxPrice = ui->frame->findChild<QLineEdit*>("auxPriceLineEdit")->text().toDouble();
+//    QVariant o; o.setValue(order);
+//    m_params.insert("order", o);
 }
 
 void CommonDialog::accept() {

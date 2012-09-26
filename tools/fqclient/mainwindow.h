@@ -134,10 +134,6 @@ public:
     virtual void error(const int id, const int errorCode, const IBString errorString) {
         QString errorStr = QString("Id: %1 | Errro Code: %2 | Error Msg: %3").arg(id).arg(errorCode).arg(errorString.c_str());
         ui->errorsTextEdit->append(errorStr);
-//        int i = m_errors.AddString( errorMsg);
-//        int top = i - N < 0 ? 0 : i - N;
-//        m_errors.SetTopIndex( top);
-
 
 //        for (int ctr=0; ctr < NUM_FA_ERROR_CODES; ctr++) {
 //           faError |= (errorCode == faErrorCodes[ctr]) ;
@@ -228,7 +224,7 @@ public slots:
     void onReqContractDetails();
     void onReqIds();
     void onFinancialAdvisor();
-
+    void onReqAccts();
 private:
     Ui::MainWindow *ui;
     EClient *m_client;
