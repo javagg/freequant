@@ -18,16 +18,10 @@ static int requestId = 0;
 
 class MdSpi : public CThostFtdcMdSpi {
 public:
-    MdSpi() {
-        char *mdFront = "tcp://asp-sim1-front1.financial-trading-platform.com:41213";
-        api = CThostFtdcMdApi::CreateFtdcMdApi();
-        api->RegisterSpi(this);
-        api->RegisterFront(mdFront);
-    }
+    MdSpi() : api(0), m_connected(false) {}
 
     ~MdSpi() {
-        api->RegisterSpi(0);
-        api->Release();
+        disconnect();
     }
 
     virtual void OnRspError(CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
@@ -61,11 +55,11 @@ public:
         cerr << "--->>> " << __FUNCTION__ << endl;
         if (!errorOccurred(rspInfo) && last) {
             cerr << "--->>> TradingDay " << api->GetTradingDay() << endl;
-            vector<char *> instruments;
-            instruments.push_back("IF1209");
-            instruments.push_back("cu0909");
-            int ret = api->SubscribeMarketData(&instruments[0], instruments.size());
-            cerr << "--->>> Subscribe MarketData " << ((ret == 0) ? "success" : "failed") << endl;
+//            vector<char *> instruments;
+//            instruments.push_back("IF1209");
+//            instruments.push_back("cu0909");
+//            int ret = api->SubscribeMarketData(&instruments[0], instruments.size());
+//            cerr << "--->>> Subscribe MarketData " << ((ret == 0) ? "success" : "failed") << endl;
         }
     }
 
@@ -93,15 +87,29 @@ public:
     }
 
     void connect() {
-        api->Init();
+       if (api == 0) {
+            char *front = "tcp://asp-sim2-front1.financial-trading-platform.com:26213";
+            TThostFtdcBrokerIDType brokerId = "4070";
+            TThostFtdcInvestorIDType userId = "888888";
+            TThostFtdcPasswordType password = "888888";
+
+            api = CThostFtdcMdApi::CreateFtdcMdApi("");
+            api->RegisterSpi(this);
+            api->RegisterFront(front);
+            api->Init();
+        }
     }
 
     void disconnect() {
-
+        if (api != 0) {
+            api->RegisterSpi(0);
+            api->Release();
+            api = 0;
+        }
     }
 
     bool isConnected() const {
-        return false;
+        return m_connected;
     }
 
     void subscribe(std::vector<std::string> symbols) {
@@ -118,6 +126,7 @@ public:
 
     CThostFtdcMdApi *api;
 private:
+    bool m_connected;
     boost::condition_variable condition;
     boost::mutex mutex;
 
