@@ -1,0 +1,15 @@
+[DEFAULT]
+ConnectionType=initiator
+ReconnectInterval=60
+SenderCompID=TW
+
+[SESSION]
+BeginString=FIX.4.2
+TargetCompID=FQ
+DataDictionary=fix42.xml
+StartTime=12:30:00
+EndTime=23:30:00
+HeartBtInt=20
+FileStorePath=.
+SocketConnectPort=7711
+SocketConnectHost=127.0.0.1

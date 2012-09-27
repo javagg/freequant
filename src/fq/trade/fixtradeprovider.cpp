@@ -21,7 +21,7 @@ public:
 
     virtual ~FixApp() {
     }
-    void run();private:
+    void run();
 
 private:
     void onCreate(const FIX::SessionID&) {}
@@ -118,6 +118,16 @@ private:
 };
 
 FixTradeProvider::FixTradeProvider() {
+    string config = "config.fix";
+    m_settings = new FIX::SessionSettings(config);
+    m_storeFactory = new FIX::FileStoreFactory(*m_settings);
+    m_initiator = new FIX::SocketInitiator(*this, *m_storeFactory, *m_settings);
+}
+
+FixTradeProvider::~FixTradeProvider() {
+    delete m_initiator;
+    delete m_storeFactory;
+    delete m_initiator;
 }
 
 void FixTradeProvider::run() {
@@ -152,15 +162,47 @@ void FixTradeProvider::sendOrder() {
 }
 
 void FixTradeProvider::connect() {
-
+    cerr << "connect..." << endl;
+    m_initiator->start();
 }
 
 void FixTradeProvider::disconnect() {
-
+    m_initiator->stop();
 }
 
 bool FixTradeProvider::isConnected() const {
 
 }
+
+void FixTradeProvider::onCreate(const FIX::SessionID&) {
+    cerr << "onCreate" << endl;
+}
+
+void FixTradeProvider::onLogon(const FIX::SessionID&) {
+    cerr << "onLogon" << endl;
+}
+
+void FixTradeProvider::onLogout(const FIX::SessionID&) {
+    cerr << "onLogout" << endl;
+}
+
+void FixTradeProvider::toAdmin(FIX::Message&, const FIX::SessionID&) {
+
+}
+
+void FixTradeProvider::toApp(FIX::Message&, const FIX::SessionID&) throw(FIX::DoNotSend) {
+
+}
+
+void FixTradeProvider::fromAdmin(const FIX::Message&, const FIX::SessionID&)
+    throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) {
+
+}
+
+void FixTradeProvider::fromApp( const FIX::Message&, const FIX::SessionID& )
+    throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
+
+}
+
 
 }}
