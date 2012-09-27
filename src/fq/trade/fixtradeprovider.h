@@ -11,8 +11,13 @@ class FixTradeProvider : public TradeProvider {
 public:
     FixTradeProvider();
     virtual ~FixTradeProvider() {}
-    void run();
+    void connect();
+    void disconnect();
+    bool isConnected() const;
+    std::string name() const { return "FIX"; }
+
     void sendOrder();
+    void run();
 private:
     FixApp *app;
 };

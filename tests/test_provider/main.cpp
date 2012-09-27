@@ -11,7 +11,6 @@ void test_tws() {
     MarketDataProvider *p =  new TwsProvider();
     p->connect();
     boost::this_thread::sleep(boost::posix_time::seconds(1));
-    p->testMe();
     p->disconnect();
 
     delete p;

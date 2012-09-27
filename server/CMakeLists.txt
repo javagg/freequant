@@ -4,3 +4,7 @@ if(WIN32)
 endif()
 target_link_libraries(server ${PROJECT_NAME} ${QUICKFIX_LIBRARIES} ${WS2_32})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/config.fix DESTINATION ${PROJECT_BINARY_DIR}/bin/)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.fix ${PROJECT_BINARY_DIR}/bin/config.fix COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fix42.xml ${PROJECT_BINARY_DIR}/bin/fix42.xml COPYONLY)

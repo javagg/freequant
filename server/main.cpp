@@ -6,19 +6,13 @@
 #include <quickfix/SocketAcceptor.h>
 #include <quickfix/Log.h>
 #include <quickfix/SessionSettings.h>
+
 #include <fq/server/executor.h>
 
 class Application : public FreeQuant::Server::Executor {
 public:
     Application() {}
 };
-
-void wait() {
-    std::cout << "Type Ctrl-C to quit" << std::endl;
-    while(true) {
-        FIX::process_sleep(1);
-    }
-}
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -34,10 +28,13 @@ int main(int argc, char** argv) {
         Application application;
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
-        FIX::SocketAcceptor acceptor(application, storeFactory, settings, logFactory );
+        FIX::SocketAcceptor acceptor(application, storeFactory, settings, logFactory);
 
         acceptor.start();
-        wait();
+        std::cout << "Type Ctrl-C to quit" << std::endl;
+        while (true) {
+            FIX::process_sleep(1);
+        }
         acceptor.stop();
         return 0;
     } catch (std::exception& e) {

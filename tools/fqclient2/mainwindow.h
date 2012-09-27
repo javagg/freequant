@@ -8,6 +8,7 @@
 #include <QString>
 
 #include <fq/marketdata/marketdataprovider.h>
+#include <fq/trade/tradeprovider.h>
 
 #include "commondialog.h"
 
@@ -220,8 +221,9 @@ public:
 public slots:
     void onConnect();
     void onDisconnect();
-//    void onClear();
-//    void onReqMktData();
+    void onClear();
+    void onReqMktData();
+    void onCancelMktData();
 //    void onExtord();
 //    void onReqCurrentTime();
 //    void onPlaceOrder();
@@ -236,9 +238,8 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-
     FreeQuant::MarketData::MarketDataProvider *md_provider;
-
+    FreeQuant::Trade::TradeProvider *trade_provider;
     bool faError;
 
     bool m_financialAdvisor;

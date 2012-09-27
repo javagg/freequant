@@ -176,7 +176,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_88">
+        <widget class="QPushButton" name="cancelMktDataButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -855,6 +855,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>cancelMktDataButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onCancelMktData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>643</x>
+     <y>34</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -863,5 +879,6 @@
   <slot>onExtord()</slot>
   <slot>onPlaceOrder()</slot>
   <slot>onClear()</slot>
+  <slot>onCancelMktData()</slot>
  </slots>
 </ui>

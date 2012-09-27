@@ -2,8 +2,11 @@
 #include <iostream>
 #include <vector>
 
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
+#include <boost/date_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/thread/condition_variable.hpp> // #include <condition_variable> // for c++11
+#include <boost/thread/mutex.hpp> // #include <mutex> // for c++11
+#include <boost/format.hpp>
 
 #include <fq/marketdata/bar.h>
 
@@ -33,7 +36,7 @@ public:
     }
 
     virtual void OnHeartBeatWarning(int timeLapse) {
-
+       cerr << "OnHeartBeatWarning..." << timeLapse << endl;
     }
 
     virtual void OnFrontConnected() {
@@ -55,11 +58,7 @@ public:
         cerr << "--->>> " << __FUNCTION__ << endl;
         if (!errorOccurred(rspInfo) && last) {
             cerr << "--->>> TradingDay " << api->GetTradingDay() << endl;
-//            vector<char *> instruments;
-//            instruments.push_back("IF1209");
-//            instruments.push_back("cu0909");
-//            int ret = api->SubscribeMarketData(&instruments[0], instruments.size());
-//            cerr << "--->>> Subscribe MarketData " << ((ret == 0) ? "success" : "failed") << endl;
+            m_connected = true;
         }
     }
 
@@ -69,12 +68,21 @@ public:
     }
 
     virtual void OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *rspInfo, int requestId, bool last) {
-
+        cerr << __FUNCTION__ << endl;
+        cout << specificInstrument->InstrumentID << endl;
     }
 
     virtual void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *depthMarketData) {
+        boost::gregorian::date d = boost::gregorian::from_undelimited_string(depthMarketData->TradingDay);
+        string sdate = to_iso_extended_string(d);
+        string str = boost::str(boost::format("%s %s.%s") % sdate %
+            depthMarketData->UpdateTime % depthMarketData->UpdateMillisec);
+        boost::posix_time::ptime dt = boost::posix_time::time_from_string(str);
+
         cerr<<" mardate | symbol:"<<depthMarketData->InstrumentID
-          <<" lastprice:"<<depthMarketData->LastPrice
+              << "timestamp: " << str
+              << " " << dt
+           <<" lastprice:"<<depthMarketData->LastPrice
           <<" high:" << depthMarketData->HighestPrice
           <<" low:" << depthMarketData->LowestPrice
           <<" ask1:" << depthMarketData->AskPrice1
@@ -87,6 +95,7 @@ public:
     }
 
     void connect() {
+        string connection = "protocal=tcp;ip=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
        if (api == 0) {
             char *front = "tcp://asp-sim2-front1.financial-trading-platform.com:26213";
             TThostFtdcBrokerIDType brokerId = "4070";
@@ -115,13 +124,13 @@ public:
     void subscribe(std::vector<std::string> symbols) {
         vector<const char *> items(symbols.size());
         transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
-//        api->SubscribeMarketData(&items[0], items.size());
+        api->SubscribeMarketData(const_cast<char**>(&items[0]), items.size());
     }
 
     void unsubscribe(std::vector<std::string> symbols) {
         vector<const char *> items(symbols.size());
         transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
-//        api->UnSubscribeMarketData(&items[0], items.size());
+        api->UnSubscribeMarketData(const_cast<char**>(&items[0]), items.size());
     }
 
     CThostFtdcMdApi *api;
@@ -138,95 +147,6 @@ private:
         return (rspInfo && rspInfo->ErrorID != 0);
     }
 };
-
-//void CtpMdSpi::OnHeartBeatWarning(int nTimeLapse)
-//{
-//  cerr<<" Ӧ | ʱ..."
-//    << " TimerLapse = " << nTimeLapse << endl;
-//}
-
-//void CtpMdSpi::OnFrontConnected()
-//{
-//    cerr<<" ӽǰ...ɹ"<<endl;
-//}
-
-//void CtpMdSpi::ReqUserLogin(TThostFtdcBrokerIDType	appId,
-//            TThostFtdcUserIDType	userId,	TThostFtdcPasswordType	passwd)
-//{
-//    CThostFtdcReqUserLoginField req;
-//    memset(&req, 0, sizeof(req));
-//    strcpy(req.BrokerID, appId);
-//    strcpy(req.UserID, userId);
-//    strcpy(req.Password, passwd);
-//    int ret = userApi->ReqUserLogin(&req, ++requestId);
-//  cerr<<"  | ͵¼..."<<((ret == 0) ? "ɹ" :"ʧ") << endl;
-////  SetEvent(g_hEvent);
-//}
-
-//void CtpMdSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
-//        CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
-//{
-//    if (!IsErrorRspInfo(pRspInfo) && pRspUserLogin)
-//    {
-//    cerr<<" Ӧ | ¼ɹ...ǰ:"
-//      <<pRspUserLogin->TradingDay<<endl;
-//    }
-////  if(bIsLast) SetEvent(g_hEvent);
-//}
-
-//void CtpMdSpi::SubscribeMarketData(char* instIdList)
-//{
-//  vector<char*> list;
-//  char *token = strtok(instIdList, ",");
-//  while( token != NULL ){
-//    list.push_back(token);
-//    token = strtok(NULL, ",");
-//  }
-//  unsigned int len = list.size();
-//  char** pInstId = new char* [len];
-//  for(unsigned int i=0; i<len;i++)  pInstId[i]=list[i];
-//    int ret=userApi->SubscribeMarketData(pInstId, len);
-//  cerr<<"  | 鶩... "<<((ret == 0) ? "ɹ" : "ʧ")<< endl;
-////  SetEvent(g_hEvent);
-//}
-
-//void CtpMdSpi::OnRspSubMarketData(
-//         CThostFtdcSpecificInstrumentField *pSpecificInstrument,
-//         CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
-//{
-//    cerr<<" Ӧ |  鶩...ɹ"<<endl;
-////  if(bIsLast)  SetEvent(g_hEvent);
-//}
-
-//void CtpMdSpi::OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument,
-//             CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
-//{
-//    cerr<<" Ӧ |  ȡ...ɹ"<<endl;
-////  if(bIsLast)  SetEvent(g_hEvent);
-//}
-
-//void CtpMdSpi::OnRtnDepthMarketData(
-//             CThostFtdcDepthMarketDataField *pDepthMarketData)
-//{
-//  cerr<<"  | Լ:"<<pDepthMarketData->InstrumentID
-//    <<" ּ:"<<pDepthMarketData->LastPrice
-//    <<" ߼:" << pDepthMarketData->HighestPrice
-//    <<" ͼ:" << pDepthMarketData->LowestPrice
-//    <<" һ:" << pDepthMarketData->AskPrice1
-//    <<" һ:" << pDepthMarketData->AskVolume1
-//    <<" һ:" << pDepthMarketData->BidPrice1
-//    <<" һ:" << pDepthMarketData->BidVolume1
-//    <<" ֲ:"<< pDepthMarketData->OpenInterest <<endl;
-//}
-
-//bool CtpMdSpi::IsErrorRspInfo(CThostFtdcRspInfoField *pRspInfo)
-//{
-//  bool ret = ((pRspInfo) && (pRspInfo->ErrorID != 0));
-//  if (ret){
-//    cerr<<" Ӧ | "<<pRspInfo->ErrorMsg<<endl;
-//  }
-//  return ret;
-//}
 
 CtpMarketDataProvider::CtpMarketDataProvider() : spi(new MdSpi()) {
 }
@@ -253,6 +173,14 @@ void CtpMarketDataProvider::subscribe(std::vector<std::string> symbols) {
 
 void CtpMarketDataProvider::unsubscribe(std::vector<std::string> symbols) {
     spi->unsubscribe(symbols);
+}
+
+void CtpMarketDataProvider::onConnected() {
+
+}
+
+void CtpMarketDataProvider::onDisconnected() {
+
 }
 
 }}

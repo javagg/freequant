@@ -18,6 +18,9 @@ public:
     virtual std::string name() const { return "CTP"; }
     virtual void subscribe(std::vector<std::string> symbols);
     virtual void unsubscribe(std::vector<std::string> symbols);
+
+    void onConnected();
+    void onDisconnected();
 private:
     MdSpi *spi;
 };

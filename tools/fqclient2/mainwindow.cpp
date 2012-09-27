@@ -1,14 +1,20 @@
+#include <vector>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <fq/marketdata/ctp/ctpmarketdataprovider.h>
+#include <fq/trade/fixtradeprovider.h>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    md_provider = new FreeQuant::MarketData::CtpMarketDataProvider();
+    md_provider = new FreeQuant::MarketData::CtpMarketDataProvider;
+    trade_provider = new FreeQuant::Trade::FixTradeProvider;
 }
 
 MainWindow::~MainWindow() {
+    delete trade_provider;
     delete md_provider;
     delete ui;
 }
@@ -44,14 +50,15 @@ MainWindow::~MainWindow() {
 
 //}
 
-//void MainWindow::onClear() {
-//    ui->responseTextEdit->clear();
-//    ui->dataTextEdit->clear();
-//    ui->errorsTextEdit->clear();
-//}
+void MainWindow::onClear() {
+    ui->responseTextEdit->clear();
+    ui->dataTextEdit->clear();
+    ui->errorsTextEdit->clear();
+}
 
 void MainWindow::onConnect() {
     md_provider->connect();
+    trade_provider->connect();
 //    CommonDialog dialog(this, CommonDialog::ConnectionDialog);
 //    if (dialog.exec() == QDialog::Accepted) {
 //        QMap<QString, QVariant> params = dialog.params();
@@ -72,9 +79,24 @@ void MainWindow::onConnect() {
 
 void MainWindow::onDisconnect() {
     md_provider->disconnect();
+    trade_provider->disconnect();
 }
 
-//void MainWindow::onReqMktData() {
+void MainWindow::onCancelMktData() {
+    vector<string> symbols;
+    symbols.push_back("IF1210");
+    symbols.push_back("cu0909");
+    md_provider->unsubscribe(symbols);
+}
+
+void MainWindow::onReqMktData() {
+    vector<string> symbols;
+    symbols.push_back("IF1210");
+    symbols.push_back("cu0909");
+    md_provider->subscribe(symbols);
+//    int ret = api->SubscribeMarketData(&instruments[0], instruments.size());
+//    cerr << "--->>> Subscribe MarketData " << ((ret == 0) ? "success" : "failed") << endl;
+
 //    CommonDialog dialog(this, CommonDialog::OrderDialog);
 //    if (dialog.exec() == QDialog::Accepted) {
 //        QMap<QString, QVariant>& params = dialog.params();
@@ -84,7 +106,7 @@ void MainWindow::onDisconnect() {
 //        bool snapshot = params.value("snapshot").toBool();
 //        m_client->reqMktData(id, contract, genericTicks, snapshot);
 //    }
-// }
+ }
 
 //void MainWindow::onExtord() {
 //    CommonDialog dialog(this, CommonDialog::OrderAttributesDialog);

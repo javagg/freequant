@@ -24,9 +24,7 @@ public:
     void run();private:
 
 private:
-    void onCreate(const FIX::SessionID&) {
-
-    }
+    void onCreate(const FIX::SessionID&) {}
     void onLogon(const FIX::SessionID& sessionID) {
         cout << "Logon - " << sessionID << endl;
 //        SetEvent(hEventWork);
@@ -124,12 +122,8 @@ FixTradeProvider::FixTradeProvider() {
 
 void FixTradeProvider::run() {
     string file = "config";
-
-
-      FIX::SessionSettings settings(file);
-      app;
-
-      FIX::FileStoreFactory storeFactory(settings);
+    FIX::SessionSettings settings(file);
+    FIX::FileStoreFactory storeFactory(settings);
       FIX::FileLogFactory logFactory(settings);
       FIX::SocketInitiator initiator(*app, storeFactory, settings, logFactory);
       string senderCompID = "sender";
@@ -155,6 +149,17 @@ void FixTradeProvider::sendOrder() {
 //    newOrderSingle.setField(FIX::FIELD::Price, "14.44");
 //    newOrderSingle.setField(FIX::FIELD::SecurityExchange, "XSHG");
 //    FIX::Session::sendToTarget(newOrderSingle, sessionID);
+}
+
+void FixTradeProvider::connect() {
+
+}
+
+void FixTradeProvider::disconnect() {
+
+}
+
+bool FixTradeProvider::isConnected() const {
 
 }
 
