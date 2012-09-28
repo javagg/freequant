@@ -6,6 +6,8 @@
 #include <quickfix/FileStore.h>
 #include <quickfix/FileLog.h>
 #include <quickfix/fix42/NewOrderSingle.h>
+#include <quickfix/fix43/Logon.h>
+#include <quickfix/fix43/Logout.h>
 
 #include "fixtradeprovider.h"
 
@@ -13,112 +15,118 @@ using namespace std;
 
 namespace FreeQuant { namespace Trade {
 
-class FixApp : public FIX::Application, public FIX::MessageCracker {
-public:
-    explicit FixApp() {
+//class FixApp : public FIX::Application, public FIX::MessageCracker {
+//public:
+//    explicit FixApp() {
 
-    }
+//    }
 
-    virtual ~FixApp() {
-    }
-    void run();
+//    virtual ~FixApp() {
+//    }
+//    void run();
 
-private:
-    void onCreate(const FIX::SessionID&) {}
-    void onLogon(const FIX::SessionID& sessionID) {
-        cout << "Logon - " << sessionID << endl;
-//        SetEvent(hEventWork);
-    }
+//private:
+//    void onCreate(const FIX::SessionID&) {}
+//    void onLogon(const FIX::SessionID& sessionID) {
+//        cout << "onLogon - " << sessionID << endl;
+//    }
 
-    void onLogout(const FIX::SessionID& sessionID) {
-        cout << "Logout - " << sessionID << std::endl;
-    }
+//    void onLogout(const FIX::SessionID& sessionID) {
+//        cout << "onLogout - " << sessionID << std::endl;
+//    }
 
-    void toAdmin(FIX::Message& msg, const FIX::SessionID&) {
-        FIX::MsgType msgType;
-        msg.getHeader().getField( msgType );
-        if(msgType == FIX::MsgType_Logon)
-        {
-            char szUserName[32]  = {0};
-            char szPassword[32]  = {0};
-            char szInputType[32] = {0};
-            char szResetSeqNumFlag[5] = {0};
+//    void toAdmin(FIX::Message& msg, const FIX::SessionID&) {
+////        cout << "toAdmin - " << sessionID << endl;
+//        FIX::MsgType msgType;
+//        msg.getHeader().getField( msgType );
+//        if(msgType == FIX::MsgType_Logon)
+//        {
+//            char szUserName[32]  = {0};
+//            char szPassword[32]  = {0};
+//            char szInputType[32] = {0};
+//            char szResetSeqNumFlag[5] = {0};
 
-            char *g_pszCfgFileName = "./Clint_pt.cfg";
+//            char *g_pszCfgFileName = "./Clint_pt.cfg";
 
-//            GetPrivateProfileString("testdata","UserName"  ,"", szUserName,  sizeof(szUserName)-1, g_pszCfgFileName);
-//            GetPrivateProfileString("testdata","Password"  ,"", szPassword,  sizeof(szPassword)-1, g_pszCfgFileName);
-//            GetPrivateProfileString("testdata","InputType" ,"", szInputType, sizeof(szInputType)-1,g_pszCfgFileName);
-//            GetPrivateProfileString("testdata","ResetSeqNumFlag" ,"Y", szResetSeqNumFlag, sizeof(szResetSeqNumFlag)-1,g_pszCfgFileName);
+////            GetPrivateProfileString("testdata","UserName"  ,"", szUserName,  sizeof(szUserName)-1, g_pszCfgFileName);
+////            GetPrivateProfileString("testdata","Password"  ,"", szPassword,  sizeof(szPassword)-1, g_pszCfgFileName);
+////            GetPrivateProfileString("testdata","InputType" ,"", szInputType, sizeof(szInputType)-1,g_pszCfgFileName);
+////            GetPrivateProfileString("testdata","ResetSeqNumFlag" ,"Y", szResetSeqNumFlag, sizeof(szResetSeqNumFlag)-1,g_pszCfgFileName);
 
-            char szValue[1024] = {0};
-//            _snprintf(szValue, sizeof(szValue)-1, "%s:%s:%s:",szInputType, szUserName,szPassword);
-            msg.setField(FIX::FIELD::RawData, szValue);
-            msg.setField(FIX::FIELD::ResetSeqNumFlag,szResetSeqNumFlag);
-            msg.setField(FIX::FIELD::EncryptMethod,"0");
-            std::string messageString = msg.toString();
-            cout << "\n发送登录消息:\n" << messageString << endl;
-        }
-        if(msgType == FIX::MsgType_Logout)
-        {
-            std::string messageString = msg.toString();
-            cout << "\n发送退出消息:\n" << messageString << endl;
-        }
+//            char szValue[1024] = {0};
+////            _snprintf(szValue, sizeof(szValue)-1, "%s:%s:%s:",szInputType, szUserName,szPassword);
+//            msg.setField(FIX::FIELD::RawData, szValue);
+//            msg.setField(FIX::FIELD::ResetSeqNumFlag,szResetSeqNumFlag);
+//            msg.setField(FIX::FIELD::EncryptMethod,"0");
+//            std::string messageString = msg.toString();
+//            cout << "\n发送登录消息:\n" << messageString << endl;
+//        }
+//        if(msgType == FIX::MsgType_Logout)
+//        {
+//            std::string messageString = msg.toString();
+//            cout << "\n发送退出消息:\n" << messageString << endl;
+//        }
 
-    }
+//    }
 
-    void toApp(FIX::Message& message, const FIX::SessionID& sessionID ) throw(FIX::DoNotSend) {
-        FIX::MsgType msgType;
-        message.getHeader().getField( msgType );
-        std::string messageString = message.toString();
-        if(msgType == "D")
-        {
-            cout << "\n发送委托消息:\n" << messageString << endl;
-        }
-        if(msgType == "F")
-        {
-            cout << "\n发送撤单消息:\n" << messageString << endl;
-        }
-        if(msgType == "UAN")
-        {
-            cout << "\n发送资金股份查询消息:\n" << messageString << endl;
-        }
-        if(msgType == "H")
-        {
-            cout << "\n发送委托状态查询消息:\n" << messageString << endl;
-        }
-    }
+//    void toApp(FIX::Message& message, const FIX::SessionID& sessionID ) throw(FIX::DoNotSend) {
+//        cout << "toApp - " << sessionID << endl;
+//        FIX::MsgType msgType;
+//        message.getHeader().getField( msgType );
+//        std::string messageString = message.toString();
+//        if(msgType == "D")
+//        {
+//            cout << "\n发送委托消息:\n" << messageString << endl;
+//        }
+//        if(msgType == "F")
+//        {
+//            cout << "\n发送撤单消息:\n" << messageString << endl;
+//        }
+//        if(msgType == "UAN")
+//        {
+//            cout << "\n发送资金股份查询消息:\n" << messageString << endl;
+//        }
+//        if(msgType == "H")
+//        {
+//            cout << "\n发送委托状态查询消息:\n" << messageString << endl;
+//        }
+//    }
 
-    void fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID)
-        throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon ) {
-        FIX::MsgType msgType;
-        FIX::PosReqType posReqType;
-        message.getHeader().getField( msgType );
-        std::string messageString = message.toString();
-        if(msgType == "8")
-            cout << "\n收到执行回报消息:\n" << messageString << endl;
+//    void fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID)
+//        throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon ) {
+//        cout << "fromAdmin - " << sessionID << endl;
+//        FIX::MsgType msgType;
+//        FIX::PosReqType posReqType;
+//        message.getHeader().getField( msgType );
+//        std::string messageString = message.toString();
+//        if(msgType == "8")
+//            cout << "\n收到执行回报消息:\n" << messageString << endl;
 
-        if(msgType == "UAP")
-            cout << "\n收到资金股份查询应答消息:\n" << messageString << endl;
-    }
+//        if(msgType == "UAP")
+//            cout << "\n收到资金股份查询应答消息:\n" << messageString << endl;
+//    }
 
-    void fromApp(const FIX::Message& message, const FIX::SessionID& sessionID)
-        throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
-        FIX::MsgType msgType;
-        FIX::PosReqType posReqType;
-        message.getHeader().getField( msgType );
-        std::string messageString = message.toString();
-        if(msgType == "8")
-            cout << "\n收到执行回报消息:\n" << messageString << endl;
+//    void fromApp(const FIX::Message& message, const FIX::SessionID& sessionID)
+//        throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
+//        cout << "fromApp - " << sessionID << endl;
 
-        if(msgType == "UAP")
-            cout << "\n收到资金股份查询应答消息:\n" << messageString << endl;
+//        FIX::MsgType msgType;
+//        FIX::PosReqType posReqType;
+//        message.getHeader().getField( msgType );
+//        std::string messageString = message.toString();
+//        if(msgType == "8")
+//            cout << "\n收到执行回报消息:\n" << messageString << endl;
 
-    }
-};
+//        if(msgType == "UAP")
+//            cout << "\n收到资金股份查询应答消息:\n" << messageString << endl;
+
+//    }
+//};
 
 FixTradeProvider::FixTradeProvider() {
     string config = "config.fix";
+    senderCompId = "ME";
+    targetCompId = "FQ";
     m_settings = new FIX::SessionSettings(config);
     m_storeFactory = new FIX::FileStoreFactory(*m_settings);
     m_initiator = new FIX::SocketInitiator(*this, *m_storeFactory, *m_settings);
@@ -130,20 +138,41 @@ FixTradeProvider::~FixTradeProvider() {
     delete m_initiator;
 }
 
-void FixTradeProvider::run() {
-    string file = "config";
-    FIX::SessionSettings settings(file);
-    FIX::FileStoreFactory storeFactory(settings);
-      FIX::FileLogFactory logFactory(settings);
-      FIX::SocketInitiator initiator(*app, storeFactory, settings, logFactory);
-      string senderCompID = "sender";
-//      char szSenderCompID[32] = {0};
-//      GetPrivateProfileString("SESSION","SenderCompID", "", szSenderCompID, sizeof(szSenderCompID)-1, "./Clint_pt.cfg");
-      string targetCompID = "target";
-//      char szTargetCompID[32] = {0};
-//      GetPrivateProfileString("SESSION","TargetCompID", "", szTargetCompID, sizeof(szTargetCompID)-1, "./Clint_pt.cfg");
+//void FixTradeProvider::run() {
+//    string file = "config";
+//    FIX::SessionSettings settings(file);
+//    FIX::FileStoreFactory storeFactory(settings);
+//      FIX::FileLogFactory logFactory(settings);
+//      FIX::SocketInitiator initiator(*app, storeFactory, settings, logFactory);
+//      string senderCompID = "sender";
+////      char szSenderCompID[32] = {0};
+////      GetPrivateProfileString("SESSION","SenderCompID", "", szSenderCompID, sizeof(szSenderCompID)-1, "./Clint_pt.cfg");
+//      string targetCompID = "target";
+////      char szTargetCompID[32] = {0};
+////      GetPrivateProfileString("SESSION","TargetCompID", "", szTargetCompID, sizeof(szTargetCompID)-1, "./Clint_pt.cfg");
 
-      FIX::SessionID sessionID("FIX.4.2", senderCompID, targetCompID);
+//      FIX::SessionID sessionID("FIX.4.2", senderCompID, targetCompID);
+//}
+
+void FixTradeProvider::logon() {
+    FIX43::Logon message;
+    message.setField(FIX::EncryptMethod(FIX::EncryptMethod_NONE));
+    message.setField(FIX::HeartBtInt(10));
+    message.setField(FIX::Username("alex"));
+    message.setField(FIX::Password("12345"));
+    FIX::Session::sendToTarget(message, *m_sessionId);
+}
+
+void FixTradeProvider::onLogon() {
+
+}
+
+void FixTradeProvider::logout() {
+
+}
+
+void FixTradeProvider::onLogout() {
+
 }
 
 void FixTradeProvider::sendOrder() {
@@ -163,10 +192,17 @@ void FixTradeProvider::sendOrder() {
 
 void FixTradeProvider::connect() {
     cerr << "connect..." << endl;
+
+    m_sessionId = new FIX::SessionID("FIX.4.3", senderCompId, targetCompId);
     m_initiator->start();
+    logon();
 }
 
 void FixTradeProvider::disconnect() {
+    if (m_sessionId != 0) {
+        delete m_sessionId;
+        m_sessionId = 0;
+    }
     m_initiator->stop();
 }
 
@@ -175,7 +211,7 @@ bool FixTradeProvider::isConnected() const {
 }
 
 void FixTradeProvider::onCreate(const FIX::SessionID&) {
-    cerr << "onCreate" << endl;
+
 }
 
 void FixTradeProvider::onLogon(const FIX::SessionID&) {
@@ -186,23 +222,18 @@ void FixTradeProvider::onLogout(const FIX::SessionID&) {
     cerr << "onLogout" << endl;
 }
 
-void FixTradeProvider::toAdmin(FIX::Message&, const FIX::SessionID&) {
-
+void FixTradeProvider::toAdmin(FIX::Message&, const FIX::SessionID& sessionId) {
 }
 
-void FixTradeProvider::toApp(FIX::Message&, const FIX::SessionID&) throw(FIX::DoNotSend) {
-
+void FixTradeProvider::toApp(FIX::Message&, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
 }
 
 void FixTradeProvider::fromAdmin(const FIX::Message&, const FIX::SessionID&)
     throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) {
-
 }
 
 void FixTradeProvider::fromApp( const FIX::Message&, const FIX::SessionID& )
     throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
-
 }
-
 
 }}

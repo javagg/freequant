@@ -4,9 +4,9 @@ ConnectionType=acceptor
 SenderCompID=FQ
 
 [SESSION]
-BeginString=FIX.4.2
+BeginString=FIX.4.3
 TargetCompID=ME
-DataDictionary=fix42.xml
-StartTime=12:30:00
-EndTime=23:30:00
+DataDictionary=FIX43.xml
+StartTime=00:00:01
+EndTime=23:59:59
 FileStorePath=.

@@ -13,7 +13,7 @@
 
 namespace FreeQuant { namespace Trade {
 
-class FixApp;
+//class FixApp;
 
 class FixTradeProvider : public TradeProvider, private FIX::Application, private FIX::MessageCracker {
 public:
@@ -24,12 +24,13 @@ public:
     bool isConnected() const;
     std::string name() const { return "FIX"; }
 
+    void logon();
+    void onLogon();
+    void logout();
+    void onLogout();
     void sendOrder();
-    void run();
 
 private:
-    FixApp *app;
-
     virtual void onCreate(const FIX::SessionID&);
     virtual void onLogon(const FIX::SessionID&);
     virtual void onLogout(const FIX::SessionID&);
@@ -44,6 +45,10 @@ private:
     FIX::SessionSettings *m_settings;
     FIX::FileStoreFactory *m_storeFactory;
     FIX::SocketInitiator *m_initiator;
+    FIX::SessionID *m_sessionId;
+
+    std::string senderCompId;
+    std::string targetCompId;
 };
 
 }}

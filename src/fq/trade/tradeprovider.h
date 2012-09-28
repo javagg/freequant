@@ -13,8 +13,8 @@ public:
     virtual bool isConnected() const = 0;
     virtual std::string name() const = 0;
 
-    virtual void login() {}
-    virtual void onLogin() {}
+    virtual void logon() {}
+    virtual void onLogon() {}
     virtual void logout() {}
     virtual void onLogout() {}
 };
