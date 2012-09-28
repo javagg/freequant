@@ -8,6 +8,10 @@
 #include <quickfix/fix42/NewOrderSingle.h>
 #include <quickfix/fix43/Logon.h>
 #include <quickfix/fix43/Logout.h>
+#include <quickfix/fix43/MarketDataRequest.h>
+#include <quickfix/fix43/MarketDataRequestReject.h>
+#include <quickfix/fix43/MarketDataSnapshotFullRefresh.h>
+#include <quickfix/fix43/MarketDataIncrementalRefresh.h>
 
 #include "fixtradeprovider.h"
 
@@ -175,6 +179,35 @@ void FixTradeProvider::onLogout() {
 
 }
 
+void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
+    FIX43::MarketDataRequest message;
+
+    message.set(FIX::MDReqID());
+//    marketDataRequest.set(new QuickFix.MDReqID(Utility.GetNewUniqueId()));
+//    marketDataRequest.set(new QuickFix.SubscriptionRequestType('1'));
+//    //if market depth require
+//    marketDataRequest.set(new QuickFix.MarketDepth(1));
+//    marketDataRequest.set(new QuickFix.MDUpdateType(1));
+//    marketDataRequest.set(new QuickFix.AggregatedBook(true));
+//    var noMDEntryTypes = new MarketDataRequest.NoMDEntryTypes();
+//    var mdEntryType_bid = new QuickFix.MDEntryType('0');
+//    noMDEntryTypes.set(mdEntryType_bid);
+//    marketDataRequest.addGroup(noMDEntryTypes);
+//    var mdEntryType_offer = new QuickFix.MDEntryType('1');
+//    noMDEntryTypes.set(mdEntryType_offer);
+//    marketDataRequest.addGroup(noMDEntryTypes);
+//    var relatedSymbol = new MarketDataRequest.NoRelatedSym();
+//    relatedSymbol.set(new QuickFix.Symbol(instrument));
+//    marketDataRequest.addGroup(relatedSymbol);
+    try {
+        FIX::Session::sendToTarget(message, *m_sessionId);
+    } catch (FIX::SessionNotFound&) {}
+}
+
+void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
+
+}
+
 void FixTradeProvider::sendOrder() {
     string orderId = "111";
     string orderSymbol = "600446";
@@ -222,18 +255,104 @@ void FixTradeProvider::onLogout(const FIX::SessionID&) {
     cerr << "onLogout" << endl;
 }
 
-void FixTradeProvider::toAdmin(FIX::Message&, const FIX::SessionID& sessionId) {
+void FixTradeProvider::toAdmin(FIX::Message& message, const FIX::SessionID& sessionId) {
+
 }
 
 void FixTradeProvider::toApp(FIX::Message&, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
 }
 
-void FixTradeProvider::fromAdmin(const FIX::Message&, const FIX::SessionID&)
-    throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) {
+void FixTradeProvider::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionId)
+        throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) {
+    crack(message, sessionId);
 }
 
-void FixTradeProvider::fromApp( const FIX::Message&, const FIX::SessionID& )
-    throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
+void FixTradeProvider::fromApp(const FIX::Message& message, const FIX::SessionID& sessionId)
+        throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
+    crack(message, sessionId);
+}
+
+void FixTradeProvider::onMessage(const FIX43::MarketDataRequestReject& message, const FIX::SessionID &) {
+
+}
+
+void FixTradeProvider::onMessage(const FIX43::MarketDataIncrementalRefresh& message, const FIX::SessionID &) {
+//    try
+//     {
+//         MDReqID mdreqid = new MDReqID();
+//         NoMDEntries nomdentries = new NoMDEntries();
+//         QuickFix42.MarketDataIncrementalRefresh.NoMDEntries group
+//             = new QuickFix42.MarketDataIncrementalRefresh.NoMDEntries();
+//         MDUpdateAction mdupdateaction = new MDUpdateAction();
+//         DeleteReason deletereason = new DeleteReason();
+//         MDEntryType mdentrytype = new MDEntryType();
+//         MDEntryID mdentryid = new MDEntryID();
+//         Symbol symbol = new Symbol();
+//         MDEntryOriginator mdentryoriginator = new MDEntryOriginator();
+//         MDEntryPx mdentrypx = new MDEntryPx();
+//         Currency currency = new Currency();
+//         MDEntrySize mdentrysize = new MDEntrySize();
+//         ExpireDate expiredate = new ExpireDate();
+//         ExpireTime expiretime = new ExpireTime();
+//         NumberOfOrders numberoforders = new NumberOfOrders();
+//         MDEntryPositionNo mdentrypositionno = new MDEntryPositionNo();
+
+//         message.get(nomdentries);
+
+//         message.getGroup(1, group);
+
+//         int list = nomdentries.getValue();
+
+//         for (uint i = 0; i < list; i++)
+//         {
+//             message.getGroup(i + 1, group);
+//             group.get(mdupdateaction);
+//             if (mdupdateaction.getValue() == '2')
+//                 Console.WriteLine("Enter");
+//             group.get(deletereason);
+//             group.get(mdentrytype);
+//             group.get(mdentryid);
+//             group.get(symbol);
+//             group.get(mdentryoriginator);
+//             if (mdupdateaction.getValue() == '0')
+//                 group.get(mdentrypx);
+//             group.get(currency);
+//             if (mdupdateaction.getValue() == '0')
+//                 group.get(mdentrysize);
+//         }
+
+//         Console.WriteLine("Got Symbol {0} Price {1}",
+//     symbol.getValue(), mdentrypx.getValue());
+//     }
+//     catch (Exception ex)
+//     {
+//         Console.WriteLine(ex.Message);
+//     }
+}
+
+void FixTradeProvider::onMessage(const FIX43::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &) {
+
+//    string Symbol = message.get(new Symbol()).getValue();
+
+//    NoMDEntries noMDEntries = new NoMDEntries();
+//    message.get(noMDEntries);
+//    var group =
+//      new QuickFix42.MarketDataSnapshotFullRefresh.NoMDEntries();
+//    MDEntryType MDEntryType = new MDEntryType();
+//    MDEntryPx MDEntryPx = new MDEntryPx();
+//    MDEntrySize MDEntrySize = new MDEntrySize();
+
+//    message.getGroup(1, group);
+//    group.get(MDEntryType);
+//    group.get(MDEntryPx);
+//    group.get(MDEntrySize);
+
+//    message.getGroup(2, group);
+//    group.get(MDEntryType);
+//    group.get(MDEntryPx);
+//    group.get(MDEntrySize);
+
+//    Console.WriteLine("Symbol {0} Price {1}", Symbol, MDEntryPx);
 }
 
 }}

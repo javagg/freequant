@@ -13,8 +13,6 @@
 
 namespace FreeQuant { namespace Trade {
 
-//class FixApp;
-
 class FixTradeProvider : public TradeProvider, private FIX::Application, private FIX::MessageCracker {
 public:
     FixTradeProvider();
@@ -28,19 +26,25 @@ public:
     void onLogon();
     void logout();
     void onLogout();
+    void subscribe(std::vector<std::string> symbols);
+    void unsubscribe(std::vector<std::string> symbols);
     void sendOrder();
 
 private:
-    virtual void onCreate(const FIX::SessionID&);
-    virtual void onLogon(const FIX::SessionID&);
-    virtual void onLogout(const FIX::SessionID&);
-    virtual void toAdmin(FIX::Message&, const FIX::SessionID&);
-    virtual void toApp(FIX::Message&, const FIX::SessionID&)
+    void onCreate(const FIX::SessionID&);
+    void onLogon(const FIX::SessionID&);
+    void onLogout(const FIX::SessionID&);
+    void toAdmin(FIX::Message&, const FIX::SessionID&);
+    void toApp(FIX::Message&, const FIX::SessionID&)
         throw(FIX::DoNotSend);
-    virtual void fromAdmin(const FIX::Message&, const FIX::SessionID&)
+    void fromAdmin(const FIX::Message&, const FIX::SessionID&)
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon);
-    virtual void fromApp( const FIX::Message&, const FIX::SessionID& )
+    void fromApp( const FIX::Message&, const FIX::SessionID& )
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType);
+
+    void onMessage(const FIX43::MarketDataRequestReject&, const FIX::SessionID &);
+    void onMessage(const FIX43::MarketDataIncrementalRefresh&, const FIX::SessionID &);
+    void onMessage(const FIX43::MarketDataSnapshotFullRefresh&, const FIX::SessionID &);
 
     FIX::SessionSettings *m_settings;
     FIX::FileStoreFactory *m_storeFactory;
