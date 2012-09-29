@@ -6,12 +6,12 @@
 #include <quickfix/FileStore.h>
 #include <quickfix/FileLog.h>
 #include <quickfix/fix42/NewOrderSingle.h>
-#include <quickfix/fix43/Logon.h>
-#include <quickfix/fix43/Logout.h>
-#include <quickfix/fix43/MarketDataRequest.h>
-#include <quickfix/fix43/MarketDataRequestReject.h>
-#include <quickfix/fix43/MarketDataSnapshotFullRefresh.h>
-#include <quickfix/fix43/MarketDataIncrementalRefresh.h>
+#include <quickfix/fix44/Logon.h>
+#include <quickfix/fix44/Logout.h>
+#include <quickfix/fix44/MarketDataRequest.h>
+#include <quickfix/fix44/MarketDataRequestReject.h>
+#include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
+#include <quickfix/fix44/MarketDataIncrementalRefresh.h>
 
 #include "fixtradeprovider.h"
 
@@ -159,7 +159,7 @@ FixTradeProvider::~FixTradeProvider() {
 //}
 
 void FixTradeProvider::logon() {
-    FIX43::Logon message;
+    FIX44::Logon message;
     message.setField(FIX::EncryptMethod(FIX::EncryptMethod_NONE));
     message.setField(FIX::HeartBtInt(10));
     message.setField(FIX::Username("alex"));
@@ -180,25 +180,22 @@ void FixTradeProvider::onLogout() {
 }
 
 void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
-    FIX43::MarketDataRequest message;
+    FIX::MDReqID mdReqId("MARKETDATAID");
+    FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT);
+    FIX::MarketDepth marketDepth(0);
 
-    message.set(FIX::MDReqID());
-//    marketDataRequest.set(new QuickFix.MDReqID(Utility.GetNewUniqueId()));
-//    marketDataRequest.set(new QuickFix.SubscriptionRequestType('1'));
-//    //if market depth require
-//    marketDataRequest.set(new QuickFix.MarketDepth(1));
-//    marketDataRequest.set(new QuickFix.MDUpdateType(1));
-//    marketDataRequest.set(new QuickFix.AggregatedBook(true));
-//    var noMDEntryTypes = new MarketDataRequest.NoMDEntryTypes();
-//    var mdEntryType_bid = new QuickFix.MDEntryType('0');
-//    noMDEntryTypes.set(mdEntryType_bid);
-//    marketDataRequest.addGroup(noMDEntryTypes);
-//    var mdEntryType_offer = new QuickFix.MDEntryType('1');
-//    noMDEntryTypes.set(mdEntryType_offer);
-//    marketDataRequest.addGroup(noMDEntryTypes);
-//    var relatedSymbol = new MarketDataRequest.NoRelatedSym();
-//    relatedSymbol.set(new QuickFix.Symbol(instrument));
-//    marketDataRequest.addGroup(relatedSymbol);
+    FIX44::MarketDataRequest::NoMDEntryTypes mdEntries;
+    FIX::MDEntryType mdEntry(FIX::MDEntryType_BID);
+    mdEntries.set(mdEntry);
+
+    FIX44::MarketDataRequest::NoRelatedSym syms;
+    FIX::Symbol symbol("GOOG");
+    syms.set(symbol);
+
+    FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
+    message.addGroup(mdEntries);
+    message.addGroup(syms);
+
     try {
         FIX::Session::sendToTarget(message, *m_sessionId);
     } catch (FIX::SessionNotFound&) {}
@@ -272,11 +269,11 @@ void FixTradeProvider::fromApp(const FIX::Message& message, const FIX::SessionID
     crack(message, sessionId);
 }
 
-void FixTradeProvider::onMessage(const FIX43::MarketDataRequestReject& message, const FIX::SessionID &) {
+void FixTradeProvider::onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID &) {
 
 }
 
-void FixTradeProvider::onMessage(const FIX43::MarketDataIncrementalRefresh& message, const FIX::SessionID &) {
+void FixTradeProvider::onMessage(const FIX44::MarketDataIncrementalRefresh& message, const FIX::SessionID &) {
 //    try
 //     {
 //         MDReqID mdreqid = new MDReqID();
@@ -330,7 +327,7 @@ void FixTradeProvider::onMessage(const FIX43::MarketDataIncrementalRefresh& mess
 //     }
 }
 
-void FixTradeProvider::onMessage(const FIX43::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &) {
+void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &) {
 
 //    string Symbol = message.get(new Symbol()).getValue();
 

@@ -7,9 +7,9 @@
 #include <quickfix/Utility.h>
 #include <quickfix/Mutex.h>
 
-#include <quickfix/fix43/MarketDataRequest.h>
-#include <quickfix/fix43/Logon.h>
-#include <quickfix/fix43/NewOrderSingle.h>
+//#include <quickfix/fix43/MarketDataRequest.h>
+//#include <quickfix/fix43/Logon.h>
+//#include <quickfix/fix43/NewOrderSingle.h>
 
 namespace FreeQuant { namespace Server {
 
@@ -32,9 +32,9 @@ public:
     void fromApp(const FIX::Message&, const FIX::SessionID&)
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType);
 
-    void onMessage(const FIX43::Logon&, const FIX::SessionID&);
-    void onMessage(const FIX43::NewOrderSingle&, const FIX::SessionID&);
-    void onMessage(const FIX43::MarketDataRequest&, const FIX::SessionID&);
+    void onMessage(const FIX44::Logon&, const FIX::SessionID&);
+    void onMessage(const FIX44::NewOrderSingle&, const FIX::SessionID&);
+    void onMessage(const FIX44::MarketDataRequest&, const FIX::SessionID&);
 
     std::string genOrderID() {
         std::stringstream stream;
