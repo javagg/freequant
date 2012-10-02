@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include <fq/utils/datetime.h>
+
 namespace FreeQuant { namespace Strategy {
 
 class Currency;
@@ -34,7 +36,11 @@ public:
     double margin() const;
     double tickSize() const;
     std::string symbol() const;
+    double factor() const;
 	std::string getId() const;
+    std::string description() const;
+    FreeQuant::Utils::DateTime maturity() const;
+
 private:
 	std::string mId;
 	Currency *mCurrency;

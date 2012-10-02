@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <boost/any.hpp>
+
 namespace FreeQuant { namespace Strategy {
 
 class Parameter {
@@ -10,8 +12,14 @@ public:
 	Parameter();
 	virtual ~Parameter();
 
-    std::string name();
+    std::string name() { return m_name; }
+    int toInt();
+    std::string toString();
+    double toDouble();
 
+private:
+    std::string m_name;
+    boost::any m_value;
 };
 
 }} /* namespace FreeQuant */

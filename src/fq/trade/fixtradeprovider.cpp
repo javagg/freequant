@@ -31,16 +31,21 @@ FixTradeProvider::FixTradeProvider() {
 FixTradeProvider::~FixTradeProvider() {
     delete m_initiator;
     delete m_storeFactory;
-    delete m_initiator;
+    delete m_settings;
 }
 
 void FixTradeProvider::logon() {
     FIX44::Logon message;
-    message.setField(FIX::EncryptMethod(FIX::EncryptMethod_NONE));
-    message.setField(FIX::HeartBtInt(10));
-    message.setField(FIX::Username("alex"));
-    message.setField(FIX::Password("12345"));
-    FIX::Session::sendToTarget(message, *m_sessionId);
+    message.set(FIX::EncryptMethod(FIX::EncryptMethod_NONE));
+    message.set(FIX::HeartBtInt(10));
+    message.set(FIX::Username("alex"));
+    message.set(FIX::Password("12345"));
+
+//    cout << "message: " << message.toXML() << endl;
+
+    try {
+        FIX::Session::sendToTarget(message, *m_sessionId);
+    } catch (FIX::SessionNotFound&) {}
 }
 
 void FixTradeProvider::onLogon() {
@@ -60,18 +65,32 @@ void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
     FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT);
     FIX::MarketDepth marketDepth(0);
 
-    FIX44::MarketDataRequest::NoMDEntryTypes mdEntries;
-    FIX::MDEntryType mdEntry(FIX::MDEntryType_BID);
-    mdEntries.set(mdEntry);
+    FIX44::MarketDataRequest::NoMDEntryTypes mdEntrieTypes;
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_LOW_PRICE));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_TRADE_VOLUME));
+    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
 
     FIX44::MarketDataRequest::NoRelatedSym syms;
-    FIX::Symbol symbol("GOOG");
-    syms.set(symbol);
+    syms.set(FIX::Symbol("GOOG"));
+    syms.set(FIX::Symbol("GOOG"));
+    syms.set(FIX::Symbol("IF1210"));
 
     FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
-    message.addGroup(mdEntries);
-    message.addGroup(syms);
+    message.set(FIX::MDUpdateType(FIX::MDUpdateType_FULL_REFRESH));
+    message.set(FIX::AggregatedBook(true));
+    string s;
+    s.append(1, FIX::Scope_LOCAL);
 
+    FIX::Scope scope(s);
+    message.set(scope);
+    message.set(FIX::MDImplicitDelete(false));
+    message.addGroup(mdEntrieTypes);
+    message.addGroup(syms);
     try {
         FIX::Session::sendToTarget(message, *m_sessionId);
     } catch (FIX::SessionNotFound&) {}
@@ -98,8 +117,7 @@ void FixTradeProvider::sendOrder() {
 
 void FixTradeProvider::connect() {
     cerr << "connect..." << endl;
-
-    m_sessionId = new FIX::SessionID("FIX.4.3", senderCompId, targetCompId);
+    m_sessionId = new FIX::SessionID("FIX.4.4", senderCompId, targetCompId);
     m_initiator->start();
     logon();
 }
@@ -132,7 +150,13 @@ void FixTradeProvider::toAdmin(FIX::Message& message, const FIX::SessionID& sess
 
 }
 
-void FixTradeProvider::toApp(FIX::Message&, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
+void FixTradeProvider::toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
+    try {
+      FIX::PossDupFlag possDupFlag;
+      message.getHeader().getField(possDupFlag);
+      if (possDupFlag) throw FIX::DoNotSend();
+    }
+    catch (FIX::FieldNotFound&) {}
 }
 
 void FixTradeProvider::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionId)
@@ -145,66 +169,153 @@ void FixTradeProvider::fromApp(const FIX::Message& message, const FIX::SessionID
     crack(message, sessionId);
 }
 
-void FixTradeProvider::onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID &) {
+void FixTradeProvider::onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID& sessionID) {
 
 }
 
-void FixTradeProvider::onMessage(const FIX44::MarketDataIncrementalRefresh& message, const FIX::SessionID &) {
-//    try
-//     {
-//         MDReqID mdreqid = new MDReqID();
-//         NoMDEntries nomdentries = new NoMDEntries();
-//         QuickFix42.MarketDataIncrementalRefresh.NoMDEntries group
-//             = new QuickFix42.MarketDataIncrementalRefresh.NoMDEntries();
-//         MDUpdateAction mdupdateaction = new MDUpdateAction();
-//         DeleteReason deletereason = new DeleteReason();
-//         MDEntryType mdentrytype = new MDEntryType();
-//         MDEntryID mdentryid = new MDEntryID();
-//         Symbol symbol = new Symbol();
-//         MDEntryOriginator mdentryoriginator = new MDEntryOriginator();
-//         MDEntryPx mdentrypx = new MDEntryPx();
-//         Currency currency = new Currency();
-//         MDEntrySize mdentrysize = new MDEntrySize();
-//         ExpireDate expiredate = new ExpireDate();
-//         ExpireTime expiretime = new ExpireTime();
-//         NumberOfOrders numberoforders = new NumberOfOrders();
-//         MDEntryPositionNo mdentrypositionno = new MDEntryPositionNo();
+struct SECURITY
+{
+    std::string Symbol;
+    std::string MDEntryID;
+    char MDUpdateAction;
+    char MDEntryType;
+    double MDEntryPx;
+    double MDEntrySize;
+    double MinQty;
+    double MinInc;
+    double MinBR;
+    double YTM;
+    double YTW;
+    SECURITY(){
+        MDEntryPx=0;
+        MDEntrySize=0;
+        MinQty=0;
+        MinInc=0;
+        MinBR=0;
+        YTM=0;
+        YTW=0;
+    };
+    bool operator < (const SECURITY& sec) const {
+        if (Symbol < sec.Symbol)
+            return true;
+        else if (Symbol == sec.Symbol)
+            if (MDEntryType < sec.MDEntryType)
+                return true;
+            else if (MDEntryType == sec.MDEntryType)
+                if (MDEntryPx < sec.MDEntryPx)
+                    return true;
+        return false;
+    }
+};
 
-//         message.get(nomdentries);
+void FixTradeProvider::onMessage(const FIX44::MarketDataIncrementalRefresh& message, const FIX::SessionID& sessionID) {
+    FIX::NoMDEntries noMDEntries;
+    message.get(noMDEntries);
+    if (noMDEntries.getValue() < 1) {
+        return;
+    }
+    if (noMDEntries.getValue() != 1) {
+        std::cout << "NoMDEntries in MarketDataIncrementalRefresh is not 1!" <<std::endl;
+        return;
+    }
+    FIX44::MarketDataIncrementalRefresh::NoMDEntries group;
+    message.getGroup(1, group);
 
-//         message.getGroup(1, group);
+    FIX::MDEntryID entryID; group.get(entryID);
+    FIX::MDUpdateAction action; group.get(action);
 
-//         int list = nomdentries.getValue();
+    char actionvalue = action.getValue();//0=New, 1=Update, 2=Delete)
+//    if (actionvalue == FIX::MDUpdateAction_DELETE) {
+//        std::map<std::string, SECURITY>::iterator it = securities_.end();
+//        it=securities_.find(entryID);
+//        if (it!=securities_.end())
+//            securities_.erase(it);
+//        return;
+//    }
 
-//         for (uint i = 0; i < list; i++)
-//         {
-//             message.getGroup(i + 1, group);
-//             group.get(mdupdateaction);
-//             if (mdupdateaction.getValue() == '2')
-//                 Console.WriteLine("Enter");
-//             group.get(deletereason);
-//             group.get(mdentrytype);
-//             group.get(mdentryid);
-//             group.get(symbol);
-//             group.get(mdentryoriginator);
-//             if (mdupdateaction.getValue() == '0')
-//                 group.get(mdentrypx);
-//             group.get(currency);
-//             if (mdupdateaction.getValue() == '0')
-//                 group.get(mdentrysize);
-//         }
-
-//         Console.WriteLine("Got Symbol {0} Price {1}",
-//     symbol.getValue(), mdentrypx.getValue());
-//     }
-//     catch (Exception ex)
-//     {
-//         Console.WriteLine(ex.Message);
-//     }
+//    SECURITY security;
+//    security.MDEntryID = entryID;
+//    security.MDUpdateAction = action;
+//    FIX::Symbol symbol;
+//    if (group.isSet(symbol)){
+//        group.get(symbol);
+//        security.Symbol = symbol;
+//    }
+//    FIX::MDEntryType entryType;
+//    if(group.isSet(entryType)) {
+//        group.get(entryType);
+//        security.MDEntryType = entryType;
+//    }
+//    FIX::MDEntryPx price;
+//    if(group.isSet(price)) {
+//        group.get(price);
+//        security.MDEntryPx = price.getValue();
+//    }
+//    FIX::MDEntrySize size;
+//    if(group.isSet(size)) {
+//        group.get(size);
+//        security.MDEntrySize = size.getValue();
+//    }
+//    FIX::MinQty qty;
+//    if(group.isSet(qty)) {
+//        group.get(qty);
+//        security.MinQty = qty.getValue();
+//    }
+//    FIX::MinInc inc;
+//    if(message.isSetField(inc)) {
+//        message.getField(inc);
+//        security.MinInc	= inc.getValue();
+//    }
+//    FIX::MinBR br;
+//    if(message.isSetField(br)) {
+//        message.getField(br);
+//        security.MinBR			= br.getValue();
+//    }
+//    FIX::YTM ytm;
+//    if(message.isSetField(ytm)) {
+//        message.getField(ytm);
+//        security.YTM			= ytm.getValue();
+//    }
+//    FIX::YTW ytw;
+//    if(message.isSetField(ytw)) {
+//        message.getField(ytw);
+//        security.YTW			= ytw.getValue();
+//    }
+//    securities_[entryID] = security;
+    std::cout << message.toXML() << std::endl;
 }
 
 void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &) {
+    std::cout << "FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh" << std::endl;
 
+    FIX::NoMDEntries entries;
+    message.get(entries);
+    std::cout << entries.getValue() << endl;
+
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries group;
+
+    for (int i = 1; i <= entries; i++) {
+        message.getGroup(i, group);
+        FIX::MDEntrySize mdEntrySize;
+        FIX::MDEntryDate mdEntryDate;
+        FIX::MDEntryTime mdEntryTime;
+        FIX::MDEntryType mdEntryType;
+        FIX::MDEntryPx mdEntryPx;
+        group.get(mdEntrySize);
+        group.get(mdEntryType);
+        group.get(mdEntryPx);
+
+        switch (mdEntryType) {
+        case FIX::MDEntryType_BID:
+            cout << "bid" << mdEntryPx << " size:" << mdEntrySize << endl;
+            break;
+        case FIX::MDEntryType_OFFER:
+            cout << "offer" << mdEntryPx << " size:" << mdEntrySize << endl;
+            break;
+        default:
+            break;
+        }
+    }
 //    string Symbol = message.get(new Symbol()).getValue();
 
 //    NoMDEntries noMDEntries = new NoMDEntries();

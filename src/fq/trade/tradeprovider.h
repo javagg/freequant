@@ -2,6 +2,7 @@
 #define FQ_TRADE_TRADEPROVIDER_H
 
 #include <string>
+#include <vector>
 
 namespace FreeQuant { namespace Trade {
 
@@ -17,6 +18,9 @@ public:
     virtual void onLogon() {}
     virtual void logout() {}
     virtual void onLogout() {}
+
+    virtual void subscribe(std::vector<std::string> symbols) = 0;
+    virtual void unsubscribe(std::vector<std::string> symbols) = 0;
 };
 
 }}

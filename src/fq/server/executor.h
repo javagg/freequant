@@ -20,7 +20,7 @@ namespace FreeQuant { namespace Server {
  */
 class Executor : public FIX::Application, public FIX::MessageCracker {
 public:
-    Executor() : m_orderID(0), m_execID(0) {}
+    Executor() {}
 
     void onCreate(const FIX::SessionID&);
     void onLogon(const FIX::SessionID&);
@@ -35,21 +35,6 @@ public:
     void onMessage(const FIX44::Logon&, const FIX::SessionID&);
     void onMessage(const FIX44::NewOrderSingle&, const FIX::SessionID&);
     void onMessage(const FIX44::MarketDataRequest&, const FIX::SessionID&);
-
-    std::string genOrderID() {
-        std::stringstream stream;
-        stream << ++m_orderID;
-        return stream.str();
-    }
-
-    std::string genExecID() {
-        std::stringstream stream;
-        stream << ++m_execID;
-        return stream.str();
-    }
-private:
-    int m_orderID;
-    int m_execID;
 };
 
 }}

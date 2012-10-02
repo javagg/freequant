@@ -86,14 +86,15 @@ void MainWindow::onCancelMktData() {
     vector<string> symbols;
     symbols.push_back("IF1210");
     symbols.push_back("cu0909");
-    md_provider->unsubscribe(symbols);
+//    md_provider->unsubscribe(symbols);
+    trade_provider->unsubscribe(symbols);
 }
 
 void MainWindow::onReqMktData() {
     vector<string> symbols;
     symbols.push_back("IF1210");
     symbols.push_back("cu0909");
-    md_provider->subscribe(symbols);
+//    md_provider->subscribe(symbols);
 //    int ret = api->SubscribeMarketData(&instruments[0], instruments.size());
 //    cerr << "--->>> Subscribe MarketData " << ((ret == 0) ? "success" : "failed") << endl;
 
@@ -106,6 +107,8 @@ void MainWindow::onReqMktData() {
 //        bool snapshot = params.value("snapshot").toBool();
 //        m_client->reqMktData(id, contract, genericTicks, snapshot);
 //    }
+
+    trade_provider->subscribe(symbols);
  }
 
 //void MainWindow::onExtord() {

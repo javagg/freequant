@@ -14,7 +14,6 @@
 
 #include "executor.h"
 
-
 using namespace std;
 using namespace boost::random;
 
@@ -105,13 +104,13 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 }
 
 void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionId) {
-    cerr << "Logon message: " << message << sessionId << endl;
-
     FIX::Username username;
     FIX::Password password;
+    cout << message.toXML() << endl;
 //    message.get(username);
 //    message.get(password);
 
+//    cout << username << password << endl;
     string expected  = "12345";
 
 //    if (password != expected) {
@@ -120,6 +119,8 @@ void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sess
 }
 
 void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionId) {
+    cerr << " Executor::onMessage(const FIX44::MarketDataRequest& message" << endl;
+
     FIX::MDReqID mdReqID;
     FIX::SubscriptionRequestType subscriptionRequestType;
     FIX::MarketDepth marketDepth;
@@ -139,90 +140,62 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
     message.get(mdImplicitDelete);
     message.get(noMDEntryTypes);
 
-    FIX44::MarketDataRequestReject mdReqReject;
-    mdReqReject.set(mdReqID);
-    mdReqReject.set(FIX::MDReqRejReason('Y'));
-    mdReqReject.set(FIX::Text("not implemented"));
-    mdReqReject.set(FIX::EncodedTextLen(10));
-    mdReqReject.set(FIX::EncodedText("!@#$%#@@@@"));
-
     FIX44::MarketDataSnapshotFullRefresh mdFull;
 
     mdFull.set(mdReqID);
     mdFull.set(FIX::Symbol("GOOG"));
-    mdFull.set(FIX::SecurityID("GOOG"));
-    mdFull.set(FIX::SecurityIDSource());
-    mdFull.set(FIX::Product());
-    mdFull.set(FIX::CFICode());
-    mdFull.set(FIX::SecurityType(FIX::SecurityType_COMMONSTOCK));
-    mdFull.set(FIX::MaturityMonthYear("2012"));
-    mdFull.set(FIX::MaturityDate("2012-12-11"));
-    mdFull.set(FIX::CouponPaymentDate("2012-12-11"));
-    mdFull.set(FIX::IssueDate("2012-12-11"));
-    mdFull.set(FIX::RepoCollateralSecurityType(1));
-    mdFull.set(FIX::RepurchaseTerm(1));
-    mdFull.set(FIX::RepurchaseRate(0.3));
-    mdFull.set(FIX::Factor(0.1));
-    mdFull.set(FIX::CreditRating("AAA"));
-    mdFull.set(FIX::InstrRegistry("DD"));
+//    mdFull.set(FIX::SecurityID("GOOG"));
+//    mdFull.set(FIX::SecurityIDSource());
+//    mdFull.set(FIX::Product());
+//    mdFull.set(FIX::CFICode());
+//    mdFull.set(FIX::SecurityType(FIX::SecurityType_COMMONSTOCK));
+//    mdFull.set(FIX::MaturityMonthYear("2012"));
+//    mdFull.set(FIX::MaturityDate("2012-12-11"));
+//    mdFull.set(FIX::CouponPaymentDate("2012-12-11"));
+//    mdFull.set(FIX::IssueDate("2012-12-11"));
+//    mdFull.set(FIX::RepoCollateralSecurityType(1));
+//    mdFull.set(FIX::RepurchaseTerm(1));
+//    mdFull.set(FIX::RepurchaseRate(0.3));
+//    mdFull.set(FIX::Factor(0.1));
+//    mdFull.set(FIX::CreditRating("AAA"));
+//    mdFull.set(FIX::InstrRegistry("DD"));
 //    mdFull.set(FIX::CountryOfIssue);
 //    mdFull.set(FIX::StateOrProvinceOfIssue);
 //    mdFull.set(FIX::LocaleOfIssue);
 //    mdFull.set(FIX::RedemptionDate);
-    mdFull.set(FIX::StrikePrice(99.99));
-    mdFull.set(FIX::OptAttribute('d'));
-    mdFull.set(FIX::ContractMultiplier(1));
-    mdFull.set(FIX::CouponRate(0.2));
-    mdFull.set(FIX::SecurityExchange("NYEX"));
-    mdFull.set(FIX::Issuer("sf"));
-    mdFull.set(FIX::EncodedIssuerLen(10));
-    mdFull.set(FIX::EncodedIssuer("sf"));
-    mdFull.set(FIX::SecurityDesc("dadad"));
-    mdFull.set(FIX::EncodedSecurityDescLen(20));
-    mdFull.set(FIX::EncodedSecurityDesc("fdfs"));
-    mdFull.set(FIX::NoSecurityAltID(1));
+//    mdFull.set(FIX::StrikePrice(99.99));
+//    mdFull.set(FIX::OptAttribute('d'));
+//    mdFull.set(FIX::ContractMultiplier(1));
+//    mdFull.set(FIX::CouponRate(0.2));
+//    mdFull.set(FIX::SecurityExchange("NYEX"));
+//    mdFull.set(FIX::Issuer("sf"));
+//    mdFull.set(FIX::EncodedIssuerLen(10));
+//    mdFull.set(FIX::EncodedIssuer("sf"));
+//    mdFull.set(FIX::SecurityDesc("dadad"));
+//    mdFull.set(FIX::EncodedSecurityDescLen(20));
+//    mdFull.set(FIX::EncodedSecurityDesc("fdfs"));
+//    mdFull.set(FIX::NoSecurityAltID(1));
 
-    FIX44::MarketDataIncrementalRefresh mdInc;
-    mdInc.set(mdReqID);
+//    mdInc.set(mdReqID);
+//    FIX::NoMDEntries count;
 
+    mdFull.set(FIX::NoMDEntries(2));
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries1;
+    mdEntries1.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+    mdEntries1.set(FIX::MDEntryPx(100));
+    mdEntries1.set(FIX::MDEntrySize(1));
 
-    FIX44::MarketDataIncrementalRefresh::NoMDEntries group;
-    FIX::MDUpdateAction action;
-    FIX::MDEntryType entryType;
-    FIX::MDEntryPx rate;
-    FIX::MDEntrySize size;
-    FIX::QuoteCondition quoteCondition;
-    int entryCount = 3;
-    for (int i = 1; i <= entryCount; i++) {
-        mdInc.getGroup(i, group);
-        group.get(action);
-        if (action.getValue() == FIX::MDUpdateAction_CHANGE) {
-                printf("get entryType\n");
-                group.get(entryType);
-                bool hasTradeCondition = false;
-                try {
-                    hasTradeCondition = true;
-                }
-                catch (FIX::FieldNotFound) {}
+    mdFull.addGroup(mdEntries1);
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries2;
+    mdEntries2.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+    mdEntries2.set(FIX::MDEntryPx(110));
+    mdEntries2.set(FIX::MDEntrySize(2));
 
-                std::string sizeStr;
-                std::string rateStr;
-                printf("get size\n");
-                group.get(size);
-                printf("get price\n");
-                group.get(rate);
-                printf("convert\n");
-                sizeStr = size.getString();
-                rateStr = rate.getString();
-                printf("got price\n");
-
-        }
-    }
+    mdFull.addGroup(mdEntries2);
 
     try {
-        FIX::Session::sendToTarget(mdReqReject, sessionId);
+        FIX::Session::sendToTarget(mdFull, sessionId);
     } catch (FIX::SessionNotFound&) {}
-
 }
 
 }}
