@@ -18,6 +18,7 @@ public:
     virtual void onLogon() {}
     virtual void logout() {}
     virtual void onLogout() {}
+    virtual void onError() {}
 
     virtual void subscribe(std::vector<std::string> symbols) = 0;
     virtual void unsubscribe(std::vector<std::string> symbols) = 0;

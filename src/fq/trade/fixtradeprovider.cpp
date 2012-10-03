@@ -12,8 +12,12 @@
 #include <quickfix/fix44/MarketDataRequestReject.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
+#include <quickfix/fix44/NewOrderSingle.h>
 
 #include "fixtradeprovider.h"
+#include <fq/strategy/order.h>
+#include <fq/utils/guid.h>
+#include <fq/strategy/order.h>
 
 using namespace std;
 
@@ -61,36 +65,50 @@ void FixTradeProvider::onLogout() {
 }
 
 void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
-    FIX::MDReqID mdReqId("MARKETDATAID");
-    FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT);
-    FIX::MarketDepth marketDepth(0);
+    std::string uuid = FreeQuant::toGuidString();
+    FIX::MDReqID mdReqId(uuid);
+    FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES);
 
-    FIX44::MarketDataRequest::NoMDEntryTypes mdEntrieTypes;
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_LOW_PRICE));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_BID));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_TRADE_VOLUME));
-    mdEntrieTypes.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
+//	SubscriptionRequestType.DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST;
 
-    FIX44::MarketDataRequest::NoRelatedSym syms;
-    syms.set(FIX::Symbol("GOOG"));
-    syms.set(FIX::Symbol("GOOG"));
-    syms.set(FIX::Symbol("IF1210"));
+    FIX::MarketDepth marketDepth(1);
 
     FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
-    message.set(FIX::MDUpdateType(FIX::MDUpdateType_FULL_REFRESH));
+
+    message.set(FIX::MDUpdateType(FIX::MDUpdateType_INCREMENTAL_REFRESH));
     message.set(FIX::AggregatedBook(true));
     string s;
     s.append(1, FIX::Scope_LOCAL);
 
     FIX::Scope scope(s);
     message.set(scope);
+
     message.set(FIX::MDImplicitDelete(false));
-    message.addGroup(mdEntrieTypes);
-    message.addGroup(syms);
+
+    FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_LOW_PRICE));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADE_VOLUME));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
+    message.addGroup(typeGroup);
+
+    FIX44::MarketDataRequest::NoRelatedSym symGroup;
+    symGroup.set(FIX::Symbol("GOOG"));
+    message.addGroup(symGroup);
+    symGroup.set(FIX::Symbol("IF1210"));
+    message.addGroup(symGroup);
+
     try {
         FIX::Session::sendToTarget(message, *m_sessionId);
     } catch (FIX::SessionNotFound&) {}
@@ -100,19 +118,19 @@ void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
 
 }
 
-void FixTradeProvider::sendOrder() {
-    string orderId = "111";
-    string orderSymbol = "600446";
-    char orderSide = '1';
+void FixTradeProvider::sendOrder(Order& order) {
+    //    string orderId = "111";
+    //    string orderSymbol = "600446";
+    //    char orderSide = '1';
 
-    FIX42::NewOrderSingle newOrderSingle(FIX::ClOrdID(orderId), FIX::HandlInst(FIX::HandlInst_AUTOEXECPRIV),
-                                         FIX::Symbol("600446"), FIX::Side(orderSide), FIX::TransactTime(),
-                                         FIX::OrdType(FIX::OrdType_LIMIT));
-//    newOrderSingle.setField(FIX::FIELD::Currency, "CNY");
-//    newOrderSingle.setField(FIX::FIELD::OrderQty, "100");
-//    newOrderSingle.setField(FIX::FIELD::Price, "14.44");
-//    newOrderSingle.setField(FIX::FIELD::SecurityExchange, "XSHG");
-//    FIX::Session::sendToTarget(newOrderSingle, sessionID);
+    //    FIX42::NewOrderSingle newOrderSingle(FIX::ClOrdID(orderId), FIX::HandlInst(FIX::HandlInst_AUTOEXECPRIV),
+    //                                         FIX::Symbol("600446"), FIX::Side(orderSide), FIX::TransactTime(),
+    //                                         FIX::OrdType(FIX::OrdType_LIMIT));
+    //    newOrderSingle.setField(FIX::FIELD::Currency, "CNY");
+    //    newOrderSingle.setField(FIX::FIELD::OrderQty, "100");
+    //    newOrderSingle.setField(FIX::FIELD::Price, "14.44");
+    //    newOrderSingle.setField(FIX::FIELD::SecurityExchange, "XSHG");
+    //    FIX::Session::sendToTarget(newOrderSingle, sessionID);
 }
 
 void FixTradeProvider::connect() {
@@ -120,6 +138,12 @@ void FixTradeProvider::connect() {
     m_sessionId = new FIX::SessionID("FIX.4.4", senderCompId, targetCompId);
     m_initiator->start();
     logon();
+
+//
+//    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
+//    if (session && !session->isLoggedOn()) {
+//        session->logon();
+//    }
 }
 
 void FixTradeProvider::disconnect() {
@@ -128,10 +152,15 @@ void FixTradeProvider::disconnect() {
         m_sessionId = 0;
     }
     m_initiator->stop();
+
+//    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
+//    if (session && session->isLoggedOn()) {
+//        session->logout();
+//    }
 }
 
 bool FixTradeProvider::isConnected() const {
-
+    return false;
 }
 
 void FixTradeProvider::onCreate(const FIX::SessionID&) {
@@ -170,7 +199,18 @@ void FixTradeProvider::fromApp(const FIX::Message& message, const FIX::SessionID
 }
 
 void FixTradeProvider::onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID& sessionID) {
+    FIX::MDReqID mdRegID;
+    FIX::MDReqRejReason mdReqRejReason;
+    FIX::Text text;
+    if (message.isSet(mdRegID)) {
 
+    }
+    if (message.isSet(mdReqRejReason)) {
+
+    }
+    if (message.isSet(text)) {
+
+    }
 }
 
 struct SECURITY
@@ -208,16 +248,52 @@ struct SECURITY
     }
 };
 
+void FixTradeProvider::onMessage(const FIX44::ExecutionReport& message, const FIX::SessionID& sessionID) {
+    FIX::ExecType execType;
+    message.get(execType);
+
+    switch (execType) {
+    case FIX::ExecType_NEW:
+        break;
+    case FIX::ExecType_REJECTED:
+        break;
+    case FIX::ExecType_CANCELED:
+    case FIX::ExecType_EXPIRED:
+    case FIX::ExecType_REPLACED:
+    case FIX::ExecType_REJECTED:
+    case FIX::ExecType_FILL:
+    case FIX::ExecType_PARTIAL_FILL:
+    case FIX::ExecType_PENDING_CANCEL:
+        \
+    default:
+        break;
+    }
+
+}
+
 void FixTradeProvider::onMessage(const FIX44::MarketDataIncrementalRefresh& message, const FIX::SessionID& sessionID) {
     FIX::NoMDEntries noMDEntries;
     message.get(noMDEntries);
-    if (noMDEntries.getValue() < 1) {
-        return;
+
+    for (int i = 1; i <= noMDEntries; i++) {
+        FIX44::MarketDataIncrementalRefresh::NoMDEntries group;
+        message.getGroup(i, group);
+        FIX::MDEntryID mdEntryID;
+        group.get(mdEntryID);
+        FIX::MDUpdateAction mdUpdateAction;
+        group.get(mdUpdateAction);
+        switch (mdUpdateAction) {
+        case FIX::MDUpdateAction_NEW:
+            break;
+        case FIX::MDUpdateAction_CHANGE:
+        default:
+            break;
+        }
     }
-    if (noMDEntries.getValue() != 1) {
-        std::cout << "NoMDEntries in MarketDataIncrementalRefresh is not 1!" <<std::endl;
-        return;
-    }
+//    if (noMDEntries.getValue() != 1) {
+//        std::cout << "NoMDEntries in MarketDataIncrementalRefresh is not 1!" <<std::endl;
+//        return;
+//    }
     FIX44::MarketDataIncrementalRefresh::NoMDEntries group;
     message.getGroup(1, group);
 
@@ -290,11 +366,9 @@ void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& mes
 
     FIX::NoMDEntries entries;
     message.get(entries);
-    std::cout << entries.getValue() << endl;
-
-    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries group;
 
     for (int i = 1; i <= entries; i++) {
+        FIX44::MarketDataSnapshotFullRefresh::NoMDEntries group;
         message.getGroup(i, group);
         FIX::MDEntrySize mdEntrySize;
         FIX::MDEntryDate mdEntryDate;
@@ -316,27 +390,138 @@ void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& mes
             break;
         }
     }
-//    string Symbol = message.get(new Symbol()).getValue();
-
-//    NoMDEntries noMDEntries = new NoMDEntries();
-//    message.get(noMDEntries);
-//    var group =
-//      new QuickFix42.MarketDataSnapshotFullRefresh.NoMDEntries();
-//    MDEntryType MDEntryType = new MDEntryType();
-//    MDEntryPx MDEntryPx = new MDEntryPx();
-//    MDEntrySize MDEntrySize = new MDEntrySize();
-
-//    message.getGroup(1, group);
-//    group.get(MDEntryType);
-//    group.get(MDEntryPx);
-//    group.get(MDEntrySize);
-
-//    message.getGroup(2, group);
-//    group.get(MDEntryType);
-//    group.get(MDEntryPx);
-//    group.get(MDEntrySize);
-
-//    Console.WriteLine("Symbol {0} Price {1}", Symbol, MDEntryPx);
+    FIX::Symbol symbol;
+    message.get(symbol);
 }
+
+void FixTradeProvider::sendOrderCancelRequest(Order& order) {
+    std::string origClOrdID = null;
+
+    FIX44::OrderCancelRequest message;
+    FIX::OrigClOrdID origClOrdID;
+    FIX::ClOrdID clOrdID;
+    message.set(origClOrdID);
+    message.set(clOrdID);
+}
+
+void FixTradeProvider::sendNewOrderSingle(Order& order) {
+    std::string clOrdID = FreeQuant::toGuidString();
+
+    FIX44::NewOrderSingle message;
+    message.set(FIX::ClOrdID(clOrdID));
+    message.set(FIX::HandlInst(FIX::HandlInst_AUTOEXECPUB));
+
+//    if (order.Instrument.AltSource == TTFIX.PROVIDER_NAME)
+//    {
+//        message.set(new Symbol(order.Instrument.AltSymbol));
+//        message.set(new SecurityExchange(order.Instrument.AltExchange));
+//    }
+//    else
+//    {
+//        message.set(new Symbol(order.Instrument.Symbol));
+//        message.set(new SecurityExchange(order.Instrument.Exchange));
+//    }
+
+//    switch (order.Side)
+//    {
+//        case OrderSide.Buy:
+//            message.set(new Side(Side.BUY));
+//            break;
+//        case OrderSide.Sell:
+//            message.set(new Side(Side.SELL));
+//            break;
+//    }
+
+//    message.set(new TransactTime(order.DateTime));
+
+//    switch (order.Type)
+//    {
+//        case OrderType.Market:
+//            {
+//                message.set(new OrdType(OrdType.MARKET));
+//            }
+//            break;
+//        case OrderType.Limit:
+//            {
+//                message.set(new OrdType(OrdType.LIMIT));
+//                message.set(new Price(order.Price));
+//            }
+//            break;
+//        case OrderType.Stop:
+//            {
+//                message.set(new OrdType(OrdType.STOP));
+//                message.set(new StopPx(order.StopPrice));
+//            }
+//            break;
+//        case OrderType.StopLimit:
+//            {
+//                message.set(new OrdType(OrdType.STOP_LIMIT));
+//                message.set(new Price(order.Price));
+//                message.set(new StopPx(order.StopPrice));
+//            }
+//            break;
+//    }
+
+//    message.set(new OrderQty(order.Qty));
+
+//    switch (order.Instrument.Type)
+//    {
+//        case InstrumentType.Stock:
+//            {
+//                message.set(new SecurityType(SecurityType.COMMON_STOCK));
+//            }
+//            break;
+//        case InstrumentType.Index:
+//            {
+//                message.set(new SecurityType("IDX"));
+//            }
+//            break;
+//        case InstrumentType.FX:
+//            {
+//                message.set(new SecurityType(SecurityType.FOREIGN_EXCHANGE_CONTRACT));
+//            }
+//            break;
+//        case InstrumentType.Futures:
+//            {
+//                message.set(new SecurityType(SecurityType.FUTURE));
+//                message.set(new MaturityMonthYear(order.Instrument.Maturity.ToString("yyyyMM")));
+//            }
+//            break;
+//        case InstrumentType.Option:
+//            {
+//                message.set(new SecurityType(SecurityType.OPTION));
+//                message.set(new MaturityMonthYear(order.Instrument.Maturity.ToString("yyyyMM")));
+
+//                switch (order.Instrument.PutCall)
+//                {
+//                    case PutCall.Put:
+//                        message.set(new PutOrCall(PutOrCall.PUT));
+//                        break;
+//                    case PutCall.Call:
+//                        message.set(new PutOrCall(PutOrCall.CALL));
+//                        break;
+//                }
+
+//                message.set(new StrikePrice(order.Instrument.Strike));
+//            }
+//            break;
+//    }
+
+//    if (order.Account != string.Empty)
+//        message.set(new Account(order.Account));
+//    else
+//        message.set(new Account(provider.Account));
+
+//    message.set(new Rule80A(provider.Rule80A));
+//    message.set(new CustomerOrFirm(provider.CustomerOrFirm));
+
+//    if (provider.ClearingAccount != string.Empty)
+//        message.set(new ClearingAccount(provider.ClearingAccount));
+
+//    orders.Add(clOrdID, order);
+
+    FIX::Session::sendToTarget(message, *m_sessionId);
+}
+
 
 }}

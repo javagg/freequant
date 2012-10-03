@@ -8,17 +8,27 @@ namespace FreeQuant {
 class Bar {
 public:
     Bar();
-    FreeQuant::Utils::DateTime beginTime();
-    FreeQuant::Utils::DateTime endTime();
-    double open();
-    double high();
-    double low();
-    double close();
-    long volume();
+    FreeQuant::Utils::DateTime beginTime() const;
+    FreeQuant::Utils::DateTime endTime() const;
+    double open() const;
+    double high() const;
+    double low() const;
+    double close() const;
+    long volume() const;
+    long openInterest() const;
+    long size() const;
+    double median() const { return (high()+low())/2; }
+    double typical() const { return (high()+low()+close())/3; }
+    double weighted() const { return (high()+low()+2*close())/4; }
 
-    double median() { return (high()+low())/2; }
-    double typical() { return (high()+low()+close())/3; }
-    double weighted() { return (high()+low()+2*close())/4; }
+    friend inline std::ostream& operator<<(std::ostream &os, Bar& bar) {
+//          cout << "class t(" << t1.v << ")" << endl;
+          return os;
+    }
+    friend inline std::istream& operator>>(std::istream &is, Bar& bar){
+//          cin >> t1.v;
+          return is;
+    }
 };
 
 }

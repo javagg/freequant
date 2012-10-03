@@ -13,6 +13,9 @@
 
 namespace FreeQuant { namespace Trade {
 
+class Order;
+class HistoricalDataRequest;
+
 class FixTradeProvider : public TradeProvider, private FIX::Application, private FIX::MessageCracker {
 public:
     FixTradeProvider();
@@ -26,9 +29,15 @@ public:
     void onLogon();
     void logout();
     void onLogout();
+    void onError() {}
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
-    void sendOrder();
+    void sendOrder(Order&);
+    void cancelOrder(Order&);
+    void replaceOrder(Order&) {}
+
+    void requestHistoricalData(HistoricalDataRequest& request);
+    void cancelHistoricalData(HistoricalDataRequest& request);
 
 private:
     void onCreate(const FIX::SessionID&);
@@ -46,6 +55,7 @@ private:
     void onMessage(const FIX44::MarketDataIncrementalRefresh&, const FIX::SessionID &);
     void onMessage(const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID &);
 
+    void sendNewOrderSingle(Order& order);
     FIX::SessionSettings *m_settings;
     FIX::FileStoreFactory *m_storeFactory;
     FIX::SocketInitiator *m_initiator;
