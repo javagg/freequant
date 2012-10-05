@@ -6,6 +6,7 @@
 #include <quickfix/FileStore.h>
 #include <quickfix/FileLog.h>
 #include <quickfix/fix42/NewOrderSingle.h>
+#include <quickfix/fix44/ExecutionReport.h>
 #include <quickfix/fix44/Logon.h>
 #include <quickfix/fix44/Logout.h>
 #include <quickfix/fix44/MarketDataRequest.h>
@@ -13,6 +14,7 @@
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
 #include <quickfix/fix44/NewOrderSingle.h>
+#include <quickfix/fix44/OrderCancelRequest.h>
 
 #include "fixtradeprovider.h"
 #include <fq/strategy/order.h>
@@ -260,7 +262,6 @@ void FixTradeProvider::onMessage(const FIX44::ExecutionReport& message, const FI
     case FIX::ExecType_CANCELED:
     case FIX::ExecType_EXPIRED:
     case FIX::ExecType_REPLACED:
-    case FIX::ExecType_REJECTED:
     case FIX::ExecType_FILL:
     case FIX::ExecType_PARTIAL_FILL:
     case FIX::ExecType_PENDING_CANCEL:
@@ -395,8 +396,6 @@ void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& mes
 }
 
 void FixTradeProvider::sendOrderCancelRequest(Order& order) {
-    std::string origClOrdID = null;
-
     FIX44::OrderCancelRequest message;
     FIX::OrigClOrdID origClOrdID;
     FIX::ClOrdID clOrdID;

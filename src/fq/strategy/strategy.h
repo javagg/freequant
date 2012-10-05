@@ -17,6 +17,7 @@
 #include <fq/marketdata/quote.h>
 #include <fq/marketdata/marketdataprovider.h>
 #include <fq/strategy/engine.h>
+#include <fq/utils/datetime.h>
 
 namespace FreeQuant {
     namespace Trade {
@@ -77,7 +78,7 @@ public:
     virtual void onBar(const FreeQuant::MarketData::Bar& bar) {}
     virtual void onQuote(const FreeQuant::MarketData::Quote& quote) {}
     virtual void onTrade(const Trade& trade) {}
-    virtual void onTask() {}
+    virtual void onTask(const FreeQuant::Utils::DateTime dt) {}
     virtual void onOrderCreated(const Order& order) {}
     virtual void onOrderFilled(const Order& order) {}
     virtual void onOrderPartiallyFilled(const Order& order) {}

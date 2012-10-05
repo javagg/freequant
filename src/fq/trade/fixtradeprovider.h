@@ -51,11 +51,14 @@ private:
     void fromApp( const FIX::Message&, const FIX::SessionID& )
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType);
 
-    void onMessage(const FIX44::MarketDataRequestReject&, const FIX::SessionID &);
-    void onMessage(const FIX44::MarketDataIncrementalRefresh&, const FIX::SessionID &);
-    void onMessage(const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID &);
+    void onMessage(const FIX44::MarketDataRequestReject&, const FIX::SessionID&);
+    void onMessage(const FIX44::MarketDataIncrementalRefresh&, const FIX::SessionID&);
+    void onMessage(const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID&);
+    void onMessage(const FIX44::ExecutionReport&, const FIX::SessionID&);
 
     void sendNewOrderSingle(Order& order);
+    void sendOrderCancelRequest(Order& order);
+
     FIX::SessionSettings *m_settings;
     FIX::FileStoreFactory *m_storeFactory;
     FIX::SocketInitiator *m_initiator;
