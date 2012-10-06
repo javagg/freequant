@@ -175,20 +175,4 @@ void TwsProvider::reqFundamentalData(string symbol) {
     wrapper->reqFundamentalData(symbol);
 }
 
-void TwsProvider::testMe() {
-    string word;
-    while (cin.good()) {
-        cout << "Choose: ";
-        cin >> word;
-
-        if (word == "1") {
-            vector<string> symbols;
-            symbols.push_back("MSFT");
-            this->subscribe(symbols);
-        } else if (word == "2") {
-            this->currentTime();
-        }
-    }
-}
-
 }}

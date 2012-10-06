@@ -6,9 +6,7 @@
 
 namespace FreeQuant { namespace MarketData {
 
-class MdSpi;
-
-class CtpMarketDataProvider : public MarketDataProvider {
+class CtpMarketDataProvider : public MarketDataProvider, private CThostFtdcMdSpi {
 public:
     explicit CtpMarketDataProvider();
     virtual ~CtpMarketDataProvider();
@@ -21,8 +19,21 @@ public:
 
     void onConnected();
     void onDisconnected();
+
 private:
-    MdSpi *spi;
+    CThostFtdcMdApi *api;
+    bool m_connected;
+    void OnFrontConnected();
+    void OnFrontDisconnected(int nReason);
+    void OnHeartBeatWarning(int nTimeLapse);
+    void OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    void OnRspSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    void OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *pSpecificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
+    void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData);
+
+    bool errorOccurred(CThostFtdcRspInfoField *rspInfo);
 };
 
 }}

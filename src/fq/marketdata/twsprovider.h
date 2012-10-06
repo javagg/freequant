@@ -24,7 +24,6 @@ public:
     virtual void reqHistoricalData(FreeQuant::Utils::DateTime startTime, FreeQuant::Utils::DateTime endTime);
     virtual void reqFundamentalData(std::string symbol);
 
-    virtual void testMe();
 private:
     TwsEWrapper *wrapper;
 };
