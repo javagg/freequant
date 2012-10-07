@@ -3,6 +3,9 @@
 
 #include <boost/thread.hpp>
 
+#include <fq/marketdata/marketdataprovider.h>
+#include <fq/trade/tradeprovider.h>
+
 namespace FreeQuant { namespace Strategy {
 
 class Engine {

@@ -24,6 +24,10 @@ public:
     virtual void reqHistoricalData(FreeQuant::Utils::DateTime startTime, FreeQuant::Utils::DateTime endTime);
     virtual void reqFundamentalData(std::string symbol);
 
+    void onConnected() {}
+    void onDisconnected() {}
+    void onBar(FreeQuant::MarketData::Bar&) {}
+
 private:
     TwsEWrapper *wrapper;
 };

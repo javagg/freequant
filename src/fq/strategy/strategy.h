@@ -13,6 +13,8 @@
 
 //#include <boost/asio/signal_set.hpp>
 
+#include <boost/shared_ptr.hpp>
+
 #include <fq/marketdata/bar.h>
 #include <fq/marketdata/quote.h>
 #include <fq/marketdata/marketdataprovider.h>
@@ -51,6 +53,8 @@ class Instrument;
  */
 class Strategy : public Engine {
 public:
+    typedef FreeQuant::MarketData::MarketDataProvider MarketDataProvider;
+    typedef FreeQuant::Trade::TradeProvider TradeProvider;
     /*!
      * \enum RunningMode
      * An enum type.
@@ -60,6 +64,16 @@ public:
         Simulation,
         Paper,
         Live
+    };
+
+    enum BarType {
+        Tick,
+        OneMinuent,
+        FiveMinuents,
+        TenMinuents,
+        OneHour,
+        OneDay,
+        Custom
     };
 
     explicit Strategy();
@@ -100,26 +114,26 @@ public:
     void chooseTradeProvider(std::string name) {}
     void chooseMarketProvider(std::string name) {}
 
+    void setTradeProvider(FreeQuant::Trade::TradeProvider *provider);
+    void setMarketDataProvider(FreeQuant::MarketData::MarketDataProvider *provider);
+
     std::vector<Exchange *>& exchanges() const {}
     std::vector<Instrument *>& instruments() const {}
     std::vector<Order *>& orders() const {}
 
-    typedef FreeQuant::MarketData::MarketDataProvider MarketDataProvider;
-    typedef FreeQuant::Trade::TradeProvider TradeProvider;
-
-    MarketDataProvider *marketDataProvider() const {}
-    TradeProvider *tradeProvider() const {}
+    MarketDataProvider *marketDataProvider() const { return m_mdProvider; }
+    TradeProvider *tradeProvider() const { return m_tradeProvider; }
     OrderBook *orderBook() const {}
 
     int exec();
 private:
-    std::vector<FreeQuant::Indicators::Indicator *> mIndictors;
-	std::vector<Rule *> mRrules;
+    std::vector<FreeQuant::Indicators::Indicator *> m_indictors;
+
+    MarketDataProvider *m_mdProvider;
+    TradeProvider *m_tradeProvider;
 
 private:
     void handleBreak();
-//    boost::asio::io_service m_io_service;
-//    boost::asio::signal_set m_signals;
 };
 
 }} // FQ_STRATEGY_STRATEGY_H

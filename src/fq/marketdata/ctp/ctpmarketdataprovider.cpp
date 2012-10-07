@@ -40,6 +40,8 @@ void CtpMarketDataProvider::connect() {
         api->RegisterFront(front);
         api->Init();
     }
+    boost::unique_lock<boost::mutex> l(mutex);
+    condition.wait(l);
 }
 
 void CtpMarketDataProvider::disconnect() {
@@ -74,6 +76,10 @@ void CtpMarketDataProvider::onDisconnected() {
 
 }
 
+//void CtpMarketDataProvider::onBar(FreeQuant::MarketData::Bar&) {
+
+//}
+
 bool CtpMarketDataProvider::errorOccurred(CThostFtdcRspInfoField *rspInfo) {
     bool occurred = rspInfo && rspInfo->ErrorID != 0;
     if (occurred) {
@@ -107,7 +113,11 @@ void CtpMarketDataProvider::OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserL
     if (!errorOccurred(rspInfo) && last) {
         cerr << "--->>> TradingDay " << api->GetTradingDay() << endl;
         m_connected = true;
-    }
+
+        onConnected();
+        boost::unique_lock<boost::mutex> lock(mutex);
+        condition.notify_one();
+     }
 }
 void CtpMarketDataProvider::OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
 }
@@ -140,8 +150,8 @@ void CtpMarketDataProvider::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField 
       <<" bid1:" << depthMarketData->BidPrice1
       <<" bidsize1:" << depthMarketData->BidVolume1
       <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
-//        Bar bar;
-//        onBar(bar);
+     Bar bar;
+     onBar(bar);
 }
 
 

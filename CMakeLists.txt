@@ -45,7 +45,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 link_directories(${Boost_LIBRARY_DIRS})
 
 add_subdirectory(src)
-#add_subdirectory(examples)
+add_subdirectory(examples)
 add_subdirectory(server)
 add_subdirectory(tools)
 

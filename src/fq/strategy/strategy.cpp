@@ -9,8 +9,10 @@
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
+#include <boost/assign.hpp>
 
 #include <fq/marketdata/ctp/ctpmarketdataprovider.h>
+#include <fq/trade/ctptradeprovider.h>
 
 #include "strategy.h"
 
@@ -22,22 +24,29 @@ namespace FreeQuant { namespace Strategy {
 //    m_signals.async_wait(boost::bind(&Strategy::handleBreak, this));
 //}
 
-Strategy::Strategy() {
+Strategy::Strategy() : m_mdProvider(0), m_tradeProvider(0) {
+
 }
 
-
 Strategy::~Strategy() {
-	// TODO Auto-generated destructor stub
+
+}
+
+void Strategy::setTradeProvider(FreeQuant::Trade::TradeProvider *provider) {
+    m_tradeProvider = provider;
+}
+
+void Strategy::setMarketDataProvider(FreeQuant::MarketData::MarketDataProvider *provider) {
+    m_mdProvider = provider;
 }
 
 int Strategy::exec() {
-    MarketDataProvider *provider = new FreeQuant::MarketData::CtpMarketDataProvider();
+    onInit();
+    m_mdProvider->connect();
 
-    vector<string> instruments;
-    instruments.push_back("IF1209");
+    vector<string> symbols = boost::assign::list_of("IF1210")("MSFT");
 
-    provider->subscribe(instruments);
-
+    m_mdProvider->subscribe(symbols);
     while (true) {
         boost::this_thread::sleep(boost::posix_time::seconds(1));
     }

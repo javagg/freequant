@@ -1,6 +1,9 @@
 #ifndef FQ_MARKETDATA_CTP_CTPPROVIDER_H
 #define FQ_MARKETDATA_CTP_CTPPROVIDER_H
 
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition_variable.hpp>
+
 #include <fq/marketdata/marketdataprovider.h>
 #include "api/trade/win/public/ThostFtdcMdApi.h"
 
@@ -21,6 +24,9 @@ public:
     void onDisconnected();
 
 private:
+    boost::mutex mutex;
+    boost::condition_variable condition;
+
     CThostFtdcMdApi *api;
     bool m_connected;
     void OnFrontConnected();
