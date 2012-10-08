@@ -89,27 +89,27 @@ public:
     virtual void onExit() {}
     virtual void onStart() {}
     virtual void onStop() {}
-    virtual void onBar(const FreeQuant::MarketData::Bar& bar) {}
-    virtual void onQuote(const FreeQuant::MarketData::Quote& quote) {}
-    virtual void onTrade(const Trade& trade) {}
+    virtual void onBar(const FreeQuant::MarketData::Bar&) = 0;
+    virtual void onQuote(const FreeQuant::MarketData::Quote&) {}
+    virtual void onTrade(const Trade&) {}
     virtual void onTask(const FreeQuant::Utils::DateTime dt) {}
-    virtual void onOrderCreated(const Order& order) {}
-    virtual void onOrderFilled(const Order& order) {}
-    virtual void onOrderPartiallyFilled(const Order& order) {}
-    virtual void onOrderCancelled(const Order& order) {}
-    virtual void onOrderExpired(const Order& order) {}
-    virtual void onOrderRejected(const Order& order) {}
-    virtual void onOrderReplaced(const Order& order) {}
+    virtual void onOrderCreated(const Order&) {}
+    virtual void onOrderFilled(const Order&) {}
+    virtual void onOrderPartiallyFilled(const Order&) {}
+    virtual void onOrderCancelled(const Order&) {}
+    virtual void onOrderExpired(const Order&) {}
+    virtual void onOrderRejected(const Order&) {}
+    virtual void onOrderReplaced(const Order&) {}
 
     virtual void onPositionOpened(const Position& position) {}
     virtual void onPositionClosed(const Position& position) {}
     virtual void onPositionValueChanged(const Position& position) {}
 
-    void addIndicator(const FreeQuant::Indicators::Indicator *indicator) {}
+    void addIndicator(FreeQuant::Indicators::Indicator *indicator);
     void addInstrument(const Instrument& instrument) {}
 
     void addSymbol(const std::string symbol) {}
-    void addSymbols(std::vector<std::string> symbol) {}
+    void addSymbols(std::vector<std::string> symbols) {}
 
     void chooseTradeProvider(std::string name) {}
     void chooseMarketProvider(std::string name) {}
@@ -127,6 +127,7 @@ public:
 
     int exec();
 private:
+    void handleBar(const FreeQuant::MarketData::Bar&);
     std::vector<FreeQuant::Indicators::Indicator *> m_indictors;
 
     MarketDataProvider *m_mdProvider;

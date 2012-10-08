@@ -11,18 +11,16 @@
 #include <boost/thread.hpp>
 #include <boost/assign.hpp>
 
+#include <fq/indicators/indicator.h>
 #include <fq/marketdata/ctp/ctpmarketdataprovider.h>
 #include <fq/trade/ctptradeprovider.h>
 
 #include "strategy.h"
 
 using namespace std;
+using namespace FreeQuant::Indicators;
 
 namespace FreeQuant { namespace Strategy {
-
-//Strategy::Strategy() : m_signals(m_io_service, SIGINT, SIGTERM) {
-//    m_signals.async_wait(boost::bind(&Strategy::handleBreak, this));
-//}
 
 Strategy::Strategy() : m_mdProvider(0), m_tradeProvider(0) {
 
@@ -38,6 +36,8 @@ void Strategy::setTradeProvider(FreeQuant::Trade::TradeProvider *provider) {
 
 void Strategy::setMarketDataProvider(FreeQuant::MarketData::MarketDataProvider *provider) {
     m_mdProvider = provider;
+    m_mdProvider->sub(boost::bind(&Strategy::onBar, this, _1));
+    m_mdProvider->sub(boost::bind(&Strategy::handleBar, this, _1));
 }
 
 int Strategy::exec() {
@@ -57,6 +57,18 @@ void Strategy::handleBreak() {
     cout << "ctrl+c detected!" << endl;
     this->stop();
     exit(0);
+}
+
+void Strategy::handleBar(const FreeQuant::MarketData::Bar& bar) {
+    std::for_each(
+        m_indictors.begin(),
+        m_indictors.end(),
+        boost::bind(&Indicator::onBar, _1, bar)
+    );
+}
+
+void Strategy::addIndicator(Indicator *indicator) {
+    m_indictors.push_back(indicator);
 }
 
 }} // namespace FreeQuant

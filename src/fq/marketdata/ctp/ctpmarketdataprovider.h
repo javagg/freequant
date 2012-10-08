@@ -13,8 +13,8 @@ class CtpMarketDataProvider : public MarketDataProvider, private CThostFtdcMdSpi
 public:
     explicit CtpMarketDataProvider();
     virtual ~CtpMarketDataProvider();
-    virtual void connect();
-    virtual void disconnect();
+    virtual void connect(bool block = true);
+    virtual void disconnect(bool block = true);
     virtual bool isConnected() const;
     virtual std::string name() const { return "CTP"; }
     virtual void subscribe(std::vector<std::string> symbols);

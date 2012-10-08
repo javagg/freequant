@@ -2,7 +2,4 @@
 
 namespace FreeQuant { namespace Indicators {
 
-MA::MA() {
-}
-
 }}

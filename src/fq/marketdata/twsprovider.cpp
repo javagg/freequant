@@ -144,11 +144,11 @@ TwsProvider::~TwsProvider() {
     delete wrapper;
 }
 
-void TwsProvider::connect() {
+void TwsProvider::connect(bool block) {
     wrapper->connect();
 }
 
-void TwsProvider::disconnect() {
+void TwsProvider::disconnect(bool block) {
     wrapper->disconnect();
 }
 
@@ -167,6 +167,7 @@ void TwsProvider::unsubscribe(vector<string> symbols) {
 void TwsProvider::currentTime() const {
     wrapper->currentTime();
 }
+
 void TwsProvider::reqHistoricalData(FreeQuant::Utils::DateTime startTime, FreeQuant::Utils::DateTime endTime) {
     wrapper->reqHistoricalData();
 }

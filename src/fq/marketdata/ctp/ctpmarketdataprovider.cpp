@@ -27,7 +27,7 @@ CtpMarketDataProvider::~CtpMarketDataProvider() {
     disconnect();
 }
 
-void CtpMarketDataProvider::connect() {
+void CtpMarketDataProvider::connect(bool block) {
     string connection = "protocal=tcp;ip=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
     if (api == 0) {
         char *front = "tcp://asp-sim2-front1.financial-trading-platform.com:26213";
@@ -44,7 +44,7 @@ void CtpMarketDataProvider::connect() {
     condition.wait(l);
 }
 
-void CtpMarketDataProvider::disconnect() {
+void CtpMarketDataProvider::disconnect(bool block) {
     if (api != 0) {
         api->RegisterSpi(0);
         api->Release();
@@ -75,10 +75,6 @@ void CtpMarketDataProvider::onConnected() {
 void CtpMarketDataProvider::onDisconnected() {
 
 }
-
-//void CtpMarketDataProvider::onBar(FreeQuant::MarketData::Bar&) {
-
-//}
 
 bool CtpMarketDataProvider::errorOccurred(CThostFtdcRspInfoField *rspInfo) {
     bool occurred = rspInfo && rspInfo->ErrorID != 0;
@@ -150,11 +146,9 @@ void CtpMarketDataProvider::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField 
       <<" bid1:" << depthMarketData->BidPrice1
       <<" bidsize1:" << depthMarketData->BidVolume1
       <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
-     Bar bar;
-     onBar(bar);
+     Bar bar(depthMarketData->LastPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice, depthMarketData->LastPrice);
+     barSignal(bar);
 }
-
-
 
 }}
 

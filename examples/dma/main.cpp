@@ -15,8 +15,9 @@ class DmaStrategy : public FreeQuant::Strategy::Strategy {
 private:
     boost::shared_ptr<FreeQuant::MarketData::MarketDataProvider> m_mdProvider;
     boost::shared_ptr<FreeQuant::Trade::TradeProvider> m_tradeProvider;
+    FreeQuant::Indicators::MA ma;
 public:
-    virtual void onInit() {
+    void onInit() {
         m_mdProvider.reset(new FreeQuant::MarketData::CtpMarketDataProvider());
         m_tradeProvider.reset(new FreeQuant::Trade::CtpTradeProvider());
 
@@ -27,24 +28,24 @@ public:
         setMarketDataProvider(m_mdProvider.get());
         setTradeProvider(m_tradeProvider.get());
 
-        FreeQuant::Indicators::Indicator *ma = new FreeQuant::Indicators::MA();
-        addIndicator(ma);
+        addIndicator(&ma);
     }
 
-    virtual void onExit() {
-
-    }
-
-    virtual void onStart() {
+    void onExit() {
 
     }
 
-    virtual void onStop() {
+    void onStart() {
 
     }
 
-    virtual void onBar(const FreeQuant::MarketData::Bar& bar) {
+    void onStop() {
 
+    }
+
+    void onBar(const FreeQuant::MarketData::Bar& bar) {
+        std::cout << "close: "<< bar.close() << std::endl;
+        std::cout << "ma: "<< ma.value() << std::endl;
     }
 
 };

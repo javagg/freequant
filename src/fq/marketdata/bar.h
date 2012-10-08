@@ -8,17 +8,18 @@ namespace FreeQuant { namespace MarketData {
 class Bar {
 public:
     Bar();
+    Bar(double open, double high, double low, double close);
     FreeQuant::Utils::DateTime beginTime();
     FreeQuant::Utils::DateTime endTime();
-    double open() { return m_open; }
-    double high() { return m_high; }
-    double low() { return m_low; }
-    double close() { return m_close; }
-    long volume() { return m_volume; }
+    double open() const { return m_open; }
+    double high() const { return m_high; }
+    double low() const { return m_low; }
+    double close() const { return m_close; }
+    long volume() const { return m_volume; }
 
-    double median() { return (high()+low())/2; }
-    double typical() { return (high()+low()+close())/3; }
-    double weighted() { return (high()+low()+2*close())/4; }
+    double median() const { return (high()+low())/2; }
+    double typical() const { return (high()+low()+close())/3; }
+    double weighted() const { return (high()+low()+2*close())/4; }
 private:
     double m_open;
     double m_high;

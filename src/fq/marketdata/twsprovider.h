@@ -14,8 +14,8 @@ class TwsProvider : public MarketDataProvider {
 public:
     TwsProvider();
     virtual ~TwsProvider();
-    virtual void connect();
-    virtual void disconnect();
+    virtual void connect(bool block = true);
+    virtual void disconnect(bool block = true);
     virtual bool isConnected() const;
     virtual std::string name() const { return "TWS"; }
     virtual void subscribe(std::vector<std::string> symbols);
