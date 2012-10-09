@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include <boost/random.hpp> // #include <random> // for c++11
+#include <random>
 #include <quickfix/Exceptions.h>
 #include <quickfix/FixFields.h>
 #include <quickfix/fix44/NewOrderSingle.h>
@@ -15,7 +15,7 @@
 #include "executor.h"
 
 using namespace std;
-using namespace boost::random;
+//using namespace boost::random;
 
 namespace FreeQuant { namespace Server {
 
