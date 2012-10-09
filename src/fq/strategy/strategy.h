@@ -19,6 +19,7 @@
 #include <fq/marketdata/quote.h>
 #include <fq/marketdata/marketdataprovider.h>
 #include <fq/strategy/engine.h>
+#include <fq/strategy/Task.h>
 #include <fq/utils/datetime.h>
 
 namespace FreeQuant {
@@ -53,6 +54,18 @@ class Instrument;
  */
 class Strategy : public Engine {
 public:
+    typedef boost::shared_ptr<FreeQuant::Indicators::Indicator> IndicatorPtr;
+    typedef std::vector<IndicatorPtr> Indicators;
+
+    typedef Task *TaskPtr;
+    typedef std::vector<TaskPtr> Tasks;
+
+    typedef boost::shared_ptr<FreeQuant::Strategy::Order> OrderPtr;
+    typedef std::vector<OrderPtr> Orders;
+
+    typedef boost::shared_ptr<FreeQuant::Strategy::Instrument> InstrumentPtr;
+    typedef std::vector<InstrumentPtr> Instruments;
+
     typedef FreeQuant::MarketData::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::Trade::TradeProvider TradeProvider;
     /*!
@@ -85,8 +98,7 @@ public:
      * \param c1 the first argument.
      * \param c2 the second argument.
      */
-    virtual void onInit() {}
-    virtual void onExit() {}
+    virtual void onBreak() {}
     virtual void onStart() {}
     virtual void onStop() {}
     virtual void onBar(const FreeQuant::MarketData::Bar&) = 0;
@@ -108,6 +120,7 @@ public:
     void addIndicator(FreeQuant::Indicators::Indicator *indicator);
     void addInstrument(const Instrument& instrument) {}
 
+    FreeQuant::Strategy::Task::TaskId addTask(FreeQuant::Strategy::Task task);
     void addSymbol(const std::string symbol) {}
     void addSymbols(std::vector<std::string> symbols) {}
 
@@ -125,16 +138,19 @@ public:
     TradeProvider *tradeProvider() const { return m_tradeProvider; }
     OrderBook *orderBook() const {}
 
-    int exec();
 private:
+    void start();
+    void stop();
+
     void handleBar(const FreeQuant::MarketData::Bar&);
     std::vector<FreeQuant::Indicators::Indicator *> m_indictors;
 
+    Indicators _indictors;
+    Instruments _instruments;
+    Orders _orders;
+    Tasks _tasks;
     MarketDataProvider *m_mdProvider;
     TradeProvider *m_tradeProvider;
-
-private:
-    void handleBreak();
 };
 
 }} // FQ_STRATEGY_STRATEGY_H

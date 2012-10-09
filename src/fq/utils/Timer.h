@@ -1,5 +1,5 @@
-#ifndef FQ_UTILS_TIMER_H
-#define FQ_UTILS_TIMER_H
+#ifndef FQ_UTILS_TIMER1_H
+#define FQ_UTILS_TIMER1_H
 
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/deadline_timer.hpp>
@@ -19,11 +19,11 @@ public:
 private:
     void handler(const boost::system::error_code& error);
     Timeout timeout;
-    boost::asio::io_service *io;
-    boost::asio::deadline_timer *timer;
-    double interval;
+    double _interval;
+    boost::asio::io_service _io_service;
+    boost::asio::deadline_timer _timer;
 };
 
 }}
 
-#endif // FQ_UTILS_TIMER_H
+#endif // FQ_UTILS_TIMER1_H

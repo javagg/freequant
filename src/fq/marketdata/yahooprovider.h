@@ -3,7 +3,7 @@
 
 #include <fq/marketdata/marketdataprovider.h>
 #include <fq/utils/httpclient.h>
-#include <fq/utils/timer.h>
+#include <fq/utils/Timer.h>
 
 namespace FreeQuant { namespace MarketData {
 

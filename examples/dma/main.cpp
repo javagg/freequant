@@ -17,7 +17,9 @@ private:
     boost::shared_ptr<FreeQuant::Trade::TradeProvider> m_tradeProvider;
     FreeQuant::Indicators::MA ma;
 public:
-    void onInit() {
+    void onStart() {
+        std::cout << "strategy start..." << std::endl;
+
         m_mdProvider.reset(new FreeQuant::MarketData::CtpMarketDataProvider());
         m_tradeProvider.reset(new FreeQuant::Trade::CtpTradeProvider());
 
@@ -31,16 +33,8 @@ public:
         addIndicator(&ma);
     }
 
-    void onExit() {
-
-    }
-
-    void onStart() {
-
-    }
-
     void onStop() {
-
+        std::cout << "strategy exit..." << std::endl;
     }
 
     void onBar(const FreeQuant::MarketData::Bar& bar) {

@@ -1,1 +1,2 @@
 add_subdirectory(test_provider)
+add_subdirectory(test_timer)

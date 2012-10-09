@@ -1,7 +1,8 @@
 #ifndef FQ_STRATEGY_ENGINE_H
 #define FQ_STRATEGY_ENGINE_H
 
-#include <boost/thread.hpp>
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/asio/signal_set.hpp>
 
 #include <fq/marketdata/marketdataprovider.h>
 #include <fq/trade/tradeprovider.h>
@@ -12,13 +13,23 @@ class Engine {
 public:
     Engine();
     virtual ~Engine() {}
-    void start();
-    void stop() {}
-    void run();
+    virtual int exec();
+    virtual void onStart() = 0;
+    virtual void onStop() = 0;
+    virtual void onBreak() = 0;
+protected:
+    virtual void start() {
+        onStart();
+    }
+
+    virtual void stop() {
+        onStop();
+    }
 
 private:
-    bool running;
-    boost::thread *m_thread;
+    boost::asio::io_service _io_service;
+    boost::asio::signal_set _signal_set;
+    boost::asio::deadline_timer _timer;
 };
 
 }}

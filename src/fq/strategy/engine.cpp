@@ -2,21 +2,27 @@
 
 namespace FreeQuant { namespace Strategy {
 
-Engine::Engine() {
+Engine::Engine() :
+    _io_service(),
+    _signal_set(_io_service, SIGINT, SIGTERM),
+    _timer(_io_service) {
 }
 
-void Engine::start() {
-    m_thread = new boost::thread(&Engine::run, this);
-//    m_thread = new boost::thread(boost::bind(&Engine::run, this));
-//    m_thread = new boost::thread([&] () {
-//        run();
-//    });
-}
-
-void Engine::run() {
+int Engine::exec() {
+    _signal_set.async_wait(boost::bind(&Engine::onBreak, this));
+    int ret = 0;
     while (true) {
-        if (!running) break;
+        try {
+            start();
+            ret = _io_service.run();
+            stop();
+            break;
+        } catch (std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            ret = -1;
+        }
     }
+    return ret;
 }
 
 }}

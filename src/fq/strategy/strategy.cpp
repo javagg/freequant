@@ -40,23 +40,17 @@ void Strategy::setMarketDataProvider(FreeQuant::MarketData::MarketDataProvider *
     m_mdProvider->sub(boost::bind(&Strategy::handleBar, this, _1));
 }
 
-int Strategy::exec() {
-    onInit();
+void Strategy::start() {
+    Engine::start();
     m_mdProvider->connect();
-
     vector<string> symbols = boost::assign::list_of("IF1210")("MSFT");
-
     m_mdProvider->subscribe(symbols);
-    while (true) {
-        boost::this_thread::sleep(boost::posix_time::seconds(1));
-    }
-    return 0;
 }
 
-void Strategy::handleBreak() {
-    cout << "ctrl+c detected!" << endl;
-    this->stop();
-    exit(0);
+void Strategy::stop() {
+    m_mdProvider->disconnect();
+    m_tradeProvider->disconnect();
+    Engine::stop();
 }
 
 void Strategy::handleBar(const FreeQuant::MarketData::Bar& bar) {
