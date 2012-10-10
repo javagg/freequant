@@ -16,7 +16,7 @@ qt4_wrap_cpp(MOC_HEADERS ${HEADERS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(fqclient2 ${SOURCES} ${UIS_HEADERS} ${MOC_HEADERS})
-target_link_libraries(fqclient2 ${QT_LIBRARIES} ${CTP_LIBRARIES} ${PROJECT_NAME})
+target_link_libraries(fqclient2 ${QT_LIBRARIES} ${CTP_LIBRARIES} ${PROJECT_NAME} ${WS2_32})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.fix ${CMAKE_CURRENT_BINARY_DIR}/config.fix COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/FIX44.xml ${CMAKE_CURRENT_BINARY_DIR}/FIX44.xml COPYONLY)

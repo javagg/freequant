@@ -26,7 +26,7 @@ YahooProvider::~YahooProvider() {
 }
 
 void YahooProvider::connect() {
-    if (timer == 0) {
+    if (timer == nullptr) {
         timer = new FreeQuant::Utils::Timer(1);
         timer->connect(boost::bind(&YahooProvider::getQuota, this));
         timer->start();
@@ -34,7 +34,7 @@ void YahooProvider::connect() {
 }
 
 void YahooProvider::disconnect() {
-    if (timer != 0) {
+    if (timer != nullptr) {
         delete timer;
         timer = 0;
     }

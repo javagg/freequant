@@ -85,7 +85,8 @@ bool CtpMarketDataProvider::errorOccurred(CThostFtdcRspInfoField *rspInfo) {
 }
 
 void CtpMarketDataProvider::OnFrontConnected() {
-    cerr << "--->>> " << __FUNCTION__ << endl;
+
+    cerr << "--->>> " << __FUNCTION__ <<  endl;
 
     string appId = "2030";
     string userId = "00092";

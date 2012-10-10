@@ -283,7 +283,7 @@ void CtpTradeProvider::disconnect() {
 }
 
 bool CtpTradeProvider::isConnected() const {
-//    return spi->isConnected();
+    return true;
 }
 
 void CtpTradeProvider::OnRspQryTradingAccount(CThostFtdcTradingAccountField *tradingAccount, CThostFtdcRspInfoField *rspInfo, int requestID, bool last) {

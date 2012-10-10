@@ -7,7 +7,6 @@ namespace FreeQuant { namespace MarketData {
 
 class Bar {
 public:
-    Bar();
     Bar(double open, double high, double low, double close);
     FreeQuant::Utils::DateTime beginTime();
     FreeQuant::Utils::DateTime endTime();

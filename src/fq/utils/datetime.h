@@ -9,7 +9,7 @@ namespace FreeQuant { namespace Utils {
 class DateTime {
 public:
     DateTime();
-    ~DateTime();
+    ~DateTime() {}
     DateTime(const DateTime&);
 
     DateTime fromString(const std::string& string);
