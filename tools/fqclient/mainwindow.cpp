@@ -2,6 +2,9 @@
 #include "TWS/Order.h"
 Q_DECLARE_METATYPE(Order)
 
+
+static long trickid = 0;
+
 QString MainWindow::tickTypeToTickField(TickType tickType) {
     switch( tickType)
     {
@@ -131,11 +134,11 @@ void MainWindow::onReqMktData() {
     CommonDialog dialog(this, CommonDialog::OrderDialog);
     if (dialog.exec() == QDialog::Accepted) {
         QMap<QString, QVariant>& params = dialog.params();
-        TickerId id = params.value("id").toInt();;
+        TickerId id = params.value("id").toInt();
         Contract contract = params.value("contract").value<Contract>();
         std::string genericTicks = params.value("genericTicks").toString().toStdString();
         bool snapshot = params.value("snapshot").toBool();
-//        m_client->reqMktData(id, contract, genericTicks, snapshot);
+        m_client->reqMktData(trickid++, contract, genericTicks, snapshot);
     }
  }
 

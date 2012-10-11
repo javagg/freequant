@@ -1,7 +1,7 @@
 #include <iostream>
+#include <random>
 #include <string>
 
-#include <random>
 #include <quickfix/Exceptions.h>
 #include <quickfix/FixFields.h>
 #include <quickfix/fix44/NewOrderSingle.h>
@@ -15,7 +15,6 @@
 #include "executor.h"
 
 using namespace std;
-//using namespace boost::random;
 
 namespace FreeQuant { namespace Server {
 
@@ -55,8 +54,8 @@ void Executor::fromApp( const FIX::Message& message, const FIX::SessionID& sessi
 }
 
 void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::SessionID& sessionId) {
-    mt19937 rng;
-    uniform_int_distribution<> six(1,6);
+    std::mt19937 rng;
+    std::uniform_int_distribution<> six(1,6);
 
 //    FIX::Symbol symbol;
 //  FIX::Side side;

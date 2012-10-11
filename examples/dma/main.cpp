@@ -1,6 +1,6 @@
 #include <iostream>
+#include <memory>
 
-#include <boost/shared_ptr.hpp>
 #include <fq/strategy/strategy.h>
 #include <fq/indicators/indicator.h>
 #include <fq/indicators/ma.h>
@@ -9,12 +9,10 @@
 #include <fq/trade/tradeprovider.h>
 #include <fq/trade/ctptradeprovider.h>
 
-using namespace std;
-
 class DmaStrategy : public FreeQuant::Strategy::Strategy {
 private:
-    boost::shared_ptr<FreeQuant::MarketData::MarketDataProvider> m_mdProvider;
-    boost::shared_ptr<FreeQuant::Trade::TradeProvider> m_tradeProvider;
+    std::shared_ptr<FreeQuant::MarketData::MarketDataProvider> m_mdProvider;
+    std::shared_ptr<FreeQuant::Trade::TradeProvider> m_tradeProvider;
     FreeQuant::Indicators::MA ma;
 public:
     void onStart() {

@@ -7,10 +7,6 @@
 #include <quickfix/Utility.h>
 #include <quickfix/Mutex.h>
 
-//#include <quickfix/fix43/MarketDataRequest.h>
-//#include <quickfix/fix43/Logon.h>
-//#include <quickfix/fix43/NewOrderSingle.h>
-
 namespace FreeQuant { namespace Server {
 
 /*!

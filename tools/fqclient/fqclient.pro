@@ -1,9 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2012-09-20T20:40:03
-#
-#-------------------------------------------------
-
 QT += core gui
 TARGET = fqclient
 TEMPLATE = app
@@ -27,16 +21,6 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     TWS/EClientSocketBase.cpp \
     client.cpp \
-
-#win32 {
-#    SOURCES += \
-#        TWS/EClientSocket.cpp \
-#}
-
-#unix {
-#    SOURCES += \
-#        TWS/EPosixClientSocket.cpp \
-#}
 
 HEADERS += mainwindow.h \
     commondialog.h \
