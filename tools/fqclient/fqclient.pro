@@ -12,24 +12,31 @@ CONFIG += uitools
 DEFINES += _AFXDLL IB_USE_STD_STRING
 DEFINES -= UNICODE
 
+
+DEFINES += USE_POSIX
+
+unix {
+    DEFINES += USE_POSIX
+}
+
 QMAKE_CFLAGS_DEBUG += -MTd
 QMAKE_CFLAGS_RELEASE += -MT
 
 SOURCES += main.cpp\
     commondialog.cpp \
     mainwindow.cpp \
+    TWS/EClientSocketBase.cpp \
+    client.cpp \
 
-win32 {
-    SOURCES += \
-        TWS/EClientSocket.cpp \
-        TWS/EClientSocketBase_win.cpp
-}
+#win32 {
+#    SOURCES += \
+#        TWS/EClientSocket.cpp \
+#}
 
-unix {
-    SOURCES += \
-        TWS/EPosixClientSocket.cpp \
-        TWS/EClientSocketBase_posix.cpp
-}
+#unix {
+#    SOURCES += \
+#        TWS/EPosixClientSocket.cpp \
+#}
 
 HEADERS += mainwindow.h \
     commondialog.h \

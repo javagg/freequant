@@ -13,7 +13,7 @@
 #include "ui_mainwindow.h"
 #include "commondialog.h"
 
-#ifdef _WIN32
+#ifndef USE_POSIX
   #include "TWS/EClientSocket.h"
 #else
   #include "TWS/EPosixClientSocket.h"
@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow, public EWrapper
 public:
     explicit MainWindow(QWidget *parent = 0): QMainWindow(parent), ui(new Ui::MainWindow) {
         ui->setupUi(this);
-#ifdef _WIN32
+#ifndef USE_POSIX
         m_client = QSharedPointer<EClient>(new EClientSocket(this));
 #else
         m_client = QSharedPointer<EClient>(new EPosixClientSocket(this));
