@@ -35,7 +35,6 @@ public:
     virtual void tickPrice(TickerId tickerId, TickType tickType, double price, int canAutoExecute) {
         QString str = QString("id=%1 %2=%3 canAutoExecute=%4").arg(tickerId).arg(tickTypeToTickField(tickType)).arg(price).arg(canAutoExecute);
         ui->dataTextEdit->append(str);
-        q
     }
 
     virtual void tickSize(TickerId tickerId, TickType tickType, int size){
