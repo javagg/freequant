@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by Qt Creator 2.4.1, 2012-10-11T21:06:43. -->
+<!-- Written by Qt Creator 2.4.1, 2012-10-12T00:45:54. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -579,7 +579,7 @@
  </data>
  <data>
   <variable>ProjectExplorer.Project.Updater.EnvironmentId</variable>
-  <value type="QString">{b5f315a2-e2bb-44d7-84e5-98c5098ea2dd}</value>
+  <value type="QString">{3b30bc6f-41a6-4069-973d-c7349aa9c3ad}</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.Updater.FileVersion</variable>
