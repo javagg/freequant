@@ -27,7 +27,8 @@ win32 {
 
 unix {
     SOURCES += \
-        TWS/EPosixClientSocket_posix.cpp \
+        TWS/EPosixClientSocket.cpp \
+        TWS/EClientSocketBase_posix.cpp
 }
 
 HEADERS += mainwindow.h \

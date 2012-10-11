@@ -115,16 +115,16 @@ void MainWindow::onConnect() {
         QString message = QString("Connecting to Tws using clientId %1 ...").arg(clientId);
         ui->responseTextEdit->append(message);
 
-//        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
-//        if (success) {
-//            QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
-//            ui->responseTextEdit->append(message);
-//        }
+        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
+        if (success) {
+            QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
+            ui->responseTextEdit->append(message);
+        }
     }
 }
 
 void MainWindow::onDisconnect() {
-//    m_client->eDisconnect();
+    m_client->eDisconnect();
 }
 
 void MainWindow::onReqMktData() {

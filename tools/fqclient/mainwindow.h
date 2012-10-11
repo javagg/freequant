@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QString>
+#include <QSharedPointer>
 
 #include "TWS/EClient.h"
 #include "TWS/EWrapper.h"
@@ -29,15 +30,14 @@ class MainWindow : public QMainWindow, public EWrapper
 public:
     explicit MainWindow(QWidget *parent = 0): QMainWindow(parent), ui(new Ui::MainWindow) {
         ui->setupUi(this);
-//#ifdef _WIN32
-//        m_client = new EClientSocket(this);
-//#else
-//        m_client = new EPosixClientSocket(this);
-//#endif
+#ifdef _WIN32
+        m_client = QSharedPointer<EClient>(new EClientSocket(this));
+#else
+        m_client = QSharedPointer<EClient>(new EPosixClientSocket(this));
+#endif
     }
 
     ~MainWindow() {
-//        delete m_client;
         delete ui;
     }
 
@@ -249,7 +249,8 @@ public slots:
     void onReqAccts();
 private:
     Ui::MainWindow *ui;
-//    EClient *m_client;
+
+    QSharedPointer<EClient> m_client;
     bool faError;
 
     bool m_financialAdvisor;
