@@ -16,12 +16,22 @@ QMAKE_CFLAGS_DEBUG += -MTd
 QMAKE_CFLAGS_RELEASE += -MT
 
 SOURCES += main.cpp\
-    TWS/EPosixClientSocket.cpp \
-    TWS/EClientSocketBase.cpp \
     commondialog.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+
+win32 {
+    SOURCES += \
+        TWS/EClientSocket.cpp \
+        TWS/EClientSocketBase_win.cpp
+}
+
+unix {
+    SOURCES += \
+        TWS/EPosixClientSocket_posix.cpp \
+}
 
 HEADERS += mainwindow.h \
+    commondialog.h \
     TWS/TwsSocketClientErrors.h \
     TWS/StdAfx.h \
     TWS/shared_ptr.h \
@@ -29,16 +39,23 @@ HEADERS += mainwindow.h \
     TWS/OrderState.h \
     TWS/Order.h \
     TWS/IBString.h \
+    TWS/HScrollListBox.h \
     TWS/Execution.h \
     TWS/EWrapper.h \
-    TWS/EPosixClientSocketPlatform.h \
-    TWS/EPosixClientSocket.h \
     TWS/EClientSocketBaseImpl.h \
     TWS/EClientSocketBase.h \
     TWS/EClient.h \
     TWS/Contract.h \
-    TWS/CommonDefs.h \
-    commondialog.h
+    TWS/CommonDefs.h
+
+win32 {
+    HEADERS += \
+        TWS/EClientSocket.h
+} unix {
+    HEADERS += \
+        TWS/EPosixClientSocketPlatform.h \
+        TWS/EPosixClientSocket.h
+}
 
 FORMS += \
     mainwindow.ui \

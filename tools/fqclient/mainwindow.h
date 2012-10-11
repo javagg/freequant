@@ -12,9 +12,14 @@
 #include "ui_mainwindow.h"
 #include "commondialog.h"
 
-#include "TWS/EPosixClientSocket.h"
+#ifdef _WIN32
+  #include "TWS/EClientSocket.h"
+#else
+  #include "TWS/EPosixClientSocket.h"
+#endif
 
 #include "TWS/Contract.h"
+
 Q_DECLARE_METATYPE(Contract)
 
 class MainWindow : public QMainWindow, public EWrapper
@@ -24,11 +29,15 @@ class MainWindow : public QMainWindow, public EWrapper
 public:
     explicit MainWindow(QWidget *parent = 0): QMainWindow(parent), ui(new Ui::MainWindow) {
         ui->setupUi(this);
-        m_client = new EPosixClientSocket(this);
+//#ifdef _WIN32
+//        m_client = new EClientSocket(this);
+//#else
+//        m_client = new EPosixClientSocket(this);
+//#endif
     }
 
     ~MainWindow() {
-        delete m_client;
+//        delete m_client;
         delete ui;
     }
 
@@ -240,7 +249,7 @@ public slots:
     void onReqAccts();
 private:
     Ui::MainWindow *ui;
-    EClient *m_client;
+//    EClient *m_client;
     bool faError;
 
     bool m_financialAdvisor;

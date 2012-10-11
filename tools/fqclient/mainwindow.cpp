@@ -68,7 +68,7 @@ QString MainWindow::tickTypeToTickField(TickType tickType) {
 }
 
 void MainWindow::onReqCurrentTime() {
-    m_client->reqCurrentTime();
+//    m_client->reqCurrentTime();
 }
 
 void MainWindow::onPlaceOrder() {
@@ -78,20 +78,20 @@ void MainWindow::onPlaceOrder() {
         OrderId id =  params.value("id").toInt();
         Order order = params.value("order").value<Order>();
         Contract contract = params.value("contract").value<Contract>();
-        m_client->placeOrder(id, contract, order);
+//        m_client->placeOrder(id, contract, order);
     }
 }
 
 void MainWindow::onReqOpenOrders() {
-    m_client->reqOpenOrders();
+//    m_client->reqOpenOrders();
 }
 
 void MainWindow::onReqAllOpenOrders() {
-    m_client->reqAllOpenOrders();
+//    m_client->reqAllOpenOrders();
 }
 
 void MainWindow::onReqAutoOpenOrders() {
-     m_client->reqAutoOpenOrders(true);
+//     m_client->reqAutoOpenOrders(true);
 }
 
 void MainWindow::onReqAccountUpdate() {
@@ -115,16 +115,16 @@ void MainWindow::onConnect() {
         QString message = QString("Connecting to Tws using clientId %1 ...").arg(clientId);
         ui->responseTextEdit->append(message);
 
-        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
-        if (success) {
-            QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
-            ui->responseTextEdit->append(message);
-        }
+//        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
+//        if (success) {
+//            QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
+//            ui->responseTextEdit->append(message);
+//        }
     }
 }
 
 void MainWindow::onDisconnect() {
-    m_client->eDisconnect();
+//    m_client->eDisconnect();
 }
 
 void MainWindow::onReqMktData() {
@@ -135,7 +135,7 @@ void MainWindow::onReqMktData() {
         Contract contract = params.value("contract").value<Contract>();
         std::string genericTicks = params.value("genericTicks").toString().toStdString();
         bool snapshot = params.value("snapshot").toBool();
-        m_client->reqMktData(id, contract, genericTicks, snapshot);
+//        m_client->reqMktData(id, contract, genericTicks, snapshot);
     }
  }
 
@@ -145,7 +145,7 @@ void MainWindow::onExtord() {
 }
 
 void MainWindow::onReqIds() {
-    m_client->reqIds(20);
+//    m_client->reqIds(20);
 }
 
 void MainWindow::onReqContractDetails() {
@@ -155,13 +155,13 @@ void MainWindow::onReqContractDetails() {
 void MainWindow::onFinancialAdvisor() {
     faGroupsXML = faProfilesXML = faAliasesXML = "";
     faError = false;
-    m_client->requestFA(GROUPS);
-    m_client->requestFA(PROFILES);
-    m_client->requestFA(ALIASES);
+//    m_client->requestFA(GROUPS);
+//    m_client->requestFA(PROFILES);
+//    m_client->requestFA(ALIASES);
 }
 
 void MainWindow::onReqAccts() {
-    m_client->reqManagedAccts();
+//    m_client->reqManagedAccts();
 }
 
 void MainWindow::tickPrice(TickerId tickerId, TickType tickType, double price, int canAutoExecute) {
