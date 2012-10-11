@@ -139,18 +139,7 @@ public:
 
     }
 
-    virtual void error(const int id, const int errorCode, const IBString errorString) {
-        QString errorStr = QString("Id: %1 | Errro Code: %2 | Error Msg: %3").arg(id).arg(errorCode).arg(errorString.c_str());
-        ui->errorsTextEdit->append(errorStr);
-
-//        for (int ctr=0; ctr < NUM_FA_ERROR_CODES; ctr++) {
-//           faError |= (errorCode == faErrorCodes[ctr]) ;
-//        }
-//        if (errorCode == CDlgMktDepth::MKT_DEPTH_DATA_RESET) {
-//            m_dlgMktDepth->clear();
-//        }
-    }
-
+    virtual void error(const int id, const int errorCode, const IBString errorString);
     virtual void updateMktDepth(TickerId id, int position, int operation, int side,
        double price, int size) {
 
@@ -165,13 +154,7 @@ public:
         QMessageBox::information(this, "", QString("MsgId=%1 :: MsgType = %2 :: Origin= %3 :: Message= %4").arg(msgId).arg(msgType).arg(originExch.c_str()).arg(newsMessage.c_str()));
     }
 
-    virtual void managedAccounts(const IBString& accountsList){
-        m_financialAdvisor = true;
-        m_managedAccounts = accountsList;
-        QString message = QString("Connected : The list of managed accounts are : [%1]").arg(accountsList.c_str());
-        ui->responseTextEdit->append(message);
-    }
-
+    virtual void managedAccounts(const IBString& accountsList);
     virtual void receiveFA(faDataType pFaDataType, const IBString& cxml){
 
     }
@@ -254,7 +237,7 @@ private:
     bool faError;
 
     bool m_financialAdvisor;
-    std::string m_managedAccounts;
+    IBString m_managedAccounts;
 
     std::string faGroupsXML;
     std::string faProfilesXML;

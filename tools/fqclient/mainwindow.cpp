@@ -70,6 +70,17 @@ QString MainWindow::tickTypeToTickField(TickType tickType) {
     }
 }
 
+void MainWindow::error(const int id, const int errorCode, const IBString errorString) {
+    ui->errorsTextEdit->append(QString("Id: %1 | Errro Code: %2 | Error Msg: %3").arg(id).arg(errorCode).arg(errorString.c_str()));
+
+//        for (int ctr=0; ctr < NUM_FA_ERROR_CODES; ctr++) {
+//           faError |= (errorCode == faErrorCodes[ctr]) ;
+//        }
+//        if (errorCode == CDlgMktDepth::MKT_DEPTH_DATA_RESET) {
+//            m_dlgMktDepth->clear();
+//        }
+}
+
 void MainWindow::onReqCurrentTime() {
 //    m_client->reqCurrentTime();
 }
@@ -118,13 +129,21 @@ void MainWindow::onConnect() {
         QString message = QString("Connecting to Tws using clientId %1 ...").arg(clientId);
         ui->responseTextEdit->append(message);
 
-        bool success = m_client->eConnect(ip.toAscii(), port, clientId);
+        bool success = m_client->eConnect(ip.toStdString().c_str(), port, clientId);
         if (success) {
             QString message = QString("Connected to Tws server version %1 at %2.").arg(m_client->serverVersion()).arg(m_client->TwsConnectionTime().c_str());
             ui->responseTextEdit->append(message);
         }
     }
 }
+
+void MainWindow::managedAccounts(const IBString& accountsList){
+    m_financialAdvisor = true;
+    m_managedAccounts = accountsList;
+    QString message = QString("Connected : The list of managed accounts are : [%1]").arg(accountsList.c_str());
+    ui->responseTextEdit->append(message);
+}
+
 
 void MainWindow::onDisconnect() {
     m_client->eDisconnect();
