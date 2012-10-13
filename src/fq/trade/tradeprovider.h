@@ -20,6 +20,8 @@ public:
     virtual void onLogout() {}
     virtual void onError() {}
 
+    virtual std::vector<std::string> availableExchanges() const = 0;
+
 //    virtual void subscribe(std::vector<std::string> symbols) = 0;
 //    virtual void unsubscribe(std::vector<std::string> symbols) = 0;
 };

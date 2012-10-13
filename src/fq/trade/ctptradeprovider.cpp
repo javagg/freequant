@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 
 #include "api/trade/win/public/ThostFtdcTraderApi.h"
@@ -6,6 +7,8 @@
 using namespace std;
 
 namespace FreeQuant { namespace Trade {
+
+static long requestId = 0;
 
 class TraderSpi : public CThostFtdcTraderSpi {
 public:
@@ -438,12 +441,20 @@ void CtpTradeProvider::reqUserLogin(TThostFtdcBrokerIDType	vAppId, TThostFtdcUse
 //}
 
 void CtpTradeProvider::reqSettlementInfoConfirm() {
-    CThostFtdcSettlementInfoConfirmField req;
-//    memset(&req, 0, sizeof(req));
+    CThostFtdcSettlementInfoConfirmField req = {};
 //    strcpy(req.BrokerID, appId);
 //    strcpy(req.InvestorID, userId);
 //    int ret = pUserApi->ReqSettlementInfoConfirm(&req, ++requestId);
 //    cerr<<" ÇëÇó | ·¢ËÍœáËãµ¥È·ÈÏ..."<<((ret == 0)?"³É¹Š":"Ê§°Ü")<<endl;
+}
+
+vector<string> CtpTradeProvider::availableExchanges() const {
+    string exchangeId = "dsf";
+    CThostFtdcQryExchangeField field = {};
+    exchangeId.copy(field.ExchangeID, exchangeId.size());
+    api->ReqQryExchange(&field, ++requestId);
+
+    return vector<string>();
 }
 
 }}

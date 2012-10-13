@@ -3,7 +3,6 @@
 
 #include "twsprovider.h"
 #include "EWrapper.h"
-#include <unistd.h>
 #include "EPosixClientSocket.h"
 #include "Contract.h"
 

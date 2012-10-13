@@ -17,6 +17,8 @@ public:
     virtual bool isConnected() const;
     virtual std::string name() const { return "CTP"; }
 
+    virtual std::vector<std::string> availableExchanges() const;
+
 private:
     TraderSpi *spi;
 

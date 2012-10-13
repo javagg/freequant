@@ -522,5 +522,8 @@ void FixTradeProvider::sendNewOrderSingle(Order& order) {
     FIX::Session::sendToTarget(message, *m_sessionId);
 }
 
+vector<string> FixTradeProvider::availableExchanges() const {
+    return vector<string>();
+}
 
 }}

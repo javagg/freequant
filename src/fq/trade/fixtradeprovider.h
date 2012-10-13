@@ -25,6 +25,8 @@ public:
     bool isConnected() const;
     std::string name() const { return "FIX"; }
 
+    std::vector<std::string> availableExchanges() const;
+
     void logon();
     void onLogon();
     void logout();
