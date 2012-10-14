@@ -10,6 +10,12 @@
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/Logon.h>
+
+#include <quickfix/fix44/SecurityList.h>
+#include <quickfix/fix44/SecurityListRequest.h>
+#include <quickfix/fix44/SecurityTypes.h>
+#include <quickfix/fix44/SecurityTypeRequest.h>
+
 #include <quickfix/Session.h>
 
 #include "executor.h"

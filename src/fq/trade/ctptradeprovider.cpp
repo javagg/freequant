@@ -457,4 +457,10 @@ vector<string> CtpTradeProvider::availableExchanges() const {
     return vector<string>();
 }
 
+vector<string> CtpTradeProvider::availableInstruments() const {
+    CThostFtdcQryInstrumentField field;
+//    api->ReqQryInstrument()
+    return vector<string>();
+}
+
 }}

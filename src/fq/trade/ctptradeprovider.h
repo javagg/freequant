@@ -18,6 +18,7 @@ public:
     virtual std::string name() const { return "CTP"; }
 
     virtual std::vector<std::string> availableExchanges() const;
+    virtual std::vector<std::string> availableInstruments() const;
 
 private:
     TraderSpi *spi;

@@ -26,7 +26,7 @@ public:
     std::string name() const { return "FIX"; }
 
     std::vector<std::string> availableExchanges() const;
-
+    std::vector<std::string> availableInstruments() const;
     void logon();
     void onLogon();
     void logout();
@@ -57,6 +57,7 @@ private:
     void onMessage(const FIX44::MarketDataIncrementalRefresh&, const FIX::SessionID&);
     void onMessage(const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID&);
     void onMessage(const FIX44::ExecutionReport&, const FIX::SessionID&);
+    void onMessage(const FIX44::SecurityList&, const FIX::SessionID&);
 
     void sendNewOrderSingle(Order& order);
     void sendOrderCancelRequest(Order& order);

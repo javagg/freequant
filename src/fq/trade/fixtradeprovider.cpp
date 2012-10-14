@@ -13,6 +13,11 @@
 #include <quickfix/fix44/MarketDataRequestReject.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
+#include <quickfix/fix44/SecurityList.h>
+#include <quickfix/fix44/SecurityListRequest.h>
+#include <quickfix/fix44/SecurityTypes.h>
+#include <quickfix/fix44/SecurityTypeRequest.h>
+
 #include <quickfix/fix44/NewOrderSingle.h>
 #include <quickfix/fix44/OrderCancelRequest.h>
 
@@ -395,6 +400,20 @@ void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& mes
     message.get(symbol);
 }
 
+void FixTradeProvider::onMessage(const FIX44::SecurityList& message, const FIX::SessionID& sessionID) {
+    vector<string> symbols;
+    FIX::NoRelatedSym noRelatedSym;
+    message.get(noRelatedSym);
+    for (int i = 1; i <= noRelatedSym; i++) {
+        FIX44::SecurityList::NoRelatedSym group;
+        message.getGroup(i, group);
+        FIX::Symbol symbol;
+        group.get(symbol);
+        symbols.push_back(symbol.getValue());
+    }
+
+}
+
 void FixTradeProvider::sendOrderCancelRequest(Order& order) {
     FIX44::OrderCancelRequest message;
     FIX::OrigClOrdID origClOrdID;
@@ -523,6 +542,15 @@ void FixTradeProvider::sendNewOrderSingle(Order& order) {
 }
 
 vector<string> FixTradeProvider::availableExchanges() const {
+    return vector<string>();
+}
+
+vector<std::string> FixTradeProvider::availableInstruments() const {
+    std::string reqID = FreeQuant::toGuidString();
+    FIX44::SecurityListRequest message;
+    message.set(FIX::SecurityReqID(reqID));
+    message.set(FIX::SecurityListRequestType(FIX::SecurityListRequestType_ALL_SECURITIES));
+    FIX::Session::sendToTarget(message, *m_sessionId);
     return vector<string>();
 }
 
