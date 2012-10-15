@@ -8,6 +8,7 @@
 #include "tws/Order.h"
 
 #include <cstdio>
+#include <iostream>
 
 const int PING_DEADLINE = 2; // seconds
 const int SLEEP_BETWEEN_PINGS = 30; // seconds
@@ -281,7 +282,7 @@ void PosixTestClient::updateMktDepthL2(TickerId id, int position, IBString marke
 										int side, double price, int size) {}
 void PosixTestClient::updateNewsBulletin(int msgId, int msgType, const IBString& newsMessage, const IBString& originExch) {}
 void PosixTestClient::managedAccounts( const IBString& accountsList) {
-	printf("Connected : The list of managed accounts are : [%s]\n", accountsList.c_str());
+    std::cout << "Connected : The list of managed accounts are : " << accountsList << std::endl;
 }
 void PosixTestClient::receiveFA(faDataType pFaDataType, const IBString& cxml) {}
 void PosixTestClient::historicalData(TickerId reqId, const IBString& date, double open, double high,

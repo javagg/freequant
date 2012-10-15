@@ -21,8 +21,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 #Find external dependencies
 #set(BOOST_LIBRARYDIR "C:\Program Files (x86)\boost\boost_1_51\lib")
-#find_package(Boost REQUIRED COMPONENTS date_time system thread chrono)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS date_time system thread chrono)
+#find_package(Boost REQUIRED)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)

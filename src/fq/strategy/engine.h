@@ -5,7 +5,7 @@
 #include <boost/asio/signal_set.hpp>
 
 #include <fq/marketdata/marketdataprovider.h>
-#include <fq/trade/tradeprovider.h>
+#include <fq/trade/TradeProvider.h>
 
 namespace FreeQuant { namespace Strategy {
 

@@ -3,7 +3,7 @@
 #include "ui_mainwindow.h"
 
 #include <fq/marketdata/ctp/ctpmarketdataprovider.h>
-#include <fq/trade/fixtradeprovider.h>
+#include <fq/trade/FixTradeProvider.h>
 
 using namespace std;
 

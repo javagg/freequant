@@ -13,7 +13,7 @@
 
 #include <fq/indicators/indicator.h>
 #include <fq/marketdata/ctp/ctpmarketdataprovider.h>
-#include <fq/trade/ctptradeprovider.h>
+#include <fq/trade/CtpTradeProvider.h>
 
 #include "strategy.h"
 

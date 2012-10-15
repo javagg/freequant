@@ -6,8 +6,8 @@
 #include <fq/indicators/ma.h>
 #include <fq/marketdata/marketdataprovider.h>
 #include <fq/marketdata/ctp/ctpmarketdataprovider.h>
-#include <fq/trade/tradeprovider.h>
-#include <fq/trade/ctptradeprovider.h>
+#include <fq/trade/TradeProvider.h>
+#include <fq/trade/CtpTradeProvider.h>
 
 class DmaStrategy : public FreeQuant::Strategy::Strategy {
 private:

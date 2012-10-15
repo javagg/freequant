@@ -8,7 +8,7 @@
 #include <QString>
 
 #include <fq/marketdata/marketdataprovider.h>
-#include <fq/trade/tradeprovider.h>
+#include <fq/trade/TradeProvider.h>
 
 #include "commondialog.h"
 
