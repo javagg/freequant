@@ -9,6 +9,15 @@
 #include <quickfix/fix44/ExecutionReport.h>
 #include <quickfix/fix44/Logon.h>
 #include <quickfix/fix44/Logout.h>
+
+#include <quickfix/fix44/ExecutionReport.h>
+#include <quickfix/fix44/NewOrderSingle.h>
+#include <quickfix/fix44/OrderCancelRequest.h>
+#include <quickfix/fix44/OrderCancelReplaceRequest.h>
+#include <quickfix/fix44/OrderCancelReject.h>
+#include <quickfix/fix44/OrderCancelReject.h>
+#include <quickfix/fix44/OrderStatusRequest.h>
+
 #include <quickfix/fix44/MarketDataRequest.h>
 #include <quickfix/fix44/MarketDataRequestReject.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
@@ -21,10 +30,9 @@
 #include <quickfix/fix44/NewOrderSingle.h>
 #include <quickfix/fix44/OrderCancelRequest.h>
 
-#include "fixtradeprovider.h"
-#include <fq/strategy/order.h>
+#include "FixTradeProvider.h"
 #include <fq/utils/guid.h>
-#include <fq/strategy/order.h>
+
 
 using namespace std;
 
@@ -123,21 +131,6 @@ void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
 
 void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
 
-}
-
-void FixTradeProvider::sendOrder(Order& order) {
-    //    string orderId = "111";
-    //    string orderSymbol = "600446";
-    //    char orderSide = '1';
-
-    //    FIX42::NewOrderSingle newOrderSingle(FIX::ClOrdID(orderId), FIX::HandlInst(FIX::HandlInst_AUTOEXECPRIV),
-    //                                         FIX::Symbol("600446"), FIX::Side(orderSide), FIX::TransactTime(),
-    //                                         FIX::OrdType(FIX::OrdType_LIMIT));
-    //    newOrderSingle.setField(FIX::FIELD::Currency, "CNY");
-    //    newOrderSingle.setField(FIX::FIELD::OrderQty, "100");
-    //    newOrderSingle.setField(FIX::FIELD::Price, "14.44");
-    //    newOrderSingle.setField(FIX::FIELD::SecurityExchange, "XSHG");
-    //    FIX::Session::sendToTarget(newOrderSingle, sessionID);
 }
 
 void FixTradeProvider::connect() {
@@ -274,7 +267,6 @@ void FixTradeProvider::onMessage(const FIX44::ExecutionReport& message, const FI
     default:
         break;
     }
-
 }
 
 void FixTradeProvider::onMessage(const FIX44::MarketDataIncrementalRefresh& message, const FIX::SessionID& sessionID) {
@@ -400,6 +392,10 @@ void FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh& mes
     message.get(symbol);
 }
 
+void FixTradeProvider::onMessage(const FIX44::OrderCancelReject&, const FIX::SessionID&) {
+
+}
+
 void FixTradeProvider::onMessage(const FIX44::SecurityList& message, const FIX::SessionID& sessionID) {
     vector<string> symbols;
     FIX::NoRelatedSym noRelatedSym;
@@ -414,7 +410,7 @@ void FixTradeProvider::onMessage(const FIX44::SecurityList& message, const FIX::
 
 }
 
-void FixTradeProvider::sendOrderCancelRequest(Order& order) {
+void FixTradeProvider::cancelOrder(FreeQuant::Strategy::Order& o) {
     FIX44::OrderCancelRequest message;
     FIX::OrigClOrdID origClOrdID;
     FIX::ClOrdID clOrdID;
@@ -422,12 +418,24 @@ void FixTradeProvider::sendOrderCancelRequest(Order& order) {
     message.set(clOrdID);
 }
 
-void FixTradeProvider::sendNewOrderSingle(Order& order) {
+void FixTradeProvider::replaceOrder(FreeQuant::Strategy::Order& o) {
+    FIX44::OrderCancelReplaceRequest message;
+
+    FIX::Session::sendToTarget(message, *m_sessionId);
+}
+
+void FixTradeProvider::sendOrder(FreeQuant::Strategy::Order& order) {
     std::string clOrdID = FreeQuant::toGuidString();
 
     FIX44::NewOrderSingle message;
     message.set(FIX::ClOrdID(clOrdID));
+    message.set(FIX::Side(FIX::Side_SELL));
+    FIX::UtcTimeStamp timestamp(2001,2,2,12,22,22,0);
+    message.set(FIX::TransactTime(timestamp));
     message.set(FIX::HandlInst(FIX::HandlInst_AUTOEXECPUB));
+    message.set(FIX::OrdType(FIX::OrdType_MARKET));
+    message.set(FIX::Symbol("GOOG"));
+    message.set(FIX::OrderQty(1));
 
 //    if (order.Instrument.AltSource == TTFIX.PROVIDER_NAME)
 //    {
@@ -552,6 +560,10 @@ vector<std::string> FixTradeProvider::availableInstruments() const {
     message.set(FIX::SecurityListRequestType(FIX::SecurityListRequestType_ALL_SECURITIES));
     FIX::Session::sendToTarget(message, *m_sessionId);
     return vector<string>();
+}
+
+void FixTradeProvider::openOrders() const {
+
 }
 
 }}

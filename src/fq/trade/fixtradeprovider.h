@@ -9,11 +9,11 @@
 #include <quickfix/MessageCracker.h>
 #include <quickfix/SessionID.h>
 
-#include <fq/trade/tradeprovider.h>
+#include <fq/trade/TradeProvider.h>
+#include <fq/strategy/Order.h>
 
 namespace FreeQuant { namespace Trade {
 
-class Order;
 class HistoricalDataRequest;
 
 class FixTradeProvider : public TradeProvider, private FIX::Application, private FIX::MessageCracker {
@@ -34,9 +34,12 @@ public:
     void onError() {}
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
-    void sendOrder(Order&);
-    void cancelOrder(Order&);
-    void replaceOrder(Order&) {}
+
+    void sendOrder(FreeQuant::Strategy::Order&);
+    void cancelOrder(FreeQuant::Strategy::Order&);
+    void replaceOrder(FreeQuant::Strategy::Order&);
+
+    void openOrders() const;
 
     void requestHistoricalData(HistoricalDataRequest& request);
     void cancelHistoricalData(HistoricalDataRequest& request);
@@ -58,9 +61,7 @@ private:
     void onMessage(const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID&);
     void onMessage(const FIX44::ExecutionReport&, const FIX::SessionID&);
     void onMessage(const FIX44::SecurityList&, const FIX::SessionID&);
-
-    void sendNewOrderSingle(Order& order);
-    void sendOrderCancelRequest(Order& order);
+    void onMessage(const FIX44::OrderCancelReject&, const FIX::SessionID&);
 
     FIX::SessionSettings *m_settings;
     FIX::FileStoreFactory *m_storeFactory;

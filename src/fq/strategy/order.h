@@ -1,14 +1,7 @@
-/*
- * order.h
- *
- *  Created on: 2012-7-1
- *      Author: alex
- */
-
 #ifndef FQ_STRATEGY_ORDER_H
 #define FQ_STRATEGY_ORDER_H
 
-#include <fq/trade/tradeprovider.h>
+#include <fq/trade/TradeProvider.h>
 
 namespace FreeQuant { namespace Strategy {
 
@@ -52,14 +45,25 @@ public:
     bool isCancelled();
     bool isPendingNew();
     bool isPendingReplace();
-    double price();
-    double qty();
+    double price() { return _price; }
+    double qty() { return _qty; }
+    double tickSize() { return _tickSize; }
     void side();
 
-    typedef FreeQuant::Trade::TradeProvider TradeProvider;
-    TradeProvider *tradeProvider() const;
+    double stopPrice() { return _stopPrice; }
+    double limitPrice() { return _limitPrice; }
+//    typedef FreeQuant::Trade::TradeProvider TradeProvider;
+    FreeQuant::Trade::TradeProvider *tradeProvider() const;
+    std::string brokerId;
+    std::string instrument;
+
 private:
-    TradeProvider *m_tradeProvider;
+    double _price;
+    double _qty;
+    double _tickSize;
+    double _stopPrice;
+    double _limitPrice;
+    FreeQuant::Trade::TradeProvider *m_tradeProvider;
 };
 
 }} /* namespace FreeQuant */

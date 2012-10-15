@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 
+namespace FreeQuant { namespace Strategy {
+class Order;
+}}
+
 namespace FreeQuant { namespace Trade {
 
 class TradeProvider {
@@ -22,6 +26,11 @@ public:
 
     virtual std::vector<std::string> availableExchanges() const = 0;
     virtual std::vector<std::string> availableInstruments() const = 0;
+
+    virtual void sendOrder(FreeQuant::Strategy::Order& order) = 0;
+    virtual void cancelOrder(FreeQuant::Strategy::Order& order) = 0;
+    virtual void replaceOrder(FreeQuant::Strategy::Order& order) = 0;
+
 //    virtual void subscribe(std::vector<std::string> symbols) = 0;
 //    virtual void unsubscribe(std::vector<std::string> symbols) = 0;
 };

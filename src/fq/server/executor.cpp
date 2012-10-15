@@ -4,16 +4,22 @@
 
 #include <quickfix/Exceptions.h>
 #include <quickfix/FixFields.h>
+#include <quickfix/fix44/ExecutionReport.h>
 #include <quickfix/fix44/NewOrderSingle.h>
+
 #include <quickfix/fix44/MarketDataRequest.h>
 #include <quickfix/fix44/MarketDataRequestReject.h>
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/Logon.h>
 
+#include <quickfix/fix44/OrderCancelReject.h>
+#include <quickfix/fix44/Reject.h>
 #include <quickfix/fix44/SecurityList.h>
 #include <quickfix/fix44/SecurityListRequest.h>
 #include <quickfix/fix44/SecurityTypes.h>
+#include <quickfix/fix44/SecurityTypeRequest.h>
+
 #include <quickfix/fix44/SecurityTypeRequest.h>
 
 #include <quickfix/Session.h>
@@ -63,6 +69,30 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
     std::mt19937 rng;
     std::uniform_int_distribution<> six(1,6);
 
+    FIX::ClOrdID clOrdID;
+    message.get(clOrdID);
+    FIX::Side side;
+    message.get(side);
+    FIX::Symbol symbol;
+    message.get(symbol);
+
+
+    FIX44::ExecutionReport response;
+    response.set(clOrdID);
+    response.set(FIX::ExecID("fssfsf"));
+    response.set(FIX::ExecType(FIX::ExecType_REJECTED));
+    response.set(FIX::OrdStatus(FIX::OrdStatus_REJECTED));
+    response.set(symbol);
+    response.set(side);
+
+    FIX::LeavesQty leavesQty(11);
+    FIX::CumQty cumQty(12);
+    FIX::AvgPx avgPx(100.0);
+
+    response.set(leavesQty);
+    response.set(cumQty);
+    response.set(avgPx);
+
 //    FIX::Symbol symbol;
 //  FIX::Side side;
 //  FIX::OrdType ordType;
@@ -101,14 +131,12 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 //  if( message.isSet(account) )
 //    executionReport.setField( message.get(account) );
 
-//  try
-//  {
-//    FIX::Session::sendToTarget( executionReport, sessionId );
-//  }
-//  catch (FIX::SessionNotFound&) {}
+
+    FIX::Session::sendToTarget(response, sessionId);
+
 }
 
-void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionId) {
+void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
     FIX::Username username;
     FIX::Password password;
     cout << message.toXML() << endl;
@@ -123,7 +151,7 @@ void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sess
 //    }
 }
 
-void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionId) {
+void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionID) {
     cerr << " Executor::onMessage(const FIX44::MarketDataRequest& message" << endl;
 
     FIX::MDReqID mdReqID;
@@ -199,8 +227,18 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
     mdFull.addGroup(mdEntries2);
 
     try {
-        FIX::Session::sendToTarget(mdFull, sessionId);
+        FIX::Session::sendToTarget(mdFull, sessionID);
     } catch (FIX::SessionNotFound&) {}
+}
+
+void Executor::onMessage(const FIX44::OrderCancelRequest& message, const FIX::SessionID& sessionID) {
+    FIX44::OrderCancelReject response;
+    FIX::Session::sendToTarget(response, sessionID);
+}
+
+void Executor::onMessage(const FIX44::OrderCancelReplaceRequest& message, const FIX::SessionID& sessionID) {
+    FIX44::Reject response;
+    FIX::Session::sendToTarget(response, sessionID);
 }
 
 }}

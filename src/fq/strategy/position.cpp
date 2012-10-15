@@ -1,4 +1,4 @@
-#include "position.h"
+#include "Position.h"
 
 namespace FreeQuant { namespace Strategy {
 

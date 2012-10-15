@@ -5,6 +5,11 @@ namespace FreeQuant { namespace Strategy {
 
 class Position {
 public:
+    enum Direction {
+        Long,
+        Short
+    };
+
     Position();
 
     double getPnL();
@@ -12,6 +17,8 @@ public:
     double getUnrealizedPnL();
     double getPrice();
     double getValue();
+private:
+//    double
 };
 
 }}

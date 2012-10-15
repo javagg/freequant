@@ -1,12 +1,10 @@
 #ifndef FQ_TRADE_CTPTRADEPROVIDER_H
 #define FQ_TRADE_CTPTRADEPROVIDER_H
 
-#include <fq/trade/tradeprovider.h>
+#include <fq/trade/TradeProvider.h>
 #include "api/trade/win/public/ThostFtdcTraderApi.h"
 
 namespace FreeQuant { namespace Trade {
-
-class TraderSpi;
 
 class CtpTradeProvider : public TradeProvider, public CThostFtdcTraderSpi {
 public:
@@ -17,19 +15,36 @@ public:
     virtual bool isConnected() const;
     virtual std::string name() const { return "CTP"; }
 
+    virtual void logon();
+    virtual void onLogon() {}
+    virtual void logout();
+    virtual void onLogout() {}
+    virtual void onError() {}
+
     virtual std::vector<std::string> availableExchanges() const;
     virtual std::vector<std::string> availableInstruments() const;
 
-private:
-    TraderSpi *spi;
+    void sendOrder(FreeQuant::Strategy::Order& order);
+    void cancelOrder(FreeQuant::Strategy::Order& order);
+    void replaceOrder(FreeQuant::Strategy::Order& order);
 
-    CThostFtdcTraderApi *api;
+    void updateAccounts();
+    void updatePosition(std::string symbol);
+    void updatePositions();
+    void openOrders() const;
+private:
+    std::string _appId;
+    std::string _userId;
+    std::string _password;
+
+    CThostFtdcTraderApi *_api;
+
     void OnFrontConnected() {};
     void OnFrontDisconnected(int nReason) {}
     void OnHeartBeatWarning(int nTimeLapse) {}
     void OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenticateField, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-    void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
+    void OnRspUserLogout(CThostFtdcUserLogoutField *pUserLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
     void OnRspUserPasswordUpdate(CThostFtdcUserPasswordUpdateField *pUserPasswordUpdate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspTradingAccountPasswordUpdate(CThostFtdcTradingAccountPasswordUpdateField *pTradingAccountPasswordUpdate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
@@ -53,10 +68,10 @@ private:
     void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspQrySettlementInfo(CThostFtdcSettlementInfoField *pSettlementInfo, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspQryTransferBank(CThostFtdcTransferBankField *pTransferBank, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInvestorPositionDetail(CThostFtdcInvestorPositionDetailField *pInvestorPositionDetail, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
+    void OnRspQryInvestorPositionDetail(CThostFtdcInvestorPositionDetailField *pInvestorPositionDetail, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
     void OnRspQryNotice(CThostFtdcNoticeField *pNotice, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspQrySettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInvestorPositionCombineDetail(CThostFtdcInvestorPositionCombineDetailField *pInvestorPositionCombineDetail, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
+    void OnRspQryInvestorPositionCombineDetail(CThostFtdcInvestorPositionCombineDetailField *pInvestorPositionCombineDetail, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
     void OnRspQryCFMMCTradingAccountKey(CThostFtdcCFMMCTradingAccountKeyField *pCFMMCTradingAccountKey, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspQryEWarrantOffset(CThostFtdcEWarrantOffsetField *pEWarrantOffset, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspQryTransferSerial(CThostFtdcTransferSerialField *pTransferSerial, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
@@ -97,14 +112,6 @@ private:
     void OnRtnOpenAccountByBank(CThostFtdcOpenAccountField *pOpenAccount) {};
     void OnRtnCancelAccountByBank(CThostFtdcCancelAccountField *pCancelAccount) {};
     void OnRtnChangeAccountByBank(CThostFtdcChangeAccountField *pChangeAccount) {};
-
-    void reqOrderInsert(TThostFtdcInstrumentIDType instId, TThostFtdcDirectionType dir, TThostFtdcCombOffsetFlagType kpp,
-        TThostFtdcPriceType price, TThostFtdcVolumeType vol);
-    void reqOrderAction(TThostFtdcSequenceNoType orderSeq);
-    void reqQryInvestorPosition(TThostFtdcInstrumentIDType instId);
-    void reqUserLogin(TThostFtdcBrokerIDType appId, TThostFtdcUserIDType userId, TThostFtdcPasswordType	passwd);
-    void reqSettlementInfoConfirm();
-    void reqQryTradingAccount();
 };
 
 }}

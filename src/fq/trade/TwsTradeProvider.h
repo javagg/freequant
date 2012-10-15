@@ -4,13 +4,14 @@
 #include <string>
 #include <vector>
 
-#include <fq/trade/tradeprovider.h>
+#include <fq/trade/TradeProvider.h>
+#include <fq/strategy/Order.h>
+
 #include "EWrapper.h"
 #include "EPosixClientSocket.h"
 
 namespace FreeQuant { namespace Trade {
 
-class Order;
 class HistoricalDataRequest;
 
 class TwsTradeProvider : public TradeProvider, private EWrapper {
@@ -35,10 +36,10 @@ public:
     void onError() {}
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
-    void sendOrder(Order&);
-    void cancelOrder(Order&);
-    void replaceOrder(Order&) {}
 
+    void sendOrder(FreeQuant::Strategy::Order& order);
+    void cancelOrder(FreeQuant::Strategy::Order& order);
+    void replaceOrder(FreeQuant::Strategy::Order& order);
 //    void requestHistoricalData(HistoricalDataRequest& request);
 //    void cancelHistoricalData(HistoricalDataRequest& request);
 

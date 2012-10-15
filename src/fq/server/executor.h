@@ -3,9 +3,6 @@
 
 #include <quickfix/Application.h>
 #include <quickfix/MessageCracker.h>
-#include <quickfix/Values.h>
-#include <quickfix/Utility.h>
-#include <quickfix/Mutex.h>
 
 namespace FreeQuant { namespace Server {
 
@@ -30,6 +27,8 @@ public:
 
     void onMessage(const FIX44::Logon&, const FIX::SessionID&);
     void onMessage(const FIX44::NewOrderSingle&, const FIX::SessionID&);
+    void onMessage(const FIX44::OrderCancelRequest&, const FIX::SessionID&);
+    void onMessage(const FIX44::OrderCancelReplaceRequest&, const FIX::SessionID&);
     void onMessage(const FIX44::MarketDataRequest&, const FIX::SessionID&);
 };
 

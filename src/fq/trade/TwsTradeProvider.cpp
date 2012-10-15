@@ -3,8 +3,8 @@
 #include <boost/algorithm/string.hpp>
 
 #include "TwsTradeProvider.h"
-
-using namespace std;
+#include "Order.h"
+#include "Contract.h"
 
 namespace FreeQuant { namespace Trade {
 
@@ -12,13 +12,13 @@ TwsTradeProvider::TwsTradeProvider() : _socket(new EPosixClientSocket(this)) {
 
 }
 
-vector<string> TwsTradeProvider::availableAccounts() const {
+std::vector<std::string> TwsTradeProvider::availableAccounts() const {
     _socket->reqManagedAccts();
-    return vector<string>();
+    return std::vector<std::string>();
 }
 
 void TwsTradeProvider::updateAccounts() {
-    string code = _accoutCodes.front();
+    std::string code = _accoutCodes.front();
     _socket->reqAccountUpdates(true, code);
 }
 
@@ -34,16 +34,16 @@ void TwsTradeProvider::updatePortfolio(const Contract& contract, int position,
 }
 
 void TwsTradeProvider::updateAccountTime(const IBString& timeStamp) {
-    cout << "timeStamp: " << timeStamp << endl;
+    std::cout << "timeStamp: " << timeStamp << std::endl;
 }
 
 void TwsTradeProvider::accountDownloadEnd(const IBString& accountName) {
-    cout << "accountName: " << accountName << endl;
+    std::cout << "accountName: " << accountName << std::endl;
 }
 
 void TwsTradeProvider::managedAccounts(const IBString& accountsList) {
 
-    vector<string> accounts;
+    std::vector<std::string> accounts;
     boost::split(accounts, accountsList, boost::is_any_of(","), boost::token_compress_on); // SplitVec == { "hello abc","ABC","aBc goodbye" }
 
 
@@ -53,6 +53,19 @@ void TwsTradeProvider::managedAccounts(const IBString& accountsList) {
 //    accountsList
 
 //    The comma delimited list of FA managed accounts.
+}
+
+void TwsTradeProvider::sendOrder(FreeQuant::Strategy::Order& order) {
+    OrderId orderId = 111;
+    Contract contract;
+    Order o;
+    _socket->placeOrder(orderId, contract, o);
+}
+void TwsTradeProvider::cancelOrder(FreeQuant::Strategy::Order& order) {
+    OrderId orderId = 111;
+    _socket->cancelOrder(orderId);
+}
+void TwsTradeProvider::replaceOrder(FreeQuant::Strategy::Order& order) {
 }
 
 }}

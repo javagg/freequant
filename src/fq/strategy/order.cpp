@@ -1,11 +1,4 @@
-/*
- * order.cpp
- *
- *  Created on: 2012-7-1
- *      Author: alex
- */
-
-#include "order.h"
+#include "Order.h"
 
 namespace FreeQuant { namespace Strategy {
 

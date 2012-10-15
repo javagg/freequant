@@ -1,10 +1,3 @@
-/*
- * account.h
- *
- *  Created on: 2012-6-25
- *      Author: alex
- */
-
 #ifndef FQ_STRATEGY_ACCOUNT_H
 #define FQ_STRATEGY_ACCOUNT_H
 
