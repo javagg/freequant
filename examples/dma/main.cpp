@@ -1,25 +1,25 @@
 #include <iostream>
 #include <memory>
 
-#include <fq/strategy/strategy.h>
-#include <fq/indicators/indicator.h>
-#include <fq/indicators/ma.h>
-#include <fq/marketdata/marketdataprovider.h>
-#include <fq/marketdata/ctp/ctpmarketdataprovider.h>
-#include <fq/trade/TradeProvider.h>
-#include <fq/trade/CtpTradeProvider.h>
+#include <freequant/strategy/strategy.h>
+#include <freequant/indicators/indicator.h>
+#include <freequant/indicators/ma.h>
+#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
+#include <freequant/trade/TradeProvider.h>
+#include <freequant/trade/CtpTradeProvider.h>
 
-class DmaStrategy : public FreeQuant::Strategy::Strategy {
+class DmaStrategy : public FreeQuant::Strategy {
 private:
-    std::shared_ptr<FreeQuant::MarketData::MarketDataProvider> m_mdProvider;
-    std::shared_ptr<FreeQuant::Trade::TradeProvider> m_tradeProvider;
-    FreeQuant::Indicators::MA ma;
+    std::shared_ptr<FreeQuant::MarketDataProvider> m_mdProvider;
+    std::shared_ptr<FreeQuant::TradeProvider> m_tradeProvider;
+    FreeQuant::MA ma;
 public:
     void onStart() {
         std::cout << "strategy start..." << std::endl;
 
-        m_mdProvider.reset(new FreeQuant::MarketData::CtpMarketDataProvider());
-        m_tradeProvider.reset(new FreeQuant::Trade::CtpTradeProvider());
+        m_mdProvider.reset(new FreeQuant::CtpMarketDataProvider());
+        m_tradeProvider.reset(new FreeQuant::CtpTradeProvider());
 
         addSymbol("IF1209");
         chooseMarketProvider("CTP");
@@ -35,7 +35,7 @@ public:
         std::cout << "strategy exit..." << std::endl;
     }
 
-    void onBar(const FreeQuant::MarketData::Bar& bar) {
+    void onBar(const FreeQuant::Bar& bar) {
         std::cout << "close: "<< bar.close() << std::endl;
         std::cout << "ma: "<< ma.value() << std::endl;
     }

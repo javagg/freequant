@@ -2,14 +2,12 @@
 #include <memory>
 #include <thread>
 
-#include <fq/marketdata/marketdataprovider.h>
-#include <fq/marketdata/yahooprovider.h>
-#include <fq/marketdata/twsprovider.h>
-
-using namespace FreeQuant::MarketData;
+#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/yahooprovider.h>
+#include <freequant/marketdata/twsprovider.h>
 
 void test_tws() {
-    std::shared_ptr<MarketDataProvider> p(new TwsProvider());
+    std::shared_ptr<FreeQuant::MarketDataProvider> p(new FreeQuant::TwsProvider());
     p->connect();
     std::this_thread::sleep_for(std::chrono::seconds(1));
     p->disconnect();

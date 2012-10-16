@@ -7,9 +7,9 @@
 #include <quickfix/Log.h>
 #include <quickfix/SessionSettings.h>
 
-#include <fq/server/executor.h>
+#include <freequant/server/Executor.h>
 
-class Application : public FreeQuant::Server::Executor {
+class Application : public FreeQuant::Executor {
 public:
     Application() {}
 };

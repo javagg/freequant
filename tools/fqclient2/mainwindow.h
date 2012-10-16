@@ -7,8 +7,8 @@
 #include <QMessageBox>
 #include <QString>
 
-#include <fq/marketdata/marketdataprovider.h>
-#include <fq/trade/TradeProvider.h>
+#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/trade/TradeProvider.h>
 
 #include "commondialog.h"
 
@@ -238,8 +238,8 @@ public slots:
 private:
     Ui::MainWindow *ui;
 
-    FreeQuant::MarketData::MarketDataProvider *md_provider;
-    FreeQuant::Trade::TradeProvider *trade_provider;
+    FreeQuant::MarketDataProvider *md_provider;
+    FreeQuant::TradeProvider *trade_provider;
     bool faError;
 
     bool m_financialAdvisor;

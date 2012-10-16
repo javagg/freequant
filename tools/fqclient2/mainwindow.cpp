@@ -2,15 +2,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <fq/marketdata/ctp/ctpmarketdataprovider.h>
-#include <fq/trade/FixTradeProvider.h>
+#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
+#include <freequant/trade/FixTradeProvider.h>
 
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    md_provider = new FreeQuant::MarketData::CtpMarketDataProvider;
-    trade_provider = new FreeQuant::Trade::FixTradeProvider;
+    md_provider = new FreeQuant::CtpMarketDataProvider;
+    trade_provider = new FreeQuant::FixTradeProvider;
 }
 
 MainWindow::~MainWindow() {
