@@ -27,8 +27,8 @@ YahooProvider::~YahooProvider() {
 
 void YahooProvider::connect() {
     if (timer == nullptr) {
-        timer = new FreeQuant::Utils::Timer(1);
-        timer->connect(boost::bind(&YahooProvider::getQuota, this));
+        timer = new FreeQuant::Utils::Timer(1, std::bind(&YahooProvider::getQuota, this));
+//        timer->connect(boost::bind(&YahooProvider::getQuota, this));
         timer->start();
     }
 }

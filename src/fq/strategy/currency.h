@@ -11,7 +11,7 @@
 #include <iostream>
 #include <memory>
 
-#include "instrument.h"
+#include "Instrument.h"
 
 namespace FreeQuant { namespace Strategy {
 

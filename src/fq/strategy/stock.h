@@ -8,7 +8,7 @@
 #ifndef FQ_STRATEGY_STOCK_H
 #define FQ_STRATEGY_STOCK_H
 
-#include "instrument.h"
+#include "Instrument.h"
 
 namespace FreeQuant { namespace Strategy {
 
@@ -18,6 +18,6 @@ public:
 	virtual ~Stock();
 };
 
-}} /* namespace Bw */
+}}
 
 #endif /* FQ_STRATEGY_STOCK_H */

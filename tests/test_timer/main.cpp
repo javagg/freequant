@@ -1,3 +1,4 @@
+#include <functional>
 #include <iostream>
 #include <thread>
 
@@ -8,9 +9,9 @@ void onTimeout() {
 }
 
 int main() {
-    FreeQuant::Utils::Timer timer(1);
-    timer.connect(boost::bind(&onTimeout));
+    FreeQuant::Utils::Timer timer(300, std::bind(&onTimeout));
+//    timer.connect(std::bind(&onTimeout));
     timer.start();
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     return 0;
 }

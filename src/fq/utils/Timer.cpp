@@ -1,5 +1,4 @@
 #include <boost/bind.hpp>
-#include <boost/thread.hpp>
 #include <boost/asio/placeholders.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -8,32 +7,34 @@
 
 namespace FreeQuant{ namespace Utils {
 
-Timer::Timer(const double interval) :
-    _interval(interval),
+Timer::Timer(int milliseconds, std::function<void()> observer) :
+    _timeout(observer),
+    _duration(boost::posix_time::milliseconds(milliseconds)),
     _io_service(),
-    _timer(_io_service, boost::posix_time::seconds(_interval)) {
+    _timer(_io_service, _duration) {
 }
 
 Timer::~Timer() {
-    _timer.cancel();
-}
-
-void Timer::connect(const Timeout::slot_type &subscriber) {
-    timeout.connect(subscriber);
+    stop();
 }
 
 void Timer::start() {
-    _timer.expires_from_now( boost::posix_time::seconds(_interval));
+    _timer.expires_from_now(_duration);
     _timer.async_wait(boost::bind(&Timer::handler, this, boost::asio::placeholders::error));
-    boost::thread thread(boost::bind(&boost::asio::io_service::run, &_io_service));
+    _thread.reset(new std::thread(boost::bind(&boost::asio::io_service::run, &_io_service)));
+}
+
+void Timer::stop() {
+    _timer.cancel();
+    _thread->join();
 }
 
 void Timer::handler(const boost::system::error_code& error) {
-     if (error != boost::asio::error::operation_aborted) {
-        timeout();
-        _timer.expires_from_now( boost::posix_time::seconds(_interval));
+    if (error != boost::asio::error::operation_aborted) {
+        if (_timeout) _timeout();
+        _timer.expires_from_now(_duration);
         _timer.async_wait(boost::bind(&Timer::handler, this, boost::asio::placeholders::error));
-     }
+    }
 }
 
 }}

@@ -1,10 +1,3 @@
-/*
- * strategy.cpp
- *
- *  Created on: 2012-6-25
- *      Author: alex
- */
-
 #include <iostream>
 
 #include <boost/bind.hpp>
