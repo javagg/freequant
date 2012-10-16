@@ -1,21 +1,9 @@
-/*
- * Instrument.cpp
- *
- *  Created on: 2012-6-25
- *      Author: alex
- */
-
-#include "instrument.h"
+#include "Instrument.h"
 
 namespace FreeQuant { namespace Strategy {
 
-Instrument::Instrument(std::string id) {
-	// TODO Auto-generated constructor stub
+Instrument::Instrument(std::string symbol) : _symbol(symbol) {
 
-}
-
-Instrument::~Instrument() {
-	// TODO Auto-generated destructor stub
 }
 
 }} /* namespace Bw */

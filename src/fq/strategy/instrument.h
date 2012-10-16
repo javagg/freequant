@@ -1,10 +1,3 @@
-/*
- * Instrument.h
- *
- *  Created on: 2012-6-25
- *      Author: alex
- */
-
 #ifndef FQ_STRATEGY_INSTRUMENT_H
 #define FQ_STRATEGY_INSTRUMENT_H
 
@@ -30,19 +23,20 @@ public:
         MultiLeg
     };
 
-	explicit Instrument(std::string id);
-	virtual ~Instrument();
+    explicit Instrument(std::string symbol);
+    virtual ~Instrument() {}
     double multipler() const;
     double margin() const;
     double tickSize() const;
-    std::string symbol() const;
+    std::string symbol() const { return _symbol; }
+    Type type() const { return _type; }
     double factor() const;
-	std::string getId() const;
     std::string description() const;
     FreeQuant::Utils::DateTime maturity() const;
 
 private:
-	std::string mId;
+    std::string _symbol;
+    Type _type;
 	Currency *mCurrency;
 	double mMultiplier;
 	double mTickSize;

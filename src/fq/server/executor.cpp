@@ -24,7 +24,7 @@
 
 #include <quickfix/Session.h>
 
-#include "executor.h"
+#include "Executor.h"
 
 using namespace std;
 
@@ -55,13 +55,11 @@ void Executor::toApp(FIX::Message& message, const FIX::SessionID& sessionId) thr
 
 void Executor::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionId)
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) {
-//    cerr << "Executor::fromAdmin" << endl;
     crack(message, sessionId);
 }
 
 void Executor::fromApp( const FIX::Message& message, const FIX::SessionID& sessionId )
         throw( FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType ) {
-//    cerr << "Executor::fromApp" << endl;
     crack(message, sessionId);
 }
 

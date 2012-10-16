@@ -83,9 +83,6 @@ void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
     std::string uuid = FreeQuant::toGuidString();
     FIX::MDReqID mdReqId(uuid);
     FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES);
-
-//	SubscriptionRequestType.DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST;
-
     FIX::MarketDepth marketDepth(1);
 
     FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
@@ -130,7 +127,9 @@ void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
 }
 
 void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
-
+    std::string uuid = FreeQuant::toGuidString();
+    FIX::MDReqID mdReqId(uuid);
+    FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST);
 }
 
 void FixTradeProvider::connect() {

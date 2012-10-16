@@ -12,6 +12,7 @@ Timer::Timer(int milliseconds, std::function<void()> observer) :
     _duration(boost::posix_time::milliseconds(milliseconds)),
     _io_service(),
     _timer(_io_service, _duration) {
+    timeout.connect(_timeout);
 }
 
 Timer::~Timer() {
@@ -31,7 +32,7 @@ void Timer::stop() {
 
 void Timer::handler(const boost::system::error_code& error) {
     if (error != boost::asio::error::operation_aborted) {
-        if (_timeout) _timeout();
+        timeout();
         _timer.expires_from_now(_duration);
         _timer.async_wait(boost::bind(&Timer::handler, this, boost::asio::placeholders::error));
     }
