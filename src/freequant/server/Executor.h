@@ -30,6 +30,11 @@ public:
     void onMessage(const FIX44::OrderCancelRequest&, const FIX::SessionID&);
     void onMessage(const FIX44::OrderCancelReplaceRequest&, const FIX::SessionID&);
     void onMessage(const FIX44::MarketDataRequest&, const FIX::SessionID&);
+    void onMessage(const FIX44::OrderStatusRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::SettlementInstructionRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::TradeCaptureReportRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::TradingSessionStatusRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::UserRequest&, const FIX::SessionID&) {}
 };
 
 } // namespace FreeQuant

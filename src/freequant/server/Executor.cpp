@@ -7,18 +7,25 @@
 #include <quickfix/fix44/ExecutionReport.h>
 #include <quickfix/fix44/NewOrderSingle.h>
 
+#include <quickfix/fix44/DontKnowTrade.h>
 #include <quickfix/fix44/MarketDataRequest.h>
 #include <quickfix/fix44/MarketDataRequestReject.h>
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/Logon.h>
-
+#include <quickfix/fix44/Logout.h>
 #include <quickfix/fix44/OrderCancelReject.h>
+#include <quickfix/fix44/QuoteStatusReport.h>
+#include <quickfix/fix44/RequestForPositions.h>
 #include <quickfix/fix44/Reject.h>
 #include <quickfix/fix44/SecurityList.h>
 #include <quickfix/fix44/SecurityListRequest.h>
 #include <quickfix/fix44/SecurityTypes.h>
 #include <quickfix/fix44/SecurityTypeRequest.h>
+#include <quickfix/fix44/TradeCaptureReport.h>
+#include <quickfix/fix44/TradeCaptureReportAck.h>
+#include <quickfix/fix44/TradingSessionStatus.h>
+#include <quickfix/fix44/UserResponse.h>
 
 #include <quickfix/fix44/SecurityTypeRequest.h>
 
