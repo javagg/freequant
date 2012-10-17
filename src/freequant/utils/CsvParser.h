@@ -8,6 +8,8 @@ public:
     CsvParser(char delimiter = ',', char terminator = '\n')
         : _delimiter(delimiter), _terminator(terminator) {}
     bool load(const std::string filename);
+    bool parse(const std::string content);
+
     char delimiter() const { return _delimiter; }
     char terminator() const { return _terminator; }
     void setSkipRows(int rows);

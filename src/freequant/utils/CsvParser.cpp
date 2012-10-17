@@ -12,6 +12,10 @@ bool CsvParser::load(const std::string filename) {
     }
 }
 
+bool CsvParser::parse(const std::string content) {
+
+}
+
 bool CsvParser::hasMoreRows() const {
     return false;
 }

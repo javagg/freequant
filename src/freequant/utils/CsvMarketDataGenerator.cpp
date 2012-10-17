@@ -7,21 +7,16 @@
 namespace FreeQuant {
 
 CsvMarketDataGenerator::CsvMarketDataGenerator(std::string filename) :
-    _parser(',', '\n'), _timer(1000, std::bind(&CsvMarketDataGenerator::generate, this)) {
+    _parser(',', '\n') {
     _parser.load(filename);
 }
 
-void CsvMarketDataGenerator::start() {
-    _timer.start();
+std::vector<std::string> CsvMarketDataGenerator::availableSymbols() const {
+    return std::vector<std::string>();
 }
 
-void CsvMarketDataGenerator::stop() {
-    _timer.stop();
-}
-
-void CsvMarketDataGenerator::generate() {
-    Bar bar(100, 100, 99, 90);
-    _onGenerated(bar);
+FreeQuant::Bar CsvMarketDataGenerator::generate(std::string symbol) {
+    return FreeQuant::Bar();
 }
 
 }

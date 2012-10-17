@@ -4,7 +4,6 @@
 #include <string>
 
 #include <freequant/utils/MarketDataGenerator.h>
-#include <freequant/utils/Timer.h>
 #include <freequant/utils/CsvParser.h>
 
 namespace FreeQuant {
@@ -13,16 +12,11 @@ class CsvMarketDataGenerator : public MarketDataGenerator {
 public:
     CsvMarketDataGenerator(std::string filename);
     virtual ~CsvMarketDataGenerator() {}
-    virtual void start();
-    virtual void stop();
-    virtual std::vector<std::string> availableSymbols() const {
-        return std::vector<std::string>();
-    }
-
+    virtual std::vector<std::string> availableSymbols() const;
+    virtual FreeQuant::Bar generate(std::string symbol);
 private:
-    FreeQuant::Timer _timer;
     FreeQuant::CsvParser _parser;
-    void generate();
+
 };
 
 } // namespace FreeQuant

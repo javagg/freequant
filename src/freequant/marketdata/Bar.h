@@ -7,6 +7,7 @@ namespace FreeQuant {
 
 class Bar {
 public:
+    Bar() {}
     Bar(double open, double high, double low, double close);
     FreeQuant::DateTime beginTime();
     FreeQuant::DateTime endTime();

@@ -1,5 +1,17 @@
 find_path(QUICKFIX_INCLUDE_DIR quickfix/FixValues.h HINTS /usr/include $ENV{QUICKFIX_HOME}/include)
-find_library(QUICKFIX_LIBRARY NAMES quickfix libquickfix HINTS /usr/lib $ENV{QUICKFIX_HOME}/lib)
+
+
+if(${MSVC})
+    if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
+        set(LIB_NAMES quickfixd)
+    else()
+        set(LIB_NAMES quickfix)
+    endif()
+else()
+    set(LIB_NAMES libquickfix)
+endif()
+
+find_library(QUICKFIX_LIBRARY NAMES ${LIB_NAMES} HINTS /usr/lib $ENV{QUICKFIX_HOME}/lib)
 
 set(QUICKFIX_LIBRARIES ${QUICKFIX_LIBRARY})
 set(QUICKFIX_INCLUDE_DIRS ${QUICKFIX_INCLUDE_DIR})

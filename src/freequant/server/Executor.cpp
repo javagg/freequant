@@ -42,11 +42,11 @@ namespace FreeQuant {
 
 Executor::Executor() {
     _mdGenerator.reset(new FreeQuant::CsvMarketDataGenerator(""));
-    _mdGenerator->connect(std::bind(&Executor::onGenerated, this, std::placeholders::_1));
+//    _mdGenerator->connect(std::bind(&Executor::onGenerated, this, std::placeholders::_1));
 }
 
 Executor::~Executor() {
-    _mdGenerator->stop();
+//    _mdGenerator->stop();
 }
 
 void Executor::onCreate(const FIX::SessionID& sessionID) {
@@ -180,9 +180,9 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
     message.get(subscriptionRequestType);
 
     if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
-        _mdGenerator->stop();
+//        _mdGenerator->stop();
     } else if (subscriptionRequestType == FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES) {
-        _mdGenerator->start();
+//        _mdGenerator->start();
     }
 
 //    message.get(marketDepth);
