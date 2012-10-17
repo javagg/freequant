@@ -18,8 +18,8 @@ class HistoricalDataRequest;
 
 class FixTradeProvider : public TradeProvider, private FIX::Application, private FIX::MessageCracker {
 public:
-    FixTradeProvider();
-    virtual ~FixTradeProvider();
+    FixTradeProvider(std::string filename);
+    virtual ~FixTradeProvider() {}
     void connect();
     void disconnect();
     bool isConnected() const;
@@ -63,13 +63,10 @@ private:
     void onMessage(const FIX44::SecurityList&, const FIX::SessionID&);
     void onMessage(const FIX44::OrderCancelReject&, const FIX::SessionID&);
 
-    FIX::SessionSettings *m_settings;
-    FIX::FileStoreFactory *m_storeFactory;
-    FIX::SocketInitiator *m_initiator;
-    FIX::SessionID *m_sessionId;
-
-    std::string senderCompId;
-    std::string targetCompId;
+    FIX::SessionSettings _settings;
+    FIX::FileStoreFactory _storeFactory;
+    FIX::SocketInitiator _initiator;
+    FIX::SessionID _sessionID;
 };
 
 } // namespace FreeQuant

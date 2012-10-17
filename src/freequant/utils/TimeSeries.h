@@ -1,7 +1,7 @@
 #ifndef FQ_UTILS_TIMESERIES_H
 #define FQ_UTILS_TIMESERIES_H
 
-#include <freequant/utils/datetime.h>
+#include <freequant/utils/DateTime.h>
 
 namespace FreeQuant {
 

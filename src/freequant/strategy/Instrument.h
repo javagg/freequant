@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <freequant/utils/datetime.h>
+#include <freequant/utils/DateTime.h>
 
 namespace FreeQuant {
 

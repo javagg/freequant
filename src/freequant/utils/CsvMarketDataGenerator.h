@@ -15,9 +15,14 @@ public:
     virtual ~CsvMarketDataGenerator() {}
     virtual void start();
     virtual void stop();
+    virtual std::vector<std::string> availableSymbols() const {
+        return std::vector<std::string>();
+    }
+
 private:
     FreeQuant::Timer _timer;
     FreeQuant::CsvParser _parser;
+    void generate();
 };
 
 } // namespace FreeQuant

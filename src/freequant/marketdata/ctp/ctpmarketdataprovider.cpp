@@ -6,7 +6,7 @@
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/format.hpp>
 
-#include <freequant/marketdata/bar.h>
+#include <freequant/marketdata/Bar.h>
 
 #include "ctpmarketdataprovider.h"
 #include "api/trade/win/public/ThostFtdcMdApi.h"
@@ -147,7 +147,7 @@ void CtpMarketDataProvider::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField 
       <<" bidsize1:" << depthMarketData->BidVolume1
       <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
      Bar bar(depthMarketData->LastPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice, depthMarketData->LastPrice);
-     barSignal(bar);
+     _onBar(bar);
 }
 
 } // namespace FreeQuant

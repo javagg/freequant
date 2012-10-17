@@ -1,6 +1,8 @@
 #ifndef FQ_TRADE_CTPTRADEPROVIDER_H
 #define FQ_TRADE_CTPTRADEPROVIDER_H
 
+#include <memory>
+
 #include <freequant/trade/TradeProvider.h>
 #include "api/trade/win/public/ThostFtdcTraderApi.h"
 

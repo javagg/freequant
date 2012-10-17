@@ -15,20 +15,29 @@ else()
   #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -stdlib=libc++")
 endif()
 
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 #Find external dependencies
 #set(BOOST_LIBRARYDIR "C:\Program Files (x86)\boost\boost_1_51\lib")
-#find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread chrono)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS date_time system filesystem)
+#find_package(Boost REQUIRED)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
     add_subdirectory(doc)
 endif()
+
+if(WIN32 OR UNIX)
+    set(BUILD_CTP on)
+elseif(APPLE)
+    set(BUILD_CTP off)
+endif()
+
+set(BUILD_TWS on)
+set(BUILD_FIX on)
 
 # Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/tws)

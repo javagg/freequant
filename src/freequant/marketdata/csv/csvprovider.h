@@ -1,7 +1,7 @@
 #ifndef FQ_MARKETDATA_CSV_CTPPROVIDER_H
 #define FQ_MARKETDATA_CSV_CTPPROVIDER_H
 
-#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/MarketDataProvider.h>
 
 namespace FreeQuant { namespace MarketData {
 

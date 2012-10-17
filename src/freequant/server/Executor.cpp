@@ -1,4 +1,5 @@
 #include <iostream>
+#include <functional>
 #include <random>
 #include <string>
 
@@ -31,46 +32,54 @@
 
 #include <quickfix/Session.h>
 
+#include <freequant/utils/CsvMarketDataGenerator.h>
+
 #include "Executor.h"
 
 using namespace std;
 
 namespace FreeQuant {
 
-void Executor::onCreate(const FIX::SessionID& sessionId) {
+Executor::Executor() {
+    _mdGenerator.reset(new FreeQuant::CsvMarketDataGenerator(""));
+    _mdGenerator->connect(std::bind(&Executor::onGenerated, this, std::placeholders::_1));
+}
+
+Executor::~Executor() {
+    _mdGenerator->stop();
+}
+
+void Executor::onCreate(const FIX::SessionID& sessionID) {
     cerr << "Executor::onCreate" << endl;
 }
 
 
-void Executor::onLogon(const FIX::SessionID& sessionId) {
-    cerr << "Executor::onLogon" << endl;
+void Executor::onLogon(const FIX::SessionID& sessionID) {
+    _sessionIDs.push_back(sessionID);
 }
 
 
-void Executor::onLogout(const FIX::SessionID& sessionId) {
-    cerr << "Executor::onLogout" << endl;
+void Executor::onLogout(const FIX::SessionID& sessionID) {
+    _sessionIDs.remove(sessionID);
 }
 
-void Executor::toAdmin(FIX::Message& message, const FIX::SessionID& sessionId) {
-//    cerr << "Executor::toAdmin" << endl;
+void Executor::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {
 }
 
-void Executor::toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
-//    cerr << "Executor::toApp" << endl;
-
+void Executor::toApp(FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::DoNotSend) {
 }
 
-void Executor::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionId)
+void Executor::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID)
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon) {
-    crack(message, sessionId);
+    crack(message, sessionID);
 }
 
-void Executor::fromApp( const FIX::Message& message, const FIX::SessionID& sessionId )
+void Executor::fromApp( const FIX::Message& message, const FIX::SessionID& sessionID )
         throw( FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType ) {
-    crack(message, sessionId);
+    crack(message, sessionID);
 }
 
-void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::SessionID& sessionId) {
+void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::SessionID& sessionID) {
     std::mt19937 rng;
     std::uniform_int_distribution<> six(1,6);
 
@@ -80,7 +89,6 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
     message.get(side);
     FIX::Symbol symbol;
     message.get(symbol);
-
 
     FIX44::ExecutionReport response;
     response.set(clOrdID);
@@ -136,8 +144,7 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 //  if( message.isSet(account) )
 //    executionReport.setField( message.get(account) );
 
-
-    FIX::Session::sendToTarget(response, sessionId);
+    FIX::Session::sendToTarget(response, sessionID);
 
 }
 
@@ -171,17 +178,25 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
 
     message.get(mdReqID);
     message.get(subscriptionRequestType);
-    message.get(marketDepth);
-    message.get(mdUpdateType);
-    message.get(aggregatedBook);
-    message.get(scope);
-    message.get(mdImplicitDelete);
-    message.get(noMDEntryTypes);
 
-    FIX44::MarketDataSnapshotFullRefresh mdFull;
+    if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
+        _mdGenerator->stop();
+    } else if (subscriptionRequestType == FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES) {
+        _mdGenerator->start();
+    }
 
-    mdFull.set(mdReqID);
-    mdFull.set(FIX::Symbol("GOOG"));
+//    message.get(marketDepth);
+//    message.get(mdUpdateType);
+//    message.get(aggregatedBook);
+//    message.get(scope);
+//    message.get(mdImplicitDelete);
+//    message.get(noMDEntryTypes);
+
+    _sessionID = sessionID;
+//    FIX44::MarketDataSnapshotFullRefresh mdFull;
+
+//    mdFull.set(mdReqID);
+//    mdFull.set(FIX::Symbol("GOOG"));
 //    mdFull.set(FIX::SecurityID("GOOG"));
 //    mdFull.set(FIX::SecurityIDSource());
 //    mdFull.set(FIX::Product());
@@ -217,23 +232,23 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
 //    mdInc.set(mdReqID);
 //    FIX::NoMDEntries count;
 
-    mdFull.set(FIX::NoMDEntries(2));
-    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries1;
-    mdEntries1.set(FIX::MDEntryType(FIX::MDEntryType_BID));
-    mdEntries1.set(FIX::MDEntryPx(100));
-    mdEntries1.set(FIX::MDEntrySize(1));
+//    mdFull.set(FIX::NoMDEntries(2));
+//    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries1;
+//    mdEntries1.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+//    mdEntries1.set(FIX::MDEntryPx(100));
+//    mdEntries1.set(FIX::MDEntrySize(1));
 
-    mdFull.addGroup(mdEntries1);
-    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries2;
-    mdEntries2.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
-    mdEntries2.set(FIX::MDEntryPx(110));
-    mdEntries2.set(FIX::MDEntrySize(2));
+//    mdFull.addGroup(mdEntries1);
+//    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries2;
+//    mdEntries2.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+//    mdEntries2.set(FIX::MDEntryPx(110));
+//    mdEntries2.set(FIX::MDEntrySize(2));
 
-    mdFull.addGroup(mdEntries2);
+//    mdFull.addGroup(mdEntries2);
 
-    try {
-        FIX::Session::sendToTarget(mdFull, sessionID);
-    } catch (FIX::SessionNotFound&) {}
+//    try {
+//        FIX::Session::sendToTarget(mdFull, sessionID);
+//    } catch (FIX::SessionNotFound&) {}
 }
 
 void Executor::onMessage(const FIX44::OrderCancelRequest& message, const FIX::SessionID& sessionID) {
@@ -244,6 +259,65 @@ void Executor::onMessage(const FIX44::OrderCancelRequest& message, const FIX::Se
 void Executor::onMessage(const FIX44::OrderCancelReplaceRequest& message, const FIX::SessionID& sessionID) {
     FIX44::Reject response;
     FIX::Session::sendToTarget(response, sessionID);
+}
+
+void Executor::onGenerated(const FreeQuant::Bar& bar) {
+
+    FIX44::MarketDataSnapshotFullRefresh marketData;
+
+    FIX::MDReqID mdReqID("ssf");
+    marketData.set(mdReqID);
+    marketData.set(FIX::Symbol("GOOG"));
+//    mdFull.set(FIX::SecurityID("GOOG"));
+//    mdFull.set(FIX::SecurityIDSource());
+//    mdFull.set(FIX::Product());
+//    mdFull.set(FIX::CFICode());
+//    mdFull.set(FIX::SecurityType(FIX::SecurityType_COMMONSTOCK));
+//    mdFull.set(FIX::MaturityMonthYear("2012"));
+//    mdFull.set(FIX::MaturityDate("2012-12-11"));
+//    mdFull.set(FIX::CouponPaymentDate("2012-12-11"));
+//    mdFull.set(FIX::IssueDate("2012-12-11"));
+//    mdFull.set(FIX::RepoCollateralSecurityType(1));
+//    mdFull.set(FIX::RepurchaseTerm(1));
+//    mdFull.set(FIX::RepurchaseRate(0.3));
+//    mdFull.set(FIX::Factor(0.1));
+//    mdFull.set(FIX::CreditRating("AAA"));
+//    mdFull.set(FIX::InstrRegistry("DD"));
+//    mdFull.set(FIX::CountryOfIssue);
+//    mdFull.set(FIX::StateOrProvinceOfIssue);
+//    mdFull.set(FIX::LocaleOfIssue);
+//    mdFull.set(FIX::RedemptionDate);
+//    mdFull.set(FIX::StrikePrice(99.99));
+//    mdFull.set(FIX::OptAttribute('d'));
+//    mdFull.set(FIX::ContractMultiplier(1));
+//    mdFull.set(FIX::CouponRate(0.2));
+//    mdFull.set(FIX::SecurityExchange("NYEX"));
+//    mdFull.set(FIX::Issuer("sf"));
+//    mdFull.set(FIX::EncodedIssuerLen(10));
+//    mdFull.set(FIX::EncodedIssuer("sf"));
+//    mdFull.set(FIX::SecurityDesc("dadad"));
+//    mdFull.set(FIX::EncodedSecurityDescLen(20));
+//    mdFull.set(FIX::EncodedSecurityDesc("fdfs"));
+//    mdFull.set(FIX::NoSecurityAltID(1));
+
+//    mdInc.set(mdReqID);
+//    FIX::NoMDEntries count;
+
+    marketData.set(FIX::NoMDEntries(2));
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries1;
+    mdEntries1.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+    mdEntries1.set(FIX::MDEntryPx(100));
+    mdEntries1.set(FIX::MDEntrySize(1));
+
+    marketData.addGroup(mdEntries1);
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries2;
+    mdEntries2.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+    mdEntries2.set(FIX::MDEntryPx(110));
+    mdEntries2.set(FIX::MDEntrySize(2));
+
+    marketData.addGroup(mdEntries2);
+
+    FIX::Session::sendToTarget(marketData, _sessionID);
 }
 
 } // namespace FreeQuant

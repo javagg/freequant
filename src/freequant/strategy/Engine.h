@@ -3,7 +3,7 @@
 
 #include <boost/asio/signal_set.hpp>
 
-#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/trade/TradeProvider.h>
 
 namespace FreeQuant {

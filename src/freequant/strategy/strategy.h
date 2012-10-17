@@ -7,12 +7,12 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <freequant/marketdata/bar.h>
+#include <freequant/marketdata/Bar.h>
 #include <freequant/marketdata/quote.h>
-#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/strategy/Engine.h>
 #include <freequant/strategy/Task.h>
-#include <freequant/utils/datetime.h>
+#include <freequant/utils/DateTime.h>
 
 namespace FreeQuant {
 class TradeProvider;

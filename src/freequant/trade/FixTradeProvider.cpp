@@ -38,19 +38,8 @@ using namespace std;
 
 namespace FreeQuant {
 
-FixTradeProvider::FixTradeProvider() {
-    string config = "config.fix";
-    senderCompId = "ME";
-    targetCompId = "FQ";
-    m_settings = new FIX::SessionSettings(config);
-    m_storeFactory = new FIX::FileStoreFactory(*m_settings);
-    m_initiator = new FIX::SocketInitiator(*this, *m_storeFactory, *m_settings);
-}
-
-FixTradeProvider::~FixTradeProvider() {
-    delete m_initiator;
-    delete m_storeFactory;
-    delete m_settings;
+FixTradeProvider::FixTradeProvider(std::string filename) :
+        _settings(filename), _storeFactory(_settings), _initiator(*this, _storeFactory, _settings) {
 }
 
 void FixTradeProvider::logon() {
@@ -60,10 +49,8 @@ void FixTradeProvider::logon() {
     message.set(FIX::Username("alex"));
     message.set(FIX::Password("12345"));
 
-//    cout << "message: " << message.toXML() << endl;
-
     try {
-        FIX::Session::sendToTarget(message, *m_sessionId);
+        FIX::Session::sendToTarget(message);
     } catch (FIX::SessionNotFound&) {}
 }
 
@@ -122,7 +109,7 @@ void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
     message.addGroup(symGroup);
 
     try {
-        FIX::Session::sendToTarget(message, *m_sessionId);
+        FIX::Session::sendToTarget(message);
     } catch (FIX::SessionNotFound&) {}
 }
 
@@ -130,15 +117,55 @@ void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
     std::string uuid = FreeQuant::toGuidString();
     FIX::MDReqID mdReqId(uuid);
     FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST);
+    FIX::MarketDepth marketDepth(1);
+
+    FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
+
+    message.set(FIX::MDUpdateType(FIX::MDUpdateType_INCREMENTAL_REFRESH));
+    message.set(FIX::AggregatedBook(true));
+    string s;
+    s.append(1, FIX::Scope_LOCAL);
+
+    FIX::Scope scope(s);
+    message.set(scope);
+
+    message.set(FIX::MDImplicitDelete(false));
+
+    FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_LOW_PRICE));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADE_VOLUME));
+    message.addGroup(typeGroup);
+    typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
+    message.addGroup(typeGroup);
+
+    FIX44::MarketDataRequest::NoRelatedSym symGroup;
+    symGroup.set(FIX::Symbol("GOOG"));
+    message.addGroup(symGroup);
+    symGroup.set(FIX::Symbol("IF1210"));
+    message.addGroup(symGroup);
+
+    try {
+        FIX::Session::sendToTarget(message);
+    } catch (FIX::SessionNotFound&) {}
+
 }
 
 void FixTradeProvider::connect() {
     cerr << "connect..." << endl;
-    m_sessionId = new FIX::SessionID("FIX.4.4", senderCompId, targetCompId);
-    m_initiator->start();
+    _initiator.start();
     logon();
 
-//
 //    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
 //    if (session && !session->isLoggedOn()) {
 //        session->logon();
@@ -146,11 +173,11 @@ void FixTradeProvider::connect() {
 }
 
 void FixTradeProvider::disconnect() {
-    if (m_sessionId != 0) {
-        delete m_sessionId;
-        m_sessionId = 0;
-    }
-    m_initiator->stop();
+//    if (m_sessionId != 0) {
+//        delete m_sessionId;
+//        m_sessionId = 0;
+//    }
+    _initiator.stop();
 
 //    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
 //    if (session && session->isLoggedOn()) {
@@ -180,9 +207,9 @@ void FixTradeProvider::toAdmin(FIX::Message& message, const FIX::SessionID& sess
 
 void FixTradeProvider::toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
     try {
-      FIX::PossDupFlag possDupFlag;
-      message.getHeader().getField(possDupFlag);
-      if (possDupFlag) throw FIX::DoNotSend();
+        FIX::PossDupFlag possDupFlag;
+        message.getHeader().getField(possDupFlag);
+        if (possDupFlag) throw FIX::DoNotSend();
     }
     catch (FIX::FieldNotFound&) {}
 }
@@ -420,7 +447,7 @@ void FixTradeProvider::cancelOrder(FreeQuant::Order& o) {
 void FixTradeProvider::replaceOrder(FreeQuant::Order& o) {
     FIX44::OrderCancelReplaceRequest message;
 
-    FIX::Session::sendToTarget(message, *m_sessionId);
+    FIX::Session::sendToTarget(message);
 }
 
 void FixTradeProvider::sendOrder(FreeQuant::Order& order) {
@@ -545,7 +572,7 @@ void FixTradeProvider::sendOrder(FreeQuant::Order& order) {
 
 //    orders.Add(clOrdID, order);
 
-    FIX::Session::sendToTarget(message, *m_sessionId);
+    FIX::Session::sendToTarget(message);
 }
 
 vector<string> FixTradeProvider::availableExchanges() const {
@@ -557,7 +584,7 @@ vector<std::string> FixTradeProvider::availableInstruments() const {
     FIX44::SecurityListRequest message;
     message.set(FIX::SecurityReqID(reqID));
     message.set(FIX::SecurityListRequestType(FIX::SecurityListRequestType_ALL_SECURITIES));
-    FIX::Session::sendToTarget(message, *m_sessionId);
+    FIX::Session::sendToTarget(message);
     return vector<string>();
 }
 

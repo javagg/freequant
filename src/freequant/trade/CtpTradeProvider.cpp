@@ -17,7 +17,6 @@ CtpTradeProvider::CtpTradeProvider() {
 }
 
 CtpTradeProvider::~CtpTradeProvider() {
-
 }
 
 void CtpTradeProvider::connect() {

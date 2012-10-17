@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include <freequant/marketdata/marketdataprovider.h>
-#include <freequant/utils/datetime.h>
+#include <freequant/marketdata/MarketDataProvider.h>
+#include <freequant/utils/DateTime.h>
 
 namespace FreeQuant {
 

@@ -1,8 +1,12 @@
 #ifndef FQ_SERVER_EXECUTOR_H
 #define FQ_SERVER_EXECUTOR_H
 
+#include <memory>
+#include <list>
 #include <quickfix/Application.h>
 #include <quickfix/MessageCracker.h>
+
+#include <freequant/utils/MarketDataGenerator.h>
 
 namespace FreeQuant {
 
@@ -13,8 +17,8 @@ namespace FreeQuant {
  */
 class Executor : public FIX::Application, public FIX::MessageCracker {
 public:
-    Executor() {}
-
+    Executor();
+    virtual ~Executor();
     void onCreate(const FIX::SessionID&);
     void onLogon(const FIX::SessionID&);
     void onLogout(const FIX::SessionID&);
@@ -35,6 +39,12 @@ public:
     void onMessage(const FIX44::TradeCaptureReportRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::TradingSessionStatusRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::UserRequest&, const FIX::SessionID&) {}
+
+private:
+    std::shared_ptr<MarketDataGenerator> _mdGenerator;
+    void onGenerated(const FreeQuant::Bar&);
+    FIX::SessionID _sessionID;
+    std::list<FIX::SessionID> _sessionIDs;
 };
 
 } // namespace FreeQuant

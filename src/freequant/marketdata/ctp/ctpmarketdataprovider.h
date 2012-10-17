@@ -4,7 +4,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/MarketDataProvider.h>
 #include "api/trade/win/public/ThostFtdcMdApi.h"
 
 namespace FreeQuant {

@@ -1,7 +1,7 @@
 #ifndef FQ_MARKETDATA_BAR_H
 #define FQ_MARKETDATA_BAR_H
 
-#include <freequant/utils/datetime.h>
+#include <freequant/utils/DateTime.h>
 
 namespace FreeQuant {
 

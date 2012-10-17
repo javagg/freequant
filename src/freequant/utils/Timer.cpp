@@ -27,7 +27,7 @@ void Timer::start() {
 
 void Timer::stop() {
     _timer.cancel();
-    _thread->join();
+    if (_thread && _thread->joinable()) _thread->join();
 }
 
 void Timer::handler(const boost::system::error_code& error) {

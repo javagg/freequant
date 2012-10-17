@@ -1,16 +1,16 @@
-#ifndef FQ_MARKETDATA_YAHOOPROVIDER_H
-#define FQ_MARKETDATA_YAHOOPROVIDER_H
+#ifndef FQ_MARKETDATA_YAHOOMARKETDATAPROVIDER_H
+#define FQ_MARKETDATA_YAHOOMARKETDATAPROVIDER_H
 
-#include <freequant/marketdata/marketdataprovider.h>
+#include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/utils/httpclient.h>
 #include <freequant/utils/Timer.h>
 
 namespace FreeQuant {
 
-class YahooProvider : public MarketDataProvider {
+class YahooMarketDataProvider : public MarketDataProvider {
 public:
-    YahooProvider();
-    virtual ~YahooProvider();
+    YahooMarketDataProvider();
+    virtual ~YahooMarketDataProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected() const { return true; }
@@ -21,10 +21,9 @@ public:
 private:
     FreeQuant::Timer *timer;
     void getQuota();
-
     FreeQuant::HttpClient client;
 };
 
 } // namespace FreeQuant
 
-#endif // FQ_MARKETDATA_YAHOOPROVIDER_H
+#endif // FQ_MARKETDATA_YAHOOMARKETDATAPROVIDER_H

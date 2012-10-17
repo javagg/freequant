@@ -1,4 +1,4 @@
-#include "timeseries.h"
+#include "TimeSeries.h"
 
 namespace FreeQuant {
 

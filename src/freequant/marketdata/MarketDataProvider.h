@@ -5,7 +5,7 @@
 #include <vector>
 
 #include <boost/signals2.hpp>
-#include <freequant/marketdata/bar.h>
+#include <freequant/marketdata/Bar.h>
 
 namespace FreeQuant {
     class Strategy;
@@ -15,12 +15,16 @@ namespace FreeQuant {
 
 class MarketDataProvider {
 public:
-    typedef boost::signals2::signal<void (const FreeQuant::Bar&)> BarSignal;
-    typedef BarSignal::slot_type BarSlot;
+//    typedef boost::signals2::signal<void (const FreeQuant::Bar&)> OnBar;
+//    typedef OnBar::slot_type BarSlot;
 
 public:
-    void sub(const BarSlot& subscriber) {
-        barSignal.connect(subscriber);
+//    void sub(const BarSlot& subscriber) {
+//        barSignal.connect(subscriber);
+//    }
+
+    void connect(std::function<void(const FreeQuant::Bar&)> func) {
+        _onBar.connect(func);
     }
 
     virtual ~MarketDataProvider() {}
@@ -35,7 +39,9 @@ public:
     virtual void onDisconnected() = 0;
 
 protected:
-    BarSignal barSignal;
+    typedef boost::signals2::signal<void (const FreeQuant::Bar&)> OnBar;
+//    OnBar barSignal;
+    OnBar _onBar;
 };
 
 } // namespace FreeQuant

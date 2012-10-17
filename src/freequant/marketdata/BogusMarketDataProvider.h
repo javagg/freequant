@@ -1,18 +1,18 @@
 #ifndef FQ_MARKETDATA_BOGUSPROVODER_H
 #define FQ_MARKETDATA_BOGUSPROVODER_H
 
-namespace FreeQuant { namespace MarketData {
+namespace FreeQuant {
 
-class BogusProvoder {
+class BogusMarketDataProvider {
 public:
-    BogusProvoder();
-    ~BogusProvoder();
+    BogusMarketDataProvider();
+    ~BogusMarketDataProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected();
     virtual void onData();
 };
 
-}}
+} // namespace FreeQuant
 
 #endif // FQ_MARKETDATA_BOGUSPROVODER_H

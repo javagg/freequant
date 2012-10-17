@@ -2,8 +2,8 @@
 #include <memory>
 #include <thread>
 
-#include <freequant/marketdata/marketdataprovider.h>
-#include <freequant/marketdata/yahooprovider.h>
+#include <freequant/marketdata/MarketDataProvider.h>
+#include <freequant/marketdata/YahooMarketDataProvider.h>
 #include <freequant/marketdata/twsprovider.h>
 
 void test_tws() {

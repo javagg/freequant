@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <freequant/marketdata/bar.h>
+#include <freequant/marketdata/Bar.h>
 
 namespace FreeQuant {
 

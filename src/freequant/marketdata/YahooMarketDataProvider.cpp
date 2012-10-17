@@ -7,40 +7,39 @@
 #include <boost/date_time/time_facet.hpp>
 
 
-#include "yahooprovider.h"
+#include "YahooMarketDataProvider.h"
 
 using namespace std;
 using namespace boost;
-
 
 namespace FreeQuant {
 
 static string format = "http://download.finance.yahoo.com/d/quotes.csv?s=%1%&f=%2%";
 
-YahooProvider::YahooProvider() {
+YahooMarketDataProvider::YahooMarketDataProvider() {
 
 }
 
-YahooProvider::~YahooProvider() {
+YahooMarketDataProvider::~YahooMarketDataProvider() {
 
 }
 
-void YahooProvider::connect() {
+void YahooMarketDataProvider::connect() {
     if (timer == nullptr) {
-        timer = new FreeQuant::Timer(1, std::bind(&YahooProvider::getQuota, this));
+        timer = new FreeQuant::Timer(1, std::bind(&YahooMarketDataProvider::getQuota, this));
 //        timer->connect(boost::bind(&YahooProvider::getQuota, this));
         timer->start();
     }
 }
 
-void YahooProvider::disconnect() {
+void YahooMarketDataProvider::disconnect() {
     if (timer != nullptr) {
         delete timer;
         timer = 0;
     }
 }
 
-void YahooProvider::getQuota() {
+void YahooMarketDataProvider::getQuota() {
     string url = str(boost::format(format) % "000001.ss" % "d1t1k3l1");
     std::cout << url << std::endl;
     string contents = client.get(url);

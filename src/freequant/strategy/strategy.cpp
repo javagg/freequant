@@ -28,8 +28,8 @@ void Strategy::setTradeProvider(FreeQuant::TradeProvider *provider) {
 
 void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
     m_mdProvider = provider;
-    m_mdProvider->sub(boost::bind(&Strategy::onBar, this, _1));
-    m_mdProvider->sub(boost::bind(&Strategy::handleBar, this, _1));
+    m_mdProvider->connect(boost::bind(&Strategy::onBar, this, _1));
+    m_mdProvider->connect(boost::bind(&Strategy::handleBar, this, _1));
 }
 
 void Strategy::start() {
