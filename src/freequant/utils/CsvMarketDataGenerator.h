@@ -16,7 +16,6 @@ public:
     virtual FreeQuant::Bar generate(std::string symbol);
 private:
     FreeQuant::CsvParser _parser;
-
 };
 
 } // namespace FreeQuant
