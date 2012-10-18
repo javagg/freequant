@@ -16,7 +16,7 @@ namespace FreeQuant {
 
 class MarketDataProvider {
 public:
-    void connect(std::function<void(const FreeQuant::Bar&)> func) {
+    void connect(boost::function<void(const FreeQuant::Bar&)> func) {
         _onBar.connect(func);
     }
 

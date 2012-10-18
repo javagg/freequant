@@ -1,6 +1,6 @@
 #include <functional>
 #include <iostream>
-#include <thread>
+#include <boost/thread.hpp>
 
 #include <freequant/utils/Timer.h>
 
@@ -9,8 +9,8 @@ void onTimeout() {
 }
 
 int main() {
-    FreeQuant::Timer timer(300, std::bind(&onTimeout));
+    FreeQuant::Timer timer(300, boost::bind(&onTimeout));
     timer.start();
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    boost::this_thread::sleep_for(boost::chrono::seconds(2));
     return 0;
 }

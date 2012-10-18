@@ -38,7 +38,7 @@ void CtpMarketDataProvider::connect(bool block) {
         api->RegisterFront(front);
         api->Init();
     }
-    std::unique_lock<std::mutex> l(mutex);
+    boost::unique_lock<boost::mutex> l(mutex);
     condition.wait(l);
 }
 
@@ -110,7 +110,7 @@ void CtpMarketDataProvider::OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserL
         m_connected = true;
 
         onConnected();
-        std::unique_lock<std::mutex> lock(mutex);
+        boost::unique_lock<boost::mutex> lock(mutex);
         condition.notify_one();
      }
 }
