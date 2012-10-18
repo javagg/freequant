@@ -10,7 +10,7 @@ namespace FreeQuant {
 class YahooMarketDataGenerator : public MarketDataGenerator {
 public:
     virtual ~YahooMarketDataGenerator() {}
-    virtual std::vector<std::string> availableSymbols();
+    virtual std::vector<std::string> availableSymbols() const;
     FreeQuant::Bar generate(std::string symbol);
 private:
     FreeQuant::HttpClient _http;

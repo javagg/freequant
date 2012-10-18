@@ -1,6 +1,7 @@
 #ifndef FQ_MARKETDATA_MARKETDATAPROVIDER_H
 #define FQ_MARKETDATA_MARKETDATAPROVIDER_H
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -15,14 +16,6 @@ namespace FreeQuant {
 
 class MarketDataProvider {
 public:
-//    typedef boost::signals2::signal<void (const FreeQuant::Bar&)> OnBar;
-//    typedef OnBar::slot_type BarSlot;
-
-public:
-//    void sub(const BarSlot& subscriber) {
-//        barSignal.connect(subscriber);
-//    }
-
     void connect(std::function<void(const FreeQuant::Bar&)> func) {
         _onBar.connect(func);
     }
@@ -40,7 +33,6 @@ public:
 
 protected:
     typedef boost::signals2::signal<void (const FreeQuant::Bar&)> OnBar;
-//    OnBar barSignal;
     OnBar _onBar;
 };
 

@@ -2,7 +2,7 @@
 #define FQ_MARKETDATA_YAHOOMARKETDATAPROVIDER_H
 
 #include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/utils/httpclient.h>
+#include <freequant/utils/HttpClient.h>
 #include <freequant/utils/Timer.h>
 
 namespace FreeQuant {

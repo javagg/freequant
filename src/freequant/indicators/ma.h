@@ -7,7 +7,6 @@
 
 #include <freequant/indicators/indicator.h>
 
-
 namespace FreeQuant {
 
 class MA : public Indicator {

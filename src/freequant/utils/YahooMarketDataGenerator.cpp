@@ -1,4 +1,5 @@
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "YahooMarketDataGenerator.h"
 
@@ -8,7 +9,7 @@ namespace FreeQuant {
 
 static string format = "http://download.finance.yahoo.com/d/quotes.csv?s=%1%&f=%2%";
 
-vector<string> YahooMarketDataGeneratoravailableSymbols() const {
+vector<string> YahooMarketDataGenerator::availableSymbols() const {
     return vector<string>();
 }
 
@@ -23,7 +24,7 @@ FreeQuant::Bar YahooMarketDataGenerator::generate(string symbol) {
     string token;
     istringstream iss(content);
     while (getline(iss, token, ',')) {
-         trim(token);
+         boost::trim(token);
          if (token.at(0) == '"' ) {
              token.erase(0, 1);
              token.erase(token.size()-1);

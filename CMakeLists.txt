@@ -21,8 +21,8 @@ endif()
 
 #Find external dependencies
 #set(BOOST_LIBRARYDIR "C:\Program Files (x86)\boost\boost_1_51\lib")
-#find_package(Boost REQUIRED COMPONENTS date_time system filesystem)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS date_time system filesystem)
+#find_package(Boost REQUIRED)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
@@ -65,8 +65,6 @@ elseif(UNIX)
         set(CTP_LIBRARIES ${CTP_MDUSER_LIBRARY} ${CTP_TRADE_LIBRARY})
     endif()
 endif()
-
-message(${QUICKFIX_LIBRARIES})
 
 include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/src)
