@@ -8,12 +8,11 @@ namespace FreeQuant {
 
 class DateTime {
 public:
-    DateTime();
+    DateTime() {}
     ~DateTime() {}
     DateTime(const std::string&);
     DateTime(const DateTime&);
 
-    DateTime fromString(const std::string& string);
     DateTime fromString(const std::string& string, const std::string& format);
     DateTime fromTimeT(const std::time_t t);
     std::string toString();
@@ -32,7 +31,7 @@ public:
     bool operator!=(const DateTime&) const;
     bool operator<(const DateTime&) const;
     bool operator<=(const DateTime&) const;
-    DateTime& operator=(const DateTime&);
+    DateTime& operator=(const DateTime&) { return *this; }
     bool operator>=(const DateTime&) const;
     bool operator==(const DateTime&) const;
     bool operator>(const DateTime&) const;

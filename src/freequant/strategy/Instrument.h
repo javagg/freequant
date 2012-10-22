@@ -50,6 +50,9 @@ public:
     Type type() const { return _type; }
     void setType(Instrument::Type type) {  _type = type; }
 
+    void setMinTradeVolume(int value) { _minTradeVolume = value; }
+    int minTradeVolume() const { return _minTradeVolume; }
+
     double factor() const;
     std::string description() const;
     FreeQuant::DateTime maturity() const;
@@ -64,6 +67,8 @@ private:
     double _margin;
     Type _type;
 	Currency *mCurrency;
+
+    int _minTradeVolume;
 
 };
 
