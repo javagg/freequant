@@ -2,7 +2,8 @@
 
 namespace FreeQuant {
 
-Instrument::Instrument(std::string symbol) : _symbol(symbol) {
+Instrument::Instrument(std::string symbol, Instrument::Type type) :
+    _symbol(symbol), _type(type){
 
 }
 

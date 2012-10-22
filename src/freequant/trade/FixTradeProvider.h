@@ -44,6 +44,7 @@ public:
     void requestHistoricalData(HistoricalDataRequest& request);
     void cancelHistoricalData(HistoricalDataRequest& request);
 
+    void updateIntrument(std::string symbol, bool block = false);
 private:
     void onCreate(const FIX::SessionID&);
     void onLogon(const FIX::SessionID&);
@@ -62,6 +63,7 @@ private:
     void onMessage(const FIX44::ExecutionReport&, const FIX::SessionID&);
     void onMessage(const FIX44::SecurityList&, const FIX::SessionID&);
     void onMessage(const FIX44::OrderCancelReject&, const FIX::SessionID&);
+    void onMessage(const FIX44::SecurityDefinition&, const FIX::SessionID&);
 
     FIX::SessionSettings _settings;
     FIX::FileStoreFactory _storeFactory;

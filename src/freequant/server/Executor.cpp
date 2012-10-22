@@ -23,6 +23,8 @@
 #include <quickfix/fix44/SecurityListRequest.h>
 #include <quickfix/fix44/SecurityTypes.h>
 #include <quickfix/fix44/SecurityTypeRequest.h>
+#include <quickfix/fix44/SecurityDefinition.h>
+#include <quickfix/fix44/SecurityDefinitionRequest.h>
 #include <quickfix/fix44/TradeCaptureReport.h>
 #include <quickfix/fix44/TradeCaptureReportAck.h>
 #include <quickfix/fix44/TradingSessionStatus.h>
@@ -258,6 +260,21 @@ void Executor::onMessage(const FIX44::OrderCancelRequest& message, const FIX::Se
 
 void Executor::onMessage(const FIX44::OrderCancelReplaceRequest& message, const FIX::SessionID& sessionID) {
     FIX44::Reject response;
+    FIX::Session::sendToTarget(response, sessionID);
+}
+
+void Executor::onMessage(const FIX44::SecurityDefinitionRequest& message, const FIX::SessionID& sessionID) {
+    FIX::SecurityReqID regID;
+    FIX::Symbol symbol;
+    message.get(regID);
+    message.get(symbol);
+
+    FIX44::SecurityDefinition response;
+    response.set(regID);
+    response.set(FIX::SecurityResponseID("dfsfs"));
+    response.set(FIX::SecurityResponseType(FIX::SecurityResponseType_LIST_OF_SECURITIES_RETURNED_PER_REQUEST));
+    response.set(symbol);
+    response.set(FIX::MaturityDate("2012-11-30"));
     FIX::Session::sendToTarget(response, sessionID);
 }
 

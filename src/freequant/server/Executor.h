@@ -39,6 +39,7 @@ public:
     void onMessage(const FIX44::TradeCaptureReportRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::TradingSessionStatusRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::UserRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::SecurityDefinitionRequest&, const FIX::SessionID&);
 
 private:
     std::shared_ptr<MarketDataGenerator> _mdGenerator;

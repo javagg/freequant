@@ -25,10 +25,10 @@ FIND_PATH(CURL_INCLUDE_DIR NAMES curl/curl.h PATHS /usr/include $ENV{CURL_HOME}/
 MARK_AS_ADVANCED(CURL_INCLUDE_DIR)
 
 # Look for the library.
-if(WIN32)
-    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(MSVC)
+    if(CMAKE_BUILD_TYPE STREQUAL Release)
         set(CURL_LIB_SEARCHPATH $ENV{CURL_HOME}/lib/Release)
-    elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    elseif(CMAKE_BUILD_TYPE STREQUAL Debug)
         set(CURL_LIB_SEARCHPATH $ENV{CURL_HOME}/lib/Debug)
     endif()
 endif()

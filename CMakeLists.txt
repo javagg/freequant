@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(freequant)
 
-set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -16,7 +16,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 elseif(${MSVC_VERSION} VERSION_LESS "1700")
 #    message(FATAL_ERROR "You should use VC 11 or above!")
 else()
-  #  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -stdlib=libc++")
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -stdlib=libc++")
 endif()
 
 #Find external dependencies
@@ -31,13 +31,13 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(WIN32 OR UNIX)
-    set(BUILD_CTP on)
+    option(BUILD_CTP "Build CTP." TRUE)
 elseif(APPLE)
-    set(BUILD_CTP off)
+    option(BUILD_CTP "Build CTP." FALSE)
 endif()
 
-set(BUILD_TWS on)
-set(BUILD_FIX on)
+option(BUILD_TWS "Build TWS." TRUE)
+option(BUILD_FIX "Build FIX." TRUE)
 
 # Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/tws)

@@ -22,10 +22,14 @@
 #include <quickfix/fix44/MarketDataRequestReject.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 #include <quickfix/fix44/MarketDataIncrementalRefresh.h>
+#include <quickfix/fix44/SecurityDefinition.h>
+#include <quickfix/fix44/SecurityDefinitionRequest.h>
 #include <quickfix/fix44/SecurityList.h>
 #include <quickfix/fix44/SecurityListRequest.h>
 #include <quickfix/fix44/SecurityTypes.h>
 #include <quickfix/fix44/SecurityTypeRequest.h>
+
+
 
 #include <quickfix/fix44/NewOrderSingle.h>
 #include <quickfix/fix44/OrderCancelRequest.h>
@@ -436,6 +440,10 @@ void FixTradeProvider::onMessage(const FIX44::SecurityList& message, const FIX::
 
 }
 
+void FixTradeProvider::onMessage(const FIX44::SecurityDefinition&, const FIX::SessionID&) {
+
+}
+
 void FixTradeProvider::cancelOrder(FreeQuant::Order& o) {
     FIX44::OrderCancelRequest message;
     FIX::OrigClOrdID origClOrdID;
@@ -590,6 +598,14 @@ vector<std::string> FixTradeProvider::availableInstruments() const {
 
 void FixTradeProvider::openOrders() const {
 
+}
+
+void FixTradeProvider::updateIntrument(std::string symbol, bool block) {
+    FIX44::SecurityDefinitionRequest message;
+    message.set(FIX::SecurityReqID("guud"));
+    message.set(FIX::SecurityRequestType(FIX::SecurityRequestType_SYMBOL));
+    message.set(FIX::Symbol(symbol));
+    FIX::Session::sendToTarget(message);
 }
 
 } // namespace FreeQuant

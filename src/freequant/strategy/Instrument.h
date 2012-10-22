@@ -23,23 +23,48 @@ public:
         MultiLeg
     };
 
-    explicit Instrument(std::string symbol);
+    explicit Instrument(std::string symbol, Instrument::Type type = Instrument::Stock);
     virtual ~Instrument() {}
-    double multipler() const;
-    double margin() const;
-    double tickSize() const;
+    void setExchange(std::string exchange) {
+        _exchange = exchange;
+    }
+    std::string exchange() const { return _exchange; }
+
+    void setName(std::string name) { _name = name; }
+    std::string name() const { return _name; }
+
+    void setExpireDate(FreeQuant::DateTime dt) {
+        _expireDate = dt;
+    }
+    FreeQuant::DateTime expireDate() const { return _expireDate; }
+
+    double multipler() const { return _multiplier; }
+    void setMultipler(double multiplier) { _multiplier = multiplier; }
+    double tickSize() const { return _tickSize; }
+    void setTickSize(double tickSize) { _tickSize = tickSize; }
+
+    double margin() const { return _margin; }
+    void setMargin(double margin) { _margin = margin; }
+
     std::string symbol() const { return _symbol; }
     Type type() const { return _type; }
+    void setType(Instrument::Type type) {  _type = type; }
+
     double factor() const;
     std::string description() const;
     FreeQuant::DateTime maturity() const;
 
 private:
     std::string _symbol;
+    std::string _exchange;
+    std::string _name;
+    FreeQuant::DateTime _expireDate;
+    double _multiplier;
+    double _tickSize;
+    double _margin;
     Type _type;
 	Currency *mCurrency;
-	double mMultiplier;
-	double mTickSize;
+
 };
 
 } // namespace FreeQuant

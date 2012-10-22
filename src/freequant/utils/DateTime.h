@@ -10,6 +10,7 @@ class DateTime {
 public:
     DateTime();
     ~DateTime() {}
+    DateTime(const std::string&);
     DateTime(const DateTime&);
 
     DateTime fromString(const std::string& string);
@@ -37,7 +38,7 @@ public:
     bool operator>(const DateTime&) const;
 
 private:
-    boost::posix_time::ptime datetime;
+    boost::posix_time::ptime _datetime;
 };
 
 std::ostream& operator<<(std::ostream& out, const DateTime& dateTime);

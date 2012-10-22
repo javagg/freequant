@@ -3,6 +3,7 @@
 
 #include <freequant/strategy/Order.h>
 #include <freequant/strategy/Position.h>
+#include <freequant/strategy/Instrument.h>
 
 #include "api/trade/win/public/ThostFtdcTraderApi.h"
 #include "CtpTradeProvider.h"
@@ -220,6 +221,64 @@ void CtpTradeProvider::replaceOrder(FreeQuant::Order& o) {
 //     strcpy(req.OrderSysID, orderList[i]->OrderSysID);
      int ret = _api->ReqOrderAction(&req, ++requestId);
       cerr<< " 请求 | 发送撤单..." <<((ret == 0)?"成功":"失败") << endl;
+}
+
+void CtpTradeProvider::updateIntrument(std::string symbol, bool block) {
+    CThostFtdcQryInstrumentField field = {};
+    string instrumentId = "";
+    string exchangeId = "";
+    string exchangeInstId = "";
+    string productId = "";
+
+    instrumentId.copy(field.InstrumentID, instrumentId.size());
+    exchangeId.copy(field.ExchangeID, exchangeId.size());
+    exchangeInstId.copy(field.ExchangeInstID, exchangeInstId.size());
+    productId.copy(field.ProductID, productId.size());
+
+    _api->ReqQryInstrument(&field, requestId++);
+}
+
+void CtpTradeProvider::OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *rspInfo, int nequestID, bool last) {
+    FreeQuant::Instrument instrument(i->InstrumentID);
+    instrument.setExchange(i->ExchangeInstID);
+    instrument.setName(i->InstrumentName);
+    instrument.setExpireDate(FreeQuant::DateTime(i->ExpireDate));
+    instrument.setMultipler(i->VolumeMultiple);
+    instrument.setTickSize(i->PriceTick);
+    instrument.setMargin(i->LongMarginRatio);
+    instrument.setType(FreeQuant::Instrument::Stock);
+//    ///市价单最大下单量
+//    TThostFtdcVolumeType	MaxMarketOrderVolume;
+//    ///市价单最小下单量
+//    TThostFtdcVolumeType	MinMarketOrderVolume;
+//    ///限价单最大下单量
+//    TThostFtdcVolumeType	MaxLimitOrderVolume;
+//    ///限价单最小下单量
+//    TThostFtdcVolumeType	MinLimitOrderVolume;
+//    ///合约数量乘数
+//    ///创建日
+//    TThostFtdcDateType	CreateDate;
+//    ///上市日
+//    TThostFtdcDateType	OpenDate;
+//    ///到期日
+//    TThostFtdcDateType	ExpireDate;
+//    ///开始交割日
+//    TThostFtdcDateType	StartDelivDate;
+//    ///结束交割日
+//    TThostFtdcDateType	EndDelivDate;
+    ///合约生命周期状态
+//    TThostFtdcInstLifePhaseType	InstLifePhase;
+//    ///当前是否交易
+//    TThostFtdcBoolType	IsTrading;
+//    ///持仓类型
+//    TThostFtdcPositionTypeType	PositionType;
+//    ///持仓日期类型
+//    TThostFtdcPositionDateTypeType	PositionDateType;
+//    ///多头保证金率
+//    TThostFtdcRatioType	LongMarginRatio;
+//    ///空头保证金率
+//    TThostFtdcRatioType	ShortMarginRatio;
+
 }
 
 } // namespace FreeQuant
