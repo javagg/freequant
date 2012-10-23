@@ -1,5 +1,5 @@
 // =================================================================================
-// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.271,
+// ORACLE, ODBC and DB2/CLI Template Library, Version 4.0.274,
 // Copyright (C) 1996-2012, Sergei Kuchin (skuchin@gmail.com)
 // 
 // This library is free software. Permission to use, copy, modify,
@@ -26,7 +26,7 @@
 #include "otl_include_0.h"
 #endif
 
-#define OTL_VERSION_NUMBER (0x04010FL)
+#define OTL_VERSION_NUMBER (0x040112L)
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600) || \
    (defined(__GNUC__) && (__GNUC__>=4) && defined(__GNUC_MINOR__) &&     \
@@ -1442,10 +1442,19 @@ inline bool otl_uncaught_exception()
 
 // ====== COMMON NON-TEMPLATE OBJECTS: CONSTANTS, CLASSES, ETC. ===========
 
+#if defined(OTL_INITIAL_VAR_LIST_SIZE)
+
+const int otl_var_list_size=OTL_INITIAL_VAR_LIST_SIZE;
+
+#else
+
 #if defined(OTL_ORA8)
 const int otl_var_list_size=1024;
 #else
 const int otl_var_list_size=512;
+
+#endif
+
 #endif
 
 const int otl_error_code_0=32000;
@@ -1894,7 +1903,7 @@ public:
   
   void add_override(const int andx, const int atype, const int asize=0)
   {
-    if(len==otl_var_list_size){
+    if(len==container_size_){
       int temp_container_size=container_size_;
       container_size_*=2;
       short int* temp_col_ndx=nullptr;
@@ -8100,10 +8109,17 @@ public:
     if(check_in_type(otl_var_char,1)){
       
       int overflow;
+#if defined(OTL_C_STR_FOR_UNICODE_STRING_TYPE)
+      otl_strcpy4
+        (OTL_RCAST(unsigned char*,this->vl[cur_in]->val()),
+         OTL_RCAST(unsigned char*,
+                   OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.OTL_C_STR_FOR_UNICODE_STRING_TYPE())),
+#else
       otl_strcpy4
         (OTL_RCAST(unsigned char*,this->vl[cur_in]->val()),
          OTL_RCAST(unsigned char*,
                    OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.c_str())),
+#endif
          overflow,
          this->vl[cur_in]->get_elem_size(),
          OTL_SCAST(int,s.length())
@@ -9720,10 +9736,17 @@ otl_uncaught_exception()){
       case otl_var_char:
         {
           int overflow;
+#if defined(OTL_C_STR_FOR_UNICODE_STRING_TYPE)
+          otl_strcpy4
+            (OTL_RCAST(unsigned char*,this->vl[cur_x]->val(cur_y)),
+             OTL_RCAST(unsigned char*,
+                       OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.OTL_C_STR_FOR_UNICODE_STRING_TYPE())),
+#else
           otl_strcpy4
             (OTL_RCAST(unsigned char*,this->vl[cur_x]->val(cur_y)),
              OTL_RCAST(unsigned char*,
                        OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.c_str())),
+#endif
              overflow,
              this->vl[cur_x]->get_elem_size(),
              OTL_SCAST(int,s.length())
@@ -9780,9 +9803,15 @@ otl_uncaught_exception()){
                this->stm_text,
                var_info);
           }
+#if defined(OTL_C_STR_FOR_UNICODE_STRING_TYPE)
+          otl_memcpy(c,
+                     OTL_RCAST(unsigned char*,
+                               OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.OTL_C_STR_FOR_UNICODE_STRING_TYPE())),
+#else
           otl_memcpy(c,
                      OTL_RCAST(unsigned char*,
                                OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.c_str())),
+#endif
                      len,
                      this->vl[cur_x]->get_ftype());
           this->vl[cur_x]->set_len(len,cur_y);
@@ -9810,7 +9839,11 @@ otl_uncaught_exception()){
           }
           this->vl[cur_x]->set_not_null(cur_y);
           this->vl[cur_x]->get_var_struct().save_blob
+#if defined(OTL_C_STR_FOR_UNICODE_STRING_TYPE)
+            (OTL_RCAST(const unsigned char*,s.OTL_C_STR_FOR_UNICODE_STRING_TYPE()),
+#else
             (OTL_RCAST(const unsigned char*,s.c_str()),
+#endif
              len,
              0);
         }
@@ -24883,7 +24916,7 @@ inline otl_stream& operator<<(otl_stream& s, const OTL_BIGINT n)
 inline otl_stream& operator>>(otl_stream& s, OTL_BIGINT& n)
   OTL_THROWS_OTL_EXCEPTION
 {
-  long temp_val;
+  long temp_val=0;
 
   s>>temp_val;
   if(s.is_null()){
@@ -32524,10 +32557,17 @@ public:
     if(check_in_type(otl_var_char,1)){
       
       int overflow;
+#if defined(OTL_C_STR_FOR_UNICODE_STRING_TYPE)
+      otl_strcpy4
+        (OTL_RCAST(unsigned char*,vl[cur_in]->val()),
+         OTL_RCAST(unsigned char*,
+                   OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.OTL_C_STR_FOR_UNICODE_STRING_TYPE())),
+#else
       otl_strcpy4
         (OTL_RCAST(unsigned char*,vl[cur_in]->val()),
          OTL_RCAST(unsigned char*,
                    OTL_CCAST(OTL_UNICODE_CHAR_TYPE*,s.c_str())),
+#endif
          overflow,
          vl[cur_in]->get_elem_size(),
          OTL_SCAST(int,s.length())
