@@ -1,5 +1,5 @@
-#ifndef FQ_UTILS_GLOBAL_H
-#define FQ_UTILS_GLOBAL_H
+#ifndef FQ_UTILS_GUID_H
+#define FQ_UTILS_GUID_H
 
 #include <string>
 
@@ -10,4 +10,4 @@ std::string toGuidString1();
 
 }
 
-#endif // FQ_UTILS_GLOBAL_H
+#endif // FQ_UTILS_GUID_H

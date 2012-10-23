@@ -35,7 +35,7 @@
 #include <quickfix/fix44/OrderCancelRequest.h>
 
 #include "FixTradeProvider.h"
-#include <freequant/utils/guid.h>
+#include <freequant/utils/Guid.h>
 
 
 using namespace std;
@@ -58,15 +58,7 @@ void FixTradeProvider::logon() {
     } catch (FIX::SessionNotFound&) {}
 }
 
-void FixTradeProvider::onLogon() {
-
-}
-
 void FixTradeProvider::logout() {
-
-}
-
-void FixTradeProvider::onLogout() {
 
 }
 

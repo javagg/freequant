@@ -239,7 +239,7 @@ private:
     Ui::MainWindow *ui;
 
     FreeQuant::MarketDataProvider *md_provider;
-    FreeQuant::FixTradeProvider *trade_provider;
+    FreeQuant::TradeProvider *trade_provider;
     bool faError;
 
     bool m_financialAdvisor;

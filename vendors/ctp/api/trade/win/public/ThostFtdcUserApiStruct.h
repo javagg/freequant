@@ -2580,7 +2580,7 @@ struct CThostFtdcPositionProfitAlgorithmField
 	///投资者帐号
 	TThostFtdcAccountIDType	AccountID;
 	///盈亏算法
-    TThostFtdcAlgorithmType	Algorithm;
+	TThostFtdcAlgorithmType	Algorithm;
 	///备注
 	TThostFtdcMemoType	Memo;
 };

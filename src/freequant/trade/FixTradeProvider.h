@@ -27,11 +27,10 @@ public:
 
     std::vector<std::string> availableExchanges() const;
     std::vector<std::string> availableInstruments() const;
+
     void logon();
-    void onLogon();
     void logout();
-    void onLogout();
-    void onError() {}
+
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
 

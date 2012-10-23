@@ -5,7 +5,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include "guid.h"
+#include "Guid.h"
 
 namespace FreeQuant {
 

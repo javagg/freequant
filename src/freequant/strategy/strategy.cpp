@@ -5,7 +5,7 @@
 #include <boost/assign.hpp>
 
 #include <freequant/indicators/indicator.h>
-#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
+#include <freequant/marketdata/CtpMarketDataProvider.h>
 #include <freequant/trade/CtpTradeProvider.h>
 
 #include "strategy.h"

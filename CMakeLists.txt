@@ -4,6 +4,7 @@ project(freequant)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+set(CMAKE_INSTALL_PREFIX /home/alex)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE CMAKE_CXX_COMPILER_VERSION)
@@ -21,8 +22,8 @@ endif()
 
 #Find external dependencies
 #set(BOOST_LIBRARYDIR "C:\Program Files (x86)\boost\boost_1_51\lib")
-#find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
+#find_package(Boost REQUIRED)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
@@ -67,6 +68,7 @@ elseif(UNIX)
 endif()
 
 include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/vendors/otl)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 link_directories(${Boost_LIBRARY_DIRS})
 

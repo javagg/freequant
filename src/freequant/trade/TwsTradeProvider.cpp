@@ -42,17 +42,8 @@ void TwsTradeProvider::accountDownloadEnd(const IBString& accountName) {
 }
 
 void TwsTradeProvider::managedAccounts(const IBString& accountsList) {
-
     std::vector<std::string> accounts;
     boost::split(accounts, accountsList, boost::is_any_of(","), boost::token_compress_on); // SplitVec == { "hello abc","ABC","aBc goodbye" }
-
-
-//        split_vector_type SplitVec; // #2: Search for tokens
-//        split( SplitVec, str1, is_any_of("-*"), token_compress_on ); // SplitVec == { "hello abc","ABC","aBc goodbye" }
-
-//    accountsList
-
-//    The comma delimited list of FA managed accounts.
 }
 
 void TwsTradeProvider::sendOrder(FreeQuant::Order& order) {
