@@ -6,6 +6,8 @@
 #endif
 
 #include <cstdio>
+#include <iostream>
+
 #include "PosixTestClient.h"
 
 const unsigned MAX_ATTEMPTS = 50;
@@ -28,6 +30,7 @@ int main(int argc, char** argv)
 
 		client.connect( host, port, clientId);
 
+        std::cout << "dffffffffffffffffffffffffffffffffffffffffff" << std::endl;
 		while( client.isConnected()) {
 			client.processMessages();
 		}

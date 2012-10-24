@@ -11,6 +11,7 @@
 #include <freequant/trade/FixTradeProvider.h>
 
 #include "commondialog.h"
+#include "PosixTestClient.h"
 
 namespace Ui {
 class MainWindow;
@@ -248,6 +249,7 @@ private:
     std::string faGroupsXML;
     std::string faProfilesXML;
     std::string faAliasesXML;
+    PosixTestClient client;
 };
 
 #endif // MAINWINDOW_H

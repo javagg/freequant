@@ -129,6 +129,7 @@ public:
     virtual void deltaNeutralValidation(int reqId, const UnderComp& underComp){}
     virtual void tickSnapshotEnd( int reqId){}
     virtual void marketDataType( TickerId reqId, int marketDataType){}
+    virtual void commissionReport( const CommissionReport &commissionReport) {}
 private:
     EPosixClientSocket *socket;
     TickerId m_tickerId;

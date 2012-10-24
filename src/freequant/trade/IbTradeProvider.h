@@ -5,14 +5,13 @@
 #include <vector>
 
 #include <freequant/trade/TradeProvider.h>
-#include <freequant/strategy/Order.h>
 
 namespace FreeQuant {
 
 class IbTradeProvider : public TradeProvider {
 public:
     IbTradeProvider(FreeQuant::TradeProvider::Callback *callback = 0);
-    virtual ~IbTradeProvider() {}
+    virtual ~IbTradeProvider();
     void connect();
     void disconnect();
     bool isConnected() const;

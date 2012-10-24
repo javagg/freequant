@@ -9,27 +9,33 @@
 
 namespace FreeQuant {
 
-class IbTradeProvider::Impl : public EWrapper {
+class IbTradeProvider::Impl : private EWrapper {
 public:
     Impl(FreeQuant::TradeProvider::Callback *callback) :
         _socket(new EPosixClientSocket(this)),
         _callback(callback) {
-
     }
 
     ~Impl() {}
 
     void connect() {
+        bool ret = _socket->eConnect("127.0.0.1", 7496, 0);
+        if (ret) {
+            std::cout << "--->>> serverVersion: " << _socket->serverVersion() << std::endl
+                      << "--->>> TwsConnectionTime: " << _socket-> TwsConnectionTime() << std::endl;
 
+            _socket->reqCurrentTime();
+        }
     }
 
     void disconnect() {
-
+        _socket->eDisconnect();
     }
 
     bool isConnected() const {
-
+        return _socket->isConnected();
     }
+
     std::string name() const { return "TWS"; }
 
     std::vector<std::string> availableExchanges() const {
@@ -80,7 +86,7 @@ public:
 
     }
 
-    virtual void tickPrice( TickerId tickerId, TickType field, double price, int canAutoExecute) {}
+    virtual void tickPrice(TickerId tickerId, TickType field, double price, int canAutoExecute) {}
     virtual void tickSize( TickerId tickerId, TickType field, int size) {}
     virtual void tickOptionComputation( TickerId tickerId, TickType tickType, double impliedVol, double delta,
         double optPrice, double pvDividend, double gamma, double vega, double theta, double undPrice) {}
@@ -96,8 +102,12 @@ public:
 
     }
     virtual void openOrderEnd() {}
-    virtual void winError( const IBString &str, int lastError) {}
-    virtual void connectionClosed()  {}
+    void winError( const IBString &str, int lastError) {
+        std::cout << "--->>>" <<__FUNCTION__ << str << std::endl;
+    }
+    virtual void connectionClosed()  {
+        std::cout << "--->>>" <<__FUNCTION__ << std::endl;
+    }
     virtual void updateAccountValue(const IBString& key, const IBString& val,
         const IBString& currency, const IBString& accountName)  {
         std::string code = _accoutCodes.front();
@@ -114,15 +124,19 @@ public:
     virtual void contractDetailsEnd( int reqId)  {}
     virtual void execDetails( int reqId, const Contract& contract, const Execution& execution) {}
     virtual void execDetailsEnd( int reqId) {}
-    virtual void error(const int id, const int errorCode, const IBString errorString) {}
+    void error(const int id, const int errorCode, const IBString errorString) {
+        std::cout << errorString << std::endl;
+    }
     virtual void updateMktDepth(TickerId id, int position, int operation, int side,
        double price, int size) {}
     virtual void updateMktDepthL2(TickerId id, int position, IBString marketMaker, int operation,
        int side, double price, int size)  {}
     virtual void updateNewsBulletin(int msgId, int msgType, const IBString& newsMessage, const IBString& originExch) {}
-    virtual void managedAccounts( const IBString& accountsList)  {
+    void managedAccounts(const IBString& accountsList)  {
+        std::cout << "--->>>" <<__FUNCTION__ << std::endl;
         std::vector<std::string> accounts;
-        boost::split(accounts, accountsList, boost::is_any_of(","), boost::token_compress_on); // SplitVec == { "hello abc","ABC","aBc goodbye" }
+        boost::split(accounts, accountsList, boost::is_any_of(","), boost::token_compress_on);
+        std::copy(accounts.begin(), accounts.end(), std::ostream_iterator<std::string>(std::cout, "\n"));
     }
     virtual void receiveFA(faDataType pFaDataType, const IBString& cxml) {}
     virtual void historicalData(TickerId reqId, const IBString& date, double open, double high,
@@ -134,32 +148,42 @@ public:
     virtual void scannerDataEnd(int reqId)  {}
     virtual void realtimeBar(TickerId reqId, long time, double open, double high, double low, double close,
         long volume, double wap, int count)  {}
-    virtual void currentTime(long time) {}
+    virtual void currentTime(long time) {
+        std::cout << "currentTime: " << time << std::endl;
+    }
     virtual void fundamentalData(TickerId reqId, const IBString& data) {}
     virtual void deltaNeutralValidation(int reqId, const UnderComp& underComp) {}
     virtual void tickSnapshotEnd( int reqId) {}
     virtual void marketDataType( TickerId reqId, int marketDataType)  {}
-    boost::scoped_ptr<EPosixClientSocket> _socket;
+    virtual void commissionReport( const CommissionReport &commissionReport) {
+
+    }
+
+    std::auto_ptr<EPosixClientSocket> _socket;
     std::vector<std::string> _accoutCodes;
     FreeQuant::TradeProvider::Callback *_callback;
 };
 
-void IbTradeProvider::connect() {
+IbTradeProvider::IbTradeProvider(FreeQuant::TradeProvider::Callback *callback) :
+   _impl(new IbTradeProvider::Impl(callback)) {
+}
 
+IbTradeProvider::~IbTradeProvider() {
+    delete _impl; _impl = 0;
+}
+
+void IbTradeProvider::connect() {
+    _impl->connect();
 }
 
 void IbTradeProvider::disconnect() {
-
+    _impl->disconnect();
 }
 
 bool IbTradeProvider::isConnected() const {
-
+    return _impl->isConnected();
 }
 
-IbTradeProvider::IbTradeProvider(FreeQuant::TradeProvider::Callback *callback) :
-   _impl(new IbTradeProvider::Impl(callback)) {
-
-}
 
 std::vector<std::string> IbTradeProvider::availableAccounts() const {
     return _impl->availableAccounts();

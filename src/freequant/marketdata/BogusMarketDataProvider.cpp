@@ -10,24 +10,4 @@ BogusMarketDataProvider::BogusMarketDataProvider(MarketDataProvider::Callback *c
 
 }
 
-//BogusMarketDataProvider::~BogusMarketDataProvider() {
-
-//}
-
-//void BogusMarketDataProvider::connect() {
-
-//}
-
-//void BogusMarketDataProvider::disconnect() {
-
-//}
-
-//bool BogusMarketDataProvider::isConnected() {
-//    return false;
-//}
-
-//void BogusMarketDataProvider::onData() {
-
-//}
-
 } // namespace FreeQuant

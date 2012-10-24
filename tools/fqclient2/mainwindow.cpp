@@ -2,7 +2,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <freequant/marketdata/CtpMarketDataProvider.h>
+//#include <freequant/marketdata/CtpMarketDataProvider.h>
+#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
+#include <freequant/trade/FixTradeProvider.h>
+#include <freequant/trade/CtpTradeProvider.h>
+#include <freequant/trade/IbTradeProvider.h>
+
 #include <freequant/trade/FixTradeProvider.h>
 #include <freequant/trade/IbTradeProvider.h>
 
@@ -10,9 +15,24 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    int tr = 3;
+    switch(tr){
+    case 1:
+         trade_provider = new FreeQuant::CtpTradeProvider;
+        break;
+    case 2:
+        trade_provider = new FreeQuant::FixTradeProvider("config.fix");
+        break;
+    case 3:
+    default:
+        trade_provider = new FreeQuant::IbTradeProvider;
+        break;
+    }
+
     md_provider = new FreeQuant::CtpMarketDataProvider;
 //    trade_provider = new FreeQuant::FixTradeProvider("config.fix");
-    trade_provider = new FreeQuant::IbTradeProvider();
+//    trade_provider = new FreeQuant::IbTradeProvider();
+
 }
 
 MainWindow::~MainWindow() {
@@ -59,8 +79,9 @@ void MainWindow::onClear() {
 }
 
 void MainWindow::onConnect() {
-    md_provider->connect();
-    trade_provider->connect();
+//    md_provider->connect();
+//    trade_provider->connect();
+    client.connect("",7496, 0);
 //    CommonDialog dialog(this, CommonDialog::ConnectionDialog);
 //    if (dialog.exec() == QDialog::Accepted) {
 //        QMap<QString, QVariant> params = dialog.params();
@@ -80,7 +101,7 @@ void MainWindow::onConnect() {
 }
 
 void MainWindow::onDisconnect() {
-    md_provider->disconnect();
+//    md_provider->disconnect();
     trade_provider->disconnect();
 }
 

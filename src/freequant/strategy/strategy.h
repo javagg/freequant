@@ -7,6 +7,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <freequant/FreeQuantPlatform.h>
 #include <freequant/marketdata/Bar.h>
 #include <freequant/marketdata/quote.h>
 #include <freequant/marketdata/MarketDataProvider.h>
