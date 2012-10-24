@@ -12,8 +12,8 @@
 
 class DmaStrategy : public FreeQuant::Strategy {
 private:
-    std::shared_ptr<FreeQuant::MarketDataProvider> m_mdProvider;
-    std::shared_ptr<FreeQuant::TradeProvider> m_tradeProvider;
+    boost::shared_ptr<FreeQuant::MarketDataProvider> m_mdProvider;
+    boost::shared_ptr<FreeQuant::TradeProvider> m_tradeProvider;
     FreeQuant::MA ma;
 public:
     void onStart() {

@@ -21,15 +21,16 @@ else()
 endif()
 
 #Find external dependencies
-#set(BOOST_LIBRARYDIR "C:\Program Files (x86)\boost\boost_1_51\lib")
-find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
-#find_package(Boost REQUIRED)
+#find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
+find_package(Boost)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-    add_subdirectory(doc)
+#    add_subdirectory(doc)
 endif()
+
+#message(${Boost_LIBRARIES})
 
 if(WIN32 OR UNIX)
     option(BUILD_CTP "Build CTP." TRUE)

@@ -2,7 +2,7 @@ find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
 set(QT_USE_QTUITOOLS TRUE)
 
-add_definitions(-DIB_USE_STD_STRING)
+add_definitions(-DIB_USE_STD_STRING -D_AFXDLL)
 
 #FILE(GLOB MarkTracker_SOURCES *.cpp)
 #FILE(GLOB MarkTracker_HEADERS *.hpp)

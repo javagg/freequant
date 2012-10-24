@@ -151,4 +151,3 @@ void CtpMarketDataProvider::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField 
 }
 
 } // namespace FreeQuant
-

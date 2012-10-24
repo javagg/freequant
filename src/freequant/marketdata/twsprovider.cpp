@@ -6,8 +6,6 @@
 #include "EPosixClientSocket.h"
 #include "Contract.h"
 
-using namespace std;
-
 namespace FreeQuant {
 
 class TwsEWrapper : public EWrapper {
@@ -43,7 +41,7 @@ public:
         contract.exchange = "SMART";
         contract.currency = "USD";
         const IBString genericTicks ="100;101;104";
-        cout << contract.symbol << endl;
+        std::cout << contract.symbol << std::endl;
         socket->reqMktData(m_tickerId, contract, genericTicks, false);
     }
 
@@ -113,7 +111,7 @@ public:
     virtual void realtimeBar(TickerId reqId, long time, double open, double high, double low, double close,
         long volume, double wap, int count) {}
     virtual void currentTime(long time) {
-        cout << "server time" << time << endl;
+        std::cout << "server time" << time << std::endl;
 //        if ( m_state == ST_PING_ACK) {
 //            time_t t = ( time_t)time;
 //            struct tm * timeinfo = localtime ( &t);
@@ -157,11 +155,11 @@ bool TwsProvider::isConnected() const {
     return wrapper->isConnected();
 }
 
-void TwsProvider::subscribe(vector<string> symbols) {
+void TwsProvider::subscribe(std::vector<std::string> symbols) {
     wrapper->subscribe(symbols);
 }
 
-void TwsProvider::unsubscribe(vector<string> symbols) {
+void TwsProvider::unsubscribe(std::vector<std::string> symbols) {
     wrapper->unsubscribe(symbols);
 }
 
@@ -173,7 +171,7 @@ void TwsProvider::reqHistoricalData(FreeQuant::DateTime startTime, FreeQuant::Da
     wrapper->reqHistoricalData();
 }
 
-void TwsProvider::reqFundamentalData(string symbol) {
+void TwsProvider::reqFundamentalData(std::string symbol) {
     wrapper->reqFundamentalData(symbol);
 }
 

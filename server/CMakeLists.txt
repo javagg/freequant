@@ -1,5 +1,5 @@
 add_executable(server main.cpp)
-target_link_libraries(server ${PROJECT_NAME} ${QUICKFIX_LIBRARIES} ${WS2_32})
+target_link_libraries(server ${PROJECT_NAME} ${QUICKFIX_LIBRARIES} ${WS2_32} ${Boost_LIBRARIES})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.fix ${PROJECT_BINARY_DIR}/bin/config.fix COPYONLY)

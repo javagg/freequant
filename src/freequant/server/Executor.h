@@ -42,7 +42,7 @@ public:
     void onMessage(const FIX44::SecurityDefinitionRequest&, const FIX::SessionID&);
 
 private:
-    std::shared_ptr<MarketDataGenerator> _mdGenerator;
+    boost::shared_ptr<MarketDataGenerator> _mdGenerator;
     void onGenerated(const FreeQuant::Bar&);
     FIX::SessionID _sessionID;
     std::list<FIX::SessionID> _sessionIDs;

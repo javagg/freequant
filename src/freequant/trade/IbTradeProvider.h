@@ -17,8 +17,12 @@ public:
     bool isConnected() const;
     std::string name() const { return "IB"; }
 
-    std::vector<std::string> availableExchanges() const {}
-    std::vector<std::string> availableInstruments() const {}
+    std::vector<std::string> availableExchanges() const {
+        return std::vector<std::string>();
+    }
+    std::vector<std::string> availableInstruments() const {
+        return std::vector<std::string>();
+    }
     std::vector<std::string> availableAccounts() const;
 
     void updateAccounts();

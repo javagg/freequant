@@ -27,7 +27,9 @@ public:
 
     void connect() {}
     void disconnect() {}
-    bool isConnected() const {}
+    bool isConnected() const {
+        return false;
+    }
 
     void logon() {
         CThostFtdcReqUserLoginField req = {};
