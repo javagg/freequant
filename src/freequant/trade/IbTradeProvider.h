@@ -41,7 +41,6 @@ private:
     Impl *_impl;
 };
 
-
 }  // namespace FreeQuant
 
 #endif // FQ_TRADE_IBTRADEPROVIDER_H

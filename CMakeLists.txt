@@ -21,8 +21,8 @@ else()
 endif()
 
 #Find external dependencies
-#find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
-find_package(Boost)
+find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
+#find_package(Boost)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
