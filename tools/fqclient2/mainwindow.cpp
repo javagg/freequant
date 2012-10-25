@@ -3,7 +3,6 @@
 #include "ui_mainwindow.h"
 
 #include <freequant/marketdata/CtpMarketDataProvider.h>
-//#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
 #include <freequant/trade/FixTradeProvider.h>
 #include <freequant/trade/CtpTradeProvider.h>
 #include <freequant/trade/TwsTradeProvider.h>
