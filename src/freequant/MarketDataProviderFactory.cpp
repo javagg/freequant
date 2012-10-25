@@ -1,4 +1,4 @@
-#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
+#include <freequant/marketdata/CtpMarketDataProvider.h>
 
 #include "MarketDataProviderFactory.h"
 
@@ -11,6 +11,8 @@ MarketDataProvider *MarketDataProviderFactory::createMarketDataProvider(std::str
     } else {
         provider = new FreeQuant::CtpMarketDataProvider();
     }
+
+    return provider;
 }
 
 }

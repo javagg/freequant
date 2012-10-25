@@ -34,7 +34,7 @@ void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
 void Strategy::start() {
     Engine::start();
     m_mdProvider->connect();
-    vector<string> symbols = boost::assign::list_of("IF1210")("MSFT");
+    vector<string> symbols = boost::assign::list_of("IF1212")("IF1301");
     m_mdProvider->subscribe(symbols);
 }
 

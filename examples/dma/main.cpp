@@ -5,7 +5,8 @@
 #include <freequant/indicators/indicator.h>
 #include <freequant/indicators/ma.h>
 #include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
+#include <freequant/marketdata/CtpMarketDataProvider.h>
+//#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
 #include <freequant/trade/TradeProvider.h>
 #include <freequant/trade/CtpTradeProvider.h>
 

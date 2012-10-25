@@ -8,6 +8,9 @@
 #include "Order.h"
 #include "Contract.h"
 
+#ifdef _WIN32
+#  include <Winsock2.h>
+#endif
 
 static long tickId = 0;
 
@@ -74,7 +77,6 @@ public:
         contract.exchange = "SMART";
         contract.currency = "USD";
         const IBString genericTicks ="428";
-//        std::cout << contract.symbol << std::endl;
         _socket->reqMktData(0, contract, genericTicks, false);
     }
 
