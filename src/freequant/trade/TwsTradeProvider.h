@@ -36,6 +36,9 @@ public:
     void sendOrder(FreeQuant::Order& order);
     void cancelOrder(FreeQuant::Order& order);
     void replaceOrder(FreeQuant::Order& order);
+
+    void updateIntrument(std::string symbol, bool block = false);
+    void updateIntrument(FreeQuant::Instrument& instrument);
 private:
     class Impl;
     Impl *_impl;

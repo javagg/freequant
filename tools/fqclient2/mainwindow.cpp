@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     int tr = 3;
     switch(tr){
     case 1:
-         trade_provider = new FreeQuant::CtpTradeProvider;
+        trade_provider = new FreeQuant::CtpTradeProvider;
         break;
     case 2:
         trade_provider = new FreeQuant::FixTradeProvider("config.fix");

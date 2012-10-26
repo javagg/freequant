@@ -35,6 +35,9 @@ public:
 
     virtual void subscribe(std::vector<std::string> symbols) = 0;
     virtual void unsubscribe(std::vector<std::string> symbols) = 0;
+
+    virtual void updateIntrument(std::string symbol, bool block = false) = 0;
+
 };
 
 }

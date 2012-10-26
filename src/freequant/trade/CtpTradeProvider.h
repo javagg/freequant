@@ -29,7 +29,9 @@ public:
     void updateAccounts();
     void updatePosition(std::string symbol);
     void openOrders() const;
+
     void updateIntrument(std::string symbol, bool block = false);
+    void updateIntrument(FreeQuant::Instrument& instrument) {}
 
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);

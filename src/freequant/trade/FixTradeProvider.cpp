@@ -616,7 +616,8 @@ FixTradeProvider::FixTradeProvider(FreeQuant::TradeProvider::Callback *callback)
     _impl(new FixTradeProvider::Impl("", callback)) {
 }
 
-FixTradeProvider::FixTradeProvider(std::string connection) {
+FixTradeProvider::FixTradeProvider(std::string connection) :
+    _impl(new FixTradeProvider::Impl("", 0)) {
 
 }
 

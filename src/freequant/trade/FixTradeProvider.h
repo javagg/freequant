@@ -29,6 +29,8 @@ public:
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
 
+    void updateIntrument(std::string symbol, bool block = false) {}
+    void updateIntrument(FreeQuant::Instrument& instrument) {}
 private:
     class Impl;
     Impl *_impl;

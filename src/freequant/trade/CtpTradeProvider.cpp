@@ -21,7 +21,7 @@ public:
 
     }
 
-    ~Impl() {
+    virtual ~Impl() {
 
     }
 
@@ -209,6 +209,7 @@ public:
         instrument.setTickSize(i->PriceTick);
         instrument.setMargin(i->LongMarginRatio);
         instrument.setType(FreeQuant::Instrument::Stock);
+        std::cout << i->InstrumentID << "dddd" << std::endl;
     }
 
     void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
@@ -279,7 +280,7 @@ CtpTradeProvider::CtpTradeProvider(FreeQuant::TradeProvider::Callback *callback)
 }
 
 CtpTradeProvider::~CtpTradeProvider() {
-    delete _impl;
+    delete _impl; _impl = 0;
 }
 
 void CtpTradeProvider::connect() {

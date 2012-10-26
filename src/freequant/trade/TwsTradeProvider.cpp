@@ -8,11 +8,14 @@
 #include "Order.h"
 #include "Contract.h"
 
+#include <freequant/strategy/Instrument.h>
+
 #ifdef _WIN32
 #  include <Winsock2.h>
 #endif
 
 static long tickId = 0;
+static long reqId = 0;
 
 namespace FreeQuant {
 
@@ -100,6 +103,12 @@ public:
 
     }
 
+    void updateIntrument(std::string symbol, bool block) {
+        Contract contract;
+        contract.symbol = symbol;
+        _socket->reqContractDetails(reqId++, contract);
+    }
+
     void exec() {
         while (isConnected()) {
             int fd = -1;
@@ -182,7 +191,9 @@ private:
     virtual void updateAccountTime(const IBString& timeStamp)  {}
     virtual void accountDownloadEnd(const IBString& accountName)  {}
     virtual void nextValidId( OrderId orderId)  {}
-    virtual void contractDetails( int reqId, const ContractDetails& contractDetails)  {}
+    virtual void contractDetails(int reqId, const ContractDetails& contractDetails)  {
+        std::cout << contractDetails.longName << std::endl;
+    }
     virtual void bondContractDetails( int reqId, const ContractDetails& contractDetails)  {}
     virtual void contractDetailsEnd( int reqId)  {}
     virtual void execDetails( int reqId, const Contract& contract, const Execution& execution) {}
@@ -266,5 +277,12 @@ void TwsTradeProvider::cancelOrder(FreeQuant::Order& order) {
 void TwsTradeProvider::replaceOrder(FreeQuant::Order& order) {
 }
 
+void TwsTradeProvider::updateIntrument(std::string symbol, bool block) {
+    _impl->updateIntrument(symbol, block);
+}
+
+void TwsTradeProvider::updateIntrument(FreeQuant::Instrument& instrument) {
+
+}
 
 }
