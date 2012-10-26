@@ -6,6 +6,7 @@
 
 namespace FreeQuant {
 class Order;
+class Instrument;
 }
 
 namespace FreeQuant {
@@ -37,7 +38,7 @@ public:
     virtual void unsubscribe(std::vector<std::string> symbols) = 0;
 
     virtual void updateIntrument(std::string symbol, bool block = false) = 0;
-
+    virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
 };
 
 }

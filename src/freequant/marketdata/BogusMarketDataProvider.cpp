@@ -6,8 +6,4 @@
 
 namespace FreeQuant {
 
-BogusMarketDataProvider::BogusMarketDataProvider(MarketDataProvider::Callback *callback) {
-
-}
-
 } // namespace FreeQuant

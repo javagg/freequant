@@ -191,8 +191,15 @@ private:
     virtual void updateAccountTime(const IBString& timeStamp)  {}
     virtual void accountDownloadEnd(const IBString& accountName)  {}
     virtual void nextValidId( OrderId orderId)  {}
-    virtual void contractDetails(int reqId, const ContractDetails& contractDetails)  {
-        std::cout << contractDetails.longName << std::endl;
+    virtual void contractDetails(int reqId, const ContractDetails& details)  {
+
+
+        std::cout << details.longName
+                  << details.priceMagnifier
+                  << details.summary.strike
+                  << details.summary.secType
+                  << details.minTick
+                  << std::endl;
     }
     virtual void bondContractDetails( int reqId, const ContractDetails& contractDetails)  {}
     virtual void contractDetailsEnd( int reqId)  {}

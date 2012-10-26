@@ -50,6 +50,9 @@ public:
     Type type() const { return _type; }
     void setType(Instrument::Type type) {  _type = type; }
 
+    std::string currency() const { return _currency; }
+    void setCurrency(std::string currency) {  _currency = currency; }
+
     void setMinTradeVolume(int value) { _minTradeVolume = value; }
     int minTradeVolume() const { return _minTradeVolume; }
 
@@ -66,7 +69,9 @@ private:
     double _tickSize;
     double _margin;
     Type _type;
-	Currency *mCurrency;
+
+    std::string _currency;
+//	Currency *mCurrency;
 
     int _minTradeVolume;
 

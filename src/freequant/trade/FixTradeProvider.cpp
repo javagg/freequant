@@ -36,6 +36,7 @@
 
 #include "FixTradeProvider.h"
 #include <freequant/utils/Guid.h>
+#include <freequant/strategy/Instrument.h>
 
 using namespace std;
 
@@ -47,7 +48,7 @@ public:
         _settings(filename), _storeFactory(_settings), _initiator(*this, _storeFactory, _settings) {
     }
 
-    ~Impl() {
+    virtual ~Impl() {
 
     }
 
@@ -354,6 +355,18 @@ public:
         FIX::Session::sendToTarget(message);
     }
 
+    void updateIntrument(FreeQuant::Instrument& instrument) {
+        FIX44::SecurityDefinitionRequest message;
+        string id = FreeQuant::toGuidString1();
+        message.set(FIX::SecurityReqID(id));
+        message.set(FIX::SecurityRequestType(FIX::SecurityRequestType_SYMBOL));
+        message.set(FIX::Symbol(instrument.symbol()));
+
+        try {
+            FIX::Session::sendToTarget(message);
+        } catch (FIX::SessionNotFound&) {}
+    }
+
 private:
     void onCreate(const FIX::SessionID&) {
 
@@ -602,7 +615,14 @@ private:
 
     }
 
-    void onMessage(const FIX44::SecurityDefinition&, const FIX::SessionID&) {
+    void onMessage(const FIX44::SecurityDefinition& message, const FIX::SessionID& sessionID) {
+        FIX::Currency currency;
+        FIX::SecurityType securityType;
+        FIX::StrikePrice strikePrice;
+
+        message.get(currency);
+        message.get(securityType); // FIX::SecurityType_FUTURE
+        message.get(strikePrice);
 
     }
 
@@ -672,6 +692,14 @@ void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
 
 void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
 
+}
+
+void FixTradeProvider::updateIntrument(std::string symbol, bool block) {
+
+}
+
+void FixTradeProvider::updateIntrument(FreeQuant::Instrument& instrument) {
+    _impl->updateIntrument(instrument);
 }
 
 } // namespace FreeQuant

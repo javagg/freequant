@@ -1,7 +1,7 @@
 #ifndef FQ_PROVIDER_H
 #define FQ_PROVIDER_H
 
-#include <stdexcept>
+#include <string>
 
 namespace FreeQuant {
 

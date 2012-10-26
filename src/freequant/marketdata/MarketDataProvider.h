@@ -22,9 +22,12 @@ public:
         virtual ~Callback() {}
         virtual void onConnected() {}
         virtual void onDisconnected() {}
+        virtual void onSubscribed() {}
+        virtual void onUnsubscribed() {}
+        virtual void onBar(FreeQuant::Bar& bar) {}
     };
 
-    MarketDataProvider(Callback *Callback = 0) {}
+    explicit MarketDataProvider(Callback *callback = 0) : _callback(callback) {}
     virtual ~MarketDataProvider() {}
 
     void connect(boost::function<void(const FreeQuant::Bar&)> func) {
@@ -39,8 +42,11 @@ public:
     virtual void unsubscribe(std::vector<std::string> symbols) = 0;
 
 protected:
+    Callback *callback() { return _callback; }
     typedef boost::signals2::signal<void (const FreeQuant::Bar&)> OnBar;
     OnBar _onBar;
+private:
+    Callback *_callback;
 };
 
 } // namespace FreeQuant

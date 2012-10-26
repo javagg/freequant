@@ -209,6 +209,7 @@ public:
         instrument.setTickSize(i->PriceTick);
         instrument.setMargin(i->LongMarginRatio);
         instrument.setType(FreeQuant::Instrument::Stock);
+        instrument.setCurrency("RMB");
         std::cout << i->InstrumentID << "dddd" << std::endl;
     }
 

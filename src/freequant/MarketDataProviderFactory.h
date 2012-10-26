@@ -5,11 +5,17 @@
 
 namespace FreeQuant {
 
-class MarketDataProvider;
+class Provider;
 
-class MarketDataProviderFactory {
+class ProviderFactory {
 public:
-    static MarketDataProvider *createMarketDataProvider(std::string name);
+    virtual ~ProviderFactory() {}
+    virtual Provider *create() = 0;
+    virtual void destroy(Provider *) = 0;
+
+//    static MarketDataProvider *createMarketDataProvider(std::string name);
 };
+
+
 }
 #endif // FQ_MDPROVIDERFACTORY_H
