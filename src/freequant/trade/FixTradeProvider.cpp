@@ -35,7 +35,7 @@
 #include <quickfix/fix44/OrderCancelRequest.h>
 
 #include "FixTradeProvider.h"
-#include <freequant/utils/Guid.h>
+#include <freequant/utils/Utility.h>
 #include <freequant/strategy/Instrument.h>
 
 using namespace std;
@@ -46,6 +46,10 @@ class FixTradeProvider::Impl : private FIX::Application, private FIX::MessageCra
 public:
     Impl(std::string filename, TradeProvider::Callback *callback = 0) :
         _settings(filename), _storeFactory(_settings), _initiator(*this, _storeFactory, _settings) {
+    }
+
+    Impl(std::istream& istream, TradeProvider::Callback *callback = 0) :
+        _settings(istream), _storeFactory(_settings), _initiator(*this, _storeFactory, _settings) {
     }
 
     virtual ~Impl() {
@@ -636,9 +640,24 @@ FixTradeProvider::FixTradeProvider(FreeQuant::TradeProvider::Callback *callback)
     _impl(new FixTradeProvider::Impl("", callback)) {
 }
 
-FixTradeProvider::FixTradeProvider(std::string connection) :
-    _impl(new FixTradeProvider::Impl("", 0)) {
-
+FixTradeProvider::FixTradeProvider(std::string connection) {
+    std::map<string, string> params = parseParamsFromString(connection);
+    stringstream ss;
+    ss << "[DEFAULT]" << endl
+       << "ConnectionType=initiator" << endl
+       << "ReconnectInterval=60" << endl
+       << "SenderCompID=" << "ME" <<  endl
+       << "[SESSION]" << endl
+       << "BeginString=FIX.4.4" << endl
+       << "TargetCompID=" << "FQ" << endl
+       << "DataDictionary=FIX44.xml" << endl
+       << "StartTime=00:00:01" << endl
+       << "EndTime=23:59:59" << endl
+       << "HeartBtInt=20" << endl
+       << "FileStorePath=." << endl
+       << "SocketConnectPort=" << 7711 << endl
+       << "SocketConnectHost=" << "127.0.0.1" << endl;
+    _impl = new FixTradeProvider::Impl(ss, 0);
 }
 
 FixTradeProvider::~FixTradeProvider() {
