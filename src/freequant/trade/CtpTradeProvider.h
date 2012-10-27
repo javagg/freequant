@@ -10,6 +10,8 @@ namespace FreeQuant {
 class CtpTradeProvider : public TradeProvider {
 public:
     explicit CtpTradeProvider(FreeQuant::TradeProvider::Callback *callback = 0);
+    explicit CtpTradeProvider(const std::string& params, FreeQuant::TradeProvider::Callback *callback = 0);
+
     virtual ~CtpTradeProvider();
     virtual void connect();
     virtual void disconnect();

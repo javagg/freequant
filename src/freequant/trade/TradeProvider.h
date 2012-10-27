@@ -1,6 +1,7 @@
 #ifndef FQ_TRADE_TRADEPROVIDER_H
 #define FQ_TRADE_TRADEPROVIDER_H
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -13,6 +14,7 @@ namespace FreeQuant {
 
 class TradeProvider {
 public:
+    typedef std::map<std::string, std::string> Params;
     class Callback {
         virtual ~Callback() {}
     };

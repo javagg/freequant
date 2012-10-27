@@ -686,11 +686,11 @@ void FixTradeProvider::logout() {
 }
 
 std::vector<std::string> FixTradeProvider::availableExchanges() const {
-
+    return std::vector<std::string>();
 }
 
 std::vector<std::string> FixTradeProvider::availableInstruments() const {
-
+    return std::vector<std::string>();
 }
 
 void FixTradeProvider::sendOrder(FreeQuant::Order& order) {

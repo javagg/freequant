@@ -4,6 +4,7 @@
 #include <freequant/strategy/Order.h>
 #include <freequant/strategy/Position.h>
 #include <freequant/strategy/Instrument.h>
+#include <freequant/utils/Utility.h>
 
 #include "CtpTradeProvider.h"
 #include "api/trade/win/public/ThostFtdcTraderApi.h"
@@ -19,6 +20,14 @@ class CtpTradeProvider::Impl {
 public:
     Impl(FreeQuant::TradeProvider::Callback *callback) : _callback(callback), _api(0) {
 
+    }
+
+    Impl(TradeProvider::Params& param, FreeQuant::TradeProvider::Callback *callback) :
+        _callback(callback), _api(0) {
+        _appId = param["brokerId"];
+        _userId = param["userId"];
+        _password = param["password"];
+        _front = param["protocal"] + param["host"] + param["port"];
     }
 
     virtual ~Impl() {
@@ -275,9 +284,15 @@ private:
     std::string _appId;
     std::string _userId;
     std::string _password;
+    std::string _front;
 };
 
 CtpTradeProvider::CtpTradeProvider(FreeQuant::TradeProvider::Callback *callback) : _impl(new CtpTradeProvider::Impl(callback)) {
+}
+
+CtpTradeProvider::CtpTradeProvider(const string& config, FreeQuant::TradeProvider::Callback *callback) :
+    _impl(new CtpTradeProvider::Impl(callback)) {
+    Params params = FreeQuant::parseParamsFromString(config);
 }
 
 CtpTradeProvider::~CtpTradeProvider() {
