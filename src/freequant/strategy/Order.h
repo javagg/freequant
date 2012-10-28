@@ -19,15 +19,15 @@ public:
 
     enum Status {
         PendingNew,
-         New,
-         PartiallyFilled,
-         Filled,
-         PendingCancel,
-         Cancelled,
-         Expired,
-         PendingReplace,
-         Replaced,
-         Rejected
+        New,
+        PartiallyFilled,
+        Filled,
+        PendingCancel,
+        Cancelled,
+        Expired,
+        PendingReplace,
+        Replaced,
+        Rejected
     };
 
     explicit Order();

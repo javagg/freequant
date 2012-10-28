@@ -2,7 +2,6 @@
 #define FQ_UTILS_HTTPCLIENT_H
 
 #include <string>
-#include <curl/curl.h>
 
 namespace FreeQuant {
 
@@ -12,7 +11,7 @@ public:
     ~HttpClient();
     std::string get(std::string url);
 private:
-    CURL *curl;
+    void *_curl;
 };
 
 } // namespace FreeQuant

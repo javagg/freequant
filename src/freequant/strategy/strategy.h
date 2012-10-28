@@ -9,7 +9,7 @@
 
 #include <freequant/FreeQuantPlatform.h>
 #include <freequant/marketdata/Bar.h>
-#include <freequant/marketdata/quote.h>
+#include <freequant/marketdata/Quote.h>
 #include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/strategy/Engine.h>
 #include <freequant/strategy/Task.h>
@@ -122,7 +122,7 @@ public:
 
     MarketDataProvider *marketDataProvider() const { return m_mdProvider; }
     TradeProvider *tradeProvider() const { return m_tradeProvider; }
-    OrderBook *orderBook() const {}
+    OrderBook *orderBook() const { return 0; }
 
 private:
     void start();

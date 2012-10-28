@@ -1,0 +1,6 @@
+#ifndef FQ_UTILS_RUBYINTERPRETER_H
+#define FQ_UTILS_RUBYINTERPRETER_H
+
+#include <ruby.h>
+
+#endif // FQ_UTILS_RUBYINTERPRETER_H

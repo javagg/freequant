@@ -38,7 +38,8 @@ if(DOXYGEN_FOUND)
 #    add_subdirectory(doc)
 endif()
 
-#message(${Boost_LIBRARIES})
+find_package(Ruby 1.9)
+find_package(PythonInterp)
 
 if(WIN32 OR UNIX)
     option(BUILD_CTP "Build CTP." TRUE)
@@ -76,7 +77,7 @@ elseif(UNIX)
     endif()
 endif()
 
-include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS} ${RUBY_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/vendors/otl)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 link_directories(${Boost_LIBRARY_DIRS})
