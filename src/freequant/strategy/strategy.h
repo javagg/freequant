@@ -135,8 +135,14 @@ private:
     Instruments _instruments;
     Orders _orders;
     Tasks _tasks;
+
     MarketDataProvider *m_mdProvider;
     TradeProvider *m_tradeProvider;
+
+    class MdProviderCallback;
+    MdProviderCallback *_mdCallback;
+    class TradeProviderCallback;
+    TradeProviderCallback *_tradeCallback;
 };
 
 } // FQ_STRATEGY_STRATEGY_H

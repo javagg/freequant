@@ -49,6 +49,15 @@ private:
     Callback *_callback;
 };
 
+class DefaultMarketDataProviderCallback : public MarketDataProvider::Callback {
+public:
+    void onConnected() {}
+    void onDisconnected() {}
+    void onSubscribed() {}
+    void onUnsubscribed() {}
+    void onBar(FreeQuant::Bar& bar) {}
+};
+
 } // namespace FreeQuant
 
 #endif //FQ_MARKETDATA_MARKETDATAPROVIDER_H

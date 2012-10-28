@@ -7,6 +7,7 @@
 namespace FreeQuant {
 class Order;
 class Instrument;
+class Bar;
 }
 
 namespace FreeQuant {
@@ -14,6 +15,7 @@ namespace FreeQuant {
 class TradeProvider {
 public:
     class Callback {
+    public:
         virtual ~Callback() {}
     };
 
@@ -39,6 +41,15 @@ public:
 
     virtual void updateIntrument(std::string symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
+};
+
+class DefaultTradeProviderCallback : public TradeProvider::Callback {
+public:
+    void onConnected() {}
+    void onDisconnected() {}
+    void onSubscribed() {}
+    void onUnsubscribed() {}
+    void onBar(FreeQuant::Bar& bar) {}
 };
 
 }

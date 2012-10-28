@@ -13,12 +13,25 @@ using namespace std;
 
 namespace FreeQuant {
 
-Strategy::Strategy() : m_mdProvider(0), m_tradeProvider(0) {
+class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
+
+};
+
+class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
+
+};
+
+
+Strategy::Strategy() :
+    m_mdProvider(0), m_tradeProvider(0),
+    _mdCallback(new Strategy::MdProviderCallback()),
+    _tradeCallback(new Strategy::TradeProviderCallback()) {
 
 }
 
 Strategy::~Strategy() {
-
+    delete _mdCallback; _mdCallback = 0;
+    delete _tradeCallback; _tradeCallback = 0;
 }
 
 void Strategy::setTradeProvider(FreeQuant::TradeProvider *provider) {

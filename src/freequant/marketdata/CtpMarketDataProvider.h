@@ -7,7 +7,7 @@ namespace FreeQuant {
 
 class CtpMarketDataProvider : public MarketDataProvider {
 public:
-    explicit CtpMarketDataProvider();
+    explicit CtpMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback = 0);
     virtual ~CtpMarketDataProvider();
     virtual void connect(bool block = true);
     virtual void disconnect(bool block = true);
@@ -18,7 +18,6 @@ public:
 
     class Impl;
 private:
-
     Impl *_impl;
 };
 
