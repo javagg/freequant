@@ -9,21 +9,19 @@ namespace FreeQuant {
 class BogusMarketDataProvider : public MarketDataProvider {
 public:
     explicit BogusMarketDataProvider(MarketDataProvider::Callback *callback = 0) :
-        MarketDataProvider(callback), _connected(false) {}
+        _callback(callback), _connected(false) {}
     ~BogusMarketDataProvider();
 
     void connect(bool block = true) {
         _connected = true;
-        MarketDataProvider::Callback *cb = this->callback();
-        if (cb) {
-            cb->onConnected();
+        if (_callback) {
+            _callback->onConnected();
         }
     }
     void disconnect(bool block = true) {
         _connected = false;
-        MarketDataProvider::Callback *cb = this->callback();
-        if (cb) {
-            cb->onDisconnected();
+        if (_callback) {
+            _callback->onDisconnected();
         }
     }
     bool isConnected() const { return _connected; }
@@ -33,6 +31,8 @@ public:
 private:
     bool _connected;
     std::set<std::string> _symbols;
+    MarketDataProvider::Callback *_callback;
+
 };
 
 } // namespace FreeQuant

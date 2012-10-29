@@ -120,7 +120,7 @@ public:
     std::vector<Instrument *>& instruments() const {}
     std::vector<Order *>& orders() const {}
 
-    MarketDataProvider *marketDataProvider() const { return m_mdProvider; }
+    MarketDataProvider *marketDataProvider() const { return _mdProvider; }
     TradeProvider *tradeProvider() const { return m_tradeProvider; }
     OrderBook *orderBook() const { return 0; }
 
@@ -136,7 +136,7 @@ private:
     Orders _orders;
     Tasks _tasks;
 
-    MarketDataProvider *m_mdProvider;
+    MarketDataProvider *_mdProvider;
     TradeProvider *m_tradeProvider;
 
     class MdProviderCallback;

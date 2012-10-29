@@ -14,7 +14,9 @@ using namespace std;
 namespace FreeQuant {
 
 class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
-
+    void onBar(FreeQuant::Bar& bar) {
+        cout << "bar!!=" << bar.high() << endl;
+    }
 };
 
 class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
@@ -23,7 +25,7 @@ class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
 
 
 Strategy::Strategy() :
-    m_mdProvider(0), m_tradeProvider(0),
+    _mdProvider(0), m_tradeProvider(0),
     _mdCallback(new Strategy::MdProviderCallback()),
     _tradeCallback(new Strategy::TradeProviderCallback()) {
 
@@ -39,21 +41,20 @@ void Strategy::setTradeProvider(FreeQuant::TradeProvider *provider) {
 }
 
 void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
-    m_mdProvider = provider;
-    m_mdProvider->connect(boost::bind(&Strategy::onBar, this, _1));
-    m_mdProvider->connect(boost::bind(&Strategy::handleBar, this, _1));
+    _mdProvider = provider;
+    _mdProvider->setCallback(_mdCallback);
 }
 
 void Strategy::start() {
     Engine::start();
-    m_mdProvider->connect();
+    _mdProvider->connect();
     vector<string> symbols = boost::assign::list_of("IF1212")("IF1301");
-    m_mdProvider->subscribe(symbols);
+    _mdProvider->subscribe(symbols);
 }
 
 void Strategy::stop() {
-    m_mdProvider->disconnect();
-    m_tradeProvider->disconnect();
+    _mdProvider->disconnect();
+//    m_tradeProvider->disconnect();
     Engine::stop();
 }
 

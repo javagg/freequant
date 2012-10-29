@@ -23,9 +23,15 @@ class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
 public:
     Impl(FreeQuant::MarketDataProvider::Callback *callback = 0) :
         _callback(callback), _api(0), _connected(false) {}
+
     virtual ~Impl() {
         disconnect();
     }
+
+    void setCallback(FreeQuant::MarketDataProvider::Callback *callback) {
+        _callback = callback;
+    }
+
     virtual void connect(bool block = true) {
         string connection = "protocal=tcp;ip=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
         if (_api == 0) {
@@ -136,18 +142,20 @@ public:
         string str = boost::str(boost::format("%s %s.%s") % sdate %
             depthMarketData->UpdateTime % depthMarketData->UpdateMillisec);
         boost::posix_time::ptime dt = boost::posix_time::time_from_string(str);
-        cerr<<" mardate | symbol:"<<depthMarketData->InstrumentID
-              << "timestamp: " << str
-              << " " << dt
-           <<" lastprice:"<<depthMarketData->LastPrice
-          <<" high:" << depthMarketData->HighestPrice
-          <<" low:" << depthMarketData->LowestPrice
-          <<" ask1:" << depthMarketData->AskPrice1
-          <<" asksize1:" << depthMarketData->AskVolume1
-          <<" bid1:" << depthMarketData->BidPrice1
-          <<" bidsize1:" << depthMarketData->BidVolume1
-          <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
-        Bar bar;
+//        cerr<<" mardate | symbol:"<<depthMarketData->InstrumentID
+//              << "timestamp: " << str
+//              << " " << dt
+//           <<" lastprice:"<<depthMarketData->LastPrice
+//          <<" high:" << depthMarketData->HighestPrice
+//          <<" low:" << depthMarketData->LowestPrice
+//          <<" ask1:" << depthMarketData->AskPrice1
+//          <<" asksize1:" << depthMarketData->AskVolume1
+//          <<" bid1:" << depthMarketData->BidPrice1
+//          <<" bidsize1:" << depthMarketData->BidVolume1
+//          <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
+
+        Bar bar(depthMarketData->OpenPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice,
+            depthMarketData->ClosePrice, depthMarketData->Volume);
         if (_callback) _callback->onBar(bar);
 
 //         Bar bar(depthMarketData->LastPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice, depthMarketData->LastPrice);
@@ -256,6 +264,10 @@ CtpMarketDataProvider::CtpMarketDataProvider(FreeQuant::MarketDataProvider::Call
 CtpMarketDataProvider::~CtpMarketDataProvider() {
     delete _impl;
     _impl = 0;
+}
+
+void CtpMarketDataProvider::setCallback(FreeQuant::MarketDataProvider::Callback *callback) {
+    _impl->setCallback(callback);
 }
 
 void CtpMarketDataProvider::connect(bool block) {

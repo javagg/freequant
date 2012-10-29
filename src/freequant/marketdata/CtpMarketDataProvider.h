@@ -9,15 +9,16 @@ class CtpMarketDataProvider : public MarketDataProvider {
 public:
     explicit CtpMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback = 0);
     virtual ~CtpMarketDataProvider();
-    virtual void connect(bool block = true);
-    virtual void disconnect(bool block = true);
-    virtual bool isConnected() const;
-    virtual std::string name() const { return "CTP"; }
-    virtual void subscribe(std::vector<std::string> symbols);
-    virtual void unsubscribe(std::vector<std::string> symbols);
+    void setCallback(FreeQuant::MarketDataProvider::Callback *callback);
+    void connect(bool block = true);
+    void disconnect(bool block = true);
+    bool isConnected() const;
+    std::string name() const { return "CTP"; }
+    void subscribe(std::vector<std::string> symbols);
+    void unsubscribe(std::vector<std::string> symbols);
 
-    class Impl;
 private:
+    class Impl;
     Impl *_impl;
 };
 

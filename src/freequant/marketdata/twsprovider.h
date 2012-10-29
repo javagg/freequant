@@ -14,19 +14,16 @@ class TwsProvider : public MarketDataProvider {
 public:
     TwsProvider();
     virtual ~TwsProvider();
-    virtual void connect(bool block = true);
-    virtual void disconnect(bool block = true);
-    virtual bool isConnected() const;
-    virtual std::string name() const { return "TWS"; }
-    virtual void subscribe(std::vector<std::string> symbols);
-    virtual void unsubscribe(std::vector<std::string> symbols);
-    virtual void currentTime() const;
-    virtual void reqHistoricalData(FreeQuant::DateTime startTime, FreeQuant::DateTime endTime);
-    virtual void reqFundamentalData(std::string symbol);
-
-    void onConnected() {}
-    void onDisconnected() {}
-    void onBar(FreeQuant::Bar&) {}
+    void setCallback(FreeQuant::MarketDataProvider::Callback *callback) {}
+    void connect(bool block = true);
+    void disconnect(bool block = true);
+    bool isConnected() const;
+    std::string name() const { return "TWS"; }
+    void subscribe(std::vector<std::string> symbols);
+    void unsubscribe(std::vector<std::string> symbols);
+    void currentTime() const;
+    void reqHistoricalData(FreeQuant::DateTime startTime, FreeQuant::DateTime endTime);
+    void reqFundamentalData(std::string symbol);
 
 private:
     TwsEWrapper *wrapper;
