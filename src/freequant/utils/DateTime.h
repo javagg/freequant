@@ -11,7 +11,6 @@ public:
     DateTime() {}
     ~DateTime() {}
     DateTime(const std::string&);
-    DateTime(const DateTime&);
 
     DateTime fromString(const std::string& string, const std::string& format);
     DateTime fromTimeT(const std::time_t t);

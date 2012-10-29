@@ -51,7 +51,7 @@ FreeQuant::Bar YahooMarketDataGenerator::generate(string symbol) {
 
     cout << dt <<endl;
     cout << time <<endl;
-    return FreeQuant::Bar();
+    return FreeQuant::Bar(1,1,1,1,1);
 }
 
 } // namespace FreeQuant

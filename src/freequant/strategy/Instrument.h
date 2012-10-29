@@ -7,8 +7,6 @@
 
 namespace FreeQuant {
 
-class Currency;
-
 class Instrument {
 public:
     enum Type {
@@ -33,9 +31,7 @@ public:
     void setName(std::string name) { _name = name; }
     std::string name() const { return _name; }
 
-    void setExpireDate(FreeQuant::DateTime dt) {
-        _expireDate = dt;
-    }
+    void setExpireDate(FreeQuant::DateTime& dt) { _expireDate = dt; }
     FreeQuant::DateTime expireDate() const { return _expireDate; }
 
     double multipler() const { return _multiplier; }
@@ -69,12 +65,8 @@ private:
     double _tickSize;
     double _margin;
     Type _type;
-
     std::string _currency;
-//	Currency *mCurrency;
-
     int _minTradeVolume;
-
 };
 
 } // namespace FreeQuant

@@ -7,10 +7,14 @@ namespace FreeQuant {
 
 class Bar {
 public:
-    Bar() {}
     Bar(double open, double high, double low, double close, long volume);
+    Bar(std::string symbol, FreeQuant::DateTime dateTime, double open, double high, double low, double close, long volume) :
+        _symbol(symbol), _dateTime(dateTime), _open(open), _high(high), _low(low), _close(close), _volume(volume){}
     FreeQuant::DateTime beginTime();
     FreeQuant::DateTime endTime();
+
+    std::string& symbol() { return _symbol; }
+    FreeQuant::DateTime& dateTime() { return _dateTime; }
     double open() const { return _open; }
     double high() const { return _high; }
     double low() const { return _low; }
@@ -20,7 +24,10 @@ public:
     double median() const { return (high()+low())/2; }
     double typical() const { return (high()+low()+close())/3; }
     double weighted() const { return (high()+low()+2*close())/4; }
+
 private:
+    std::string _symbol;
+    FreeQuant::DateTime _dateTime;
     double _open;
     double _high;
     double _low;

@@ -16,7 +16,7 @@ std::vector<std::string> CsvMarketDataGenerator::availableSymbols() const {
 }
 
 FreeQuant::Bar CsvMarketDataGenerator::generate(std::string symbol) {
-    return FreeQuant::Bar();
+    return FreeQuant::Bar(1,1,1,1,1);
 }
 
 }
