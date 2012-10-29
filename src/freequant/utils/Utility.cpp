@@ -31,19 +31,14 @@ map<string, string> parseParamsFromString(const string& str) {
     boost::split(parts, str, boost::is_any_of(";"), boost::token_compress_on);
     map<string, string> params;
 
-    transform(parts.begin(), parts.end(), inserter(params, params.end()), [](const string& part)->pair<string, string> {
-        vector<string> p;
-        boost::split(p, part, boost::is_any_of("="), boost::token_compress_on);
-        return make_pair(p[0], p[1]);
-    });
-
-
-//    for (auto part : parts) {
-//        vector<string> p;
-//        boost::split(p, part, boost::is_any_of("="), boost::token_compress_on);
-//        params.insert(pair<string, string>(p[0], p[1]));
-//    }
-
+    struct func {
+        pair<string, string> operator()(string& part) const {
+            vector<string> p;
+            boost::split(p, part, boost::is_any_of("="), boost::token_compress_on);
+            return make_pair(p[0], p[1]);
+        }
+    };
+    transform(parts.begin(), parts.end(), inserter(params, params.end()), func());
     return params;
 }
 

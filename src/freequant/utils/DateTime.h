@@ -17,13 +17,13 @@ public:
     DateTime fromTimeT(const std::time_t t);
     std::string toString();
 
-    DateTime addYears(int nyears) const;
-    DateTime addMonths(int nmonths) const;
-    DateTime addDays(int ndays) const;
-    DateTime addHours(int nhours) const;
-    DateTime addMinutes(int nminutes) const;
-    DateTime addSeconds(int nseconds) const;
-    DateTime addMilliSeconds(long milliseconds) const;
+    DateTime& addYears(int nyears) const;
+    DateTime& addMonths(int nmonths) const;
+    DateTime& addDays(int ndays) const;
+    DateTime& addHours(int nhours) const;
+    DateTime& addMinutes(int nminutes) const;
+    DateTime& addSeconds(int nseconds) const;
+    DateTime& addMilliSeconds(long milliseconds) const;
 
     DateTime toLocalTime() const;
     DateTime toUTC() const;

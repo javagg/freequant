@@ -1,4 +1,4 @@
-#include "quote.h"
+#include "Quote.h"
 
 namespace FreeQuant {
 

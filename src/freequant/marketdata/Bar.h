@@ -8,24 +8,24 @@ namespace FreeQuant {
 class Bar {
 public:
     Bar() {}
-    Bar(double open, double high, double low, double close);
+    Bar(double open, double high, double low, double close, long volume);
     FreeQuant::DateTime beginTime();
     FreeQuant::DateTime endTime();
-    double open() const { return m_open; }
-    double high() const { return m_high; }
-    double low() const { return m_low; }
-    double close() const { return m_close; }
-    long volume() const { return m_volume; }
+    double open() const { return _open; }
+    double high() const { return _high; }
+    double low() const { return _low; }
+    double close() const { return _close; }
+    long volume() const { return _volume; }
 
     double median() const { return (high()+low())/2; }
     double typical() const { return (high()+low()+close())/3; }
     double weighted() const { return (high()+low()+2*close())/4; }
 private:
-    double m_open;
-    double m_high;
-    double m_low;
-    double m_close;
-    long m_volume;
+    double _open;
+    double _high;
+    double _low;
+    double _close;
+    long _volume;
 };
 
 } // namespace FreeQuant

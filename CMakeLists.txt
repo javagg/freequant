@@ -10,6 +10,7 @@ if(WIN32)
 else()
     set(CMAKE_INSTALL_PREFIX $ENV{HOME})
 endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX)
     execute_process(COMMAND ${CMAKE_CXX_COMPILER} --version OUTPUT_VARIABLE CMAKE_CXX_COMPILER_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" CMAKE_CXX_COMPILER_VERSION "${CMAKE_CXX_COMPILER_VERSION}")
@@ -32,8 +33,10 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
 endif()
 
-#Find external dependencies
-SET(Boost_USE_STATIC_LIBS true)
+
+# Find external dependencies
+set(Boost_USE_STATIC_LIBS on)
+
 find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
@@ -41,6 +44,12 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
 #    add_subdirectory(doc)
 endif()
+
+
+find_package(Ruby 1.9)
+if(UNIX)
+    find_package(PythonInterp)
+endif(UNIX)
 
 if(WIN32 OR UNIX)
     option(BUILD_CTP "Build CTP." TRUE)
@@ -78,7 +87,7 @@ elseif(UNIX)
     endif()
 endif()
 
-include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS} ${CURL_INCLUDE_DIRS} ${QUICKFIX_INCLUDE_DIRS} ${TWS_INCLUDE_DIRS} ${CTP_INCLUDE_DIRS} ${RUBY_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/vendors/otl)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 link_directories(${Boost_LIBRARY_DIRS})

@@ -1,4 +1,6 @@
+#include <curl/curl.h>
 #include "HttpClient.h"
+
 
 using namespace std;
 
@@ -12,21 +14,20 @@ static int writer(char *data, size_t size, size_t nmemb, string *writerData) {
   return size*nmemb;
 }
 
-HttpClient::HttpClient() : curl(curl_easy_init()) {
+HttpClient::HttpClient() : _curl(curl_easy_init()) {
 }
 
 HttpClient::~HttpClient() {
-    curl_easy_cleanup(curl);
+    curl_easy_cleanup(_curl);
 }
 
 string HttpClient::get(string url) {
     std::string buffer;
     CURLcode res;
-
-    res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
-    res = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-    res = curl_easy_perform(curl);
+    res = curl_easy_setopt(_curl, CURLOPT_URL, url.c_str());
+    res = curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, writer);
+    res = curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &buffer);
+    res = curl_easy_perform(_curl);
 
     return buffer;
 }
