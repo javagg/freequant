@@ -4,18 +4,21 @@
 #include <boost/thread.hpp>
 #include <boost/assign.hpp>
 
-#include <freequant/indicators/indicator.h>
+#include <freequant/indicators/Indicator.h>
 #include <freequant/trade/CtpTradeProvider.h>
 
-#include "strategy.h"
+#include "Strategy.h"
 
 using namespace std;
 
 namespace FreeQuant {
 
 class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
+public:
+    Strategy *_strategy;
+    MdProviderCallback(Strategy *strategy) : _strategy(strategy) {}
     void onBar(FreeQuant::Bar& bar) {
-        cout << "bar!!=" << bar.high() << endl;
+        _strategy->onBar(bar);
     }
 };
 
@@ -26,9 +29,8 @@ class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
 
 Strategy::Strategy() :
     _mdProvider(0), m_tradeProvider(0),
-    _mdCallback(new Strategy::MdProviderCallback()),
+    _mdCallback(new Strategy::MdProviderCallback(this)),
     _tradeCallback(new Strategy::TradeProviderCallback()) {
-
 }
 
 Strategy::~Strategy() {

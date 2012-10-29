@@ -1,4 +1,4 @@
-#include <freequant/indicators/indicator.h>
+#include <freequant/indicators/Indicator.h>
 
 namespace FreeQuant {
 

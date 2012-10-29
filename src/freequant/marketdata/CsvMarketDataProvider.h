@@ -3,17 +3,17 @@
 
 #include <freequant/marketdata/MarketDataProvider.h>
 
-namespace FreeQuant { namespace MarketData {
+namespace FreeQuant {
 
-class CsvProvider : public MarketDataProvider {
+class CsvMarketDataProvider : public MarketDataProvider {
 public:
-    CsvProvider();
-    virtual ~CsvProvider();
+    CsvMarketDataProvider();
+    virtual ~CsvMarketDataProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected();
 };
 
-}}
+} // namespace FreeQuant
 
 #endif // FQ_MARKETDATA_CSV_CTPPROVIDER_H

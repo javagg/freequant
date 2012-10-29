@@ -1,12 +1,11 @@
 #include <iostream>
 #include <memory>
 
-#include <freequant/strategy/strategy.h>
-#include <freequant/indicators/indicator.h>
-#include <freequant/indicators/ma.h>
+#include <freequant/strategy/Strategy.h>
+#include <freequant/indicators/Indicator.h>
+#include <freequant/indicators/MA.h>
 #include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/marketdata/CtpMarketDataProvider.h>
-//#include <freequant/marketdata/ctp/ctpmarketdataprovider.h>
 #include <freequant/trade/TradeProvider.h>
 #include <freequant/trade/CtpTradeProvider.h>
 
@@ -37,7 +36,7 @@ public:
     }
 
     void onBar(const FreeQuant::Bar& bar) {
-        std::cout << "close: "<< bar.close() << std::endl;
+        std::cout << "close: "<< bar.open() << std::endl;
         std::cout << "ma: "<< ma.value() << std::endl;
     }
 

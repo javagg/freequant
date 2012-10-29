@@ -5,7 +5,7 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
 
-#include <freequant/indicators/indicator.h>
+#include <freequant/indicators/Indicator.h>
 
 namespace FreeQuant {
 

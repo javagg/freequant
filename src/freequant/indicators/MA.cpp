@@ -1,4 +1,4 @@
-#include "ma.h"
+#include "MA.h"
 
 namespace FreeQuant {
 
