@@ -4,7 +4,6 @@
 #include <quickfix/FileLog.h>
 #include <quickfix/Message.h>
 #include <quickfix/MessageCracker.h>
-#include <quickfix/MessageCracker.h>
 #include <quickfix/SessionFactory.h>
 #include <quickfix/SessionSettings.h>
 #include <quickfix/SocketInitiator.h>
@@ -96,11 +95,18 @@ public:
         typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
         message.addGroup(typeGroup);
 
-        FIX44::MarketDataRequest::NoRelatedSym symGroup;
-        symGroup.set(FIX::Symbol("GOOG"));
-        message.addGroup(symGroup);
-        symGroup.set(FIX::Symbol("IF1210"));
-        message.addGroup(symGroup);
+        for (auto i = symbols.begin(); i != symbols.end(); i++) {
+            auto sym = *i;
+            FIX44::MarketDataRequest::NoRelatedSym symGroup;
+            symGroup.set(FIX::Symbol(*i));
+            message.addGroup(symGroup);
+        }
+
+//        FIX44::MarketDataRequest::NoRelatedSym symGroup;
+//        symGroup.set(FIX::Symbol("GOOG"));
+//        message.addGroup(symGroup);
+//        symGroup.set(FIX::Symbol("IF1210"));
+//        message.addGroup(symGroup);
 
         try {
             FIX::Session::sendToTarget(message);
@@ -158,7 +164,7 @@ public:
     void connect() {
         cerr << "connect..." << endl;
         _initiator.start();
-        logon();
+//        logon();
 
     //    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
     //    if (session && !session->isLoggedOn()) {
@@ -180,26 +186,15 @@ public:
     }
 
     bool isConnected() const {
-        return false;
+        return _initiator.isLoggedOn();
     }
 
     MarketDataProvider::Callback *_callback;
 private:
-    void onCreate(const FIX::SessionID&) {
-    }
-
-    void onLogon(const FIX::SessionID&) {
-        cerr << "onLogon" << endl;
-    }
-
-    void onLogout(const FIX::SessionID&) {
-        cerr << "onLogout" << endl;
-    }
-
-    void toAdmin(FIX::Message& message, const FIX::SessionID& sessionId) {
-
-    }
-
+    void onCreate(const FIX::SessionID&) {}
+    void onLogon(const FIX::SessionID&) {}
+    void onLogout(const FIX::SessionID&) {}
+    void toAdmin(FIX::Message&, const FIX::SessionID&) {}
     void toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
         try {
             FIX::PossDupFlag possDupFlag;
@@ -304,7 +299,7 @@ private:
 
     FIX::SessionSettings _settings;
     FIX::FileStoreFactory _storeFactory;
-    FIX::SocketInitiator _initiator;
+    mutable FIX::SocketInitiator _initiator;
     FIX::SessionID _sessionID;
 };
 

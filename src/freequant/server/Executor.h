@@ -47,7 +47,7 @@ private:
 
     boost::scoped_ptr<FreeQuant::Timer> _timerMd;
     boost::scoped_ptr<MarketDataGenerator> _mdGenerator;
-    void onGenerated(const FreeQuant::Bar&);
+    void generatedBars();
     std::set<FIX::SessionID> _sessionIDs;
     typedef std::set<std::string> Symbols;
     typedef std::map<FIX::SessionID, Symbols> Subscriptions;

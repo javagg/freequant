@@ -47,15 +47,14 @@ namespace FreeQuant {
 
 Executor::Executor() {
     _mdGenerator.reset(new FreeQuant::RandomMarketDataGenerator());
-//    _mdGenerator->connect(std::bind(&Executor::onGenerated, this, std::placeholders::_1));
+    _timerMd.reset(new FreeQuant::Timer(1000, boost::bind(&Executor::generatedBars, this)));
+    _timerMd->start();
 }
 
 Executor::~Executor() {
-//    _mdGenerator->stop();
 }
 
 void Executor::onCreate(const FIX::SessionID& sessionID) {
-//    cerr << "Executor::onCreate" << endl;
 }
 
 
@@ -182,6 +181,13 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
         requestSymbols.insert(sym);
     }
 
+    std::set<std::string> allSyms;
+    for (auto i = _subscriptions.begin(); i != _subscriptions.end(); i++) {
+        std::set<std::string>& syms = i->second;
+        allSyms.insert(syms.begin(), syms.end());
+    }
+    _mdGenerator->setSymbols(std::vector<std::string>(allSyms.begin(), allSyms.end()));
+
     FIX::SubscriptionRequestType subscriptionRequestType;
     message.get(subscriptionRequestType);
     if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
@@ -299,26 +305,25 @@ void Executor::onMessage(const FIX44::SecurityDefinitionRequest& message, const 
     FIX::Session::sendToTarget(response, sessionID);
 }
 
-void Executor::onGenerated(const FreeQuant::Bar& bar) {
-//    std::vector<FreeQuant::Bar> bars = _mdGenerator->generate();
-//    std::map<std::string, FreeQuant::Bar> barMap;
+void Executor::generatedBars() {
+    std::vector<FreeQuant::Bar> bars = _mdGenerator->generate();
+    std::map<std::string, FreeQuant::Bar> barMap;
 
-//    barMap["IF1201"] = FreeQuant::Bar(11,1,1,1,1);
-//    barMap["IF1301"] = FreeQuant::Bar(13,1,1,1,1);
-
-//    for (auto i = _subscriptions.begin(); i != _subscriptions.end(); i++) {
-//        auto symbols = i->second();
-//        for (auto j = symbols.begin(); j != symbols.end(); j++) {
-//            auto bar = barMap[*j];
-//            sendBar(*i, bar);
-//        }
-//    }
+    for (auto i = bars.begin(); i != bars.end(); i++) {
+        FreeQuant::Bar& bar = *i;
+        barMap[bar.symbol()] = bar;
+    }
+    for (auto i = _subscriptions.begin(); i != _subscriptions.end(); i++) {
+        auto symbols = i->second;
+        for (auto j = symbols.begin(); j != symbols.end(); j++) {
+            auto bar = barMap[*j];
+            sendBar(i->first, bar);
+        }
+    }
 }
 
 void Executor::sendBar(const FIX::SessionID& sessionID, const FreeQuant::Bar& bar) {
-
     FIX44::MarketDataSnapshotFullRefresh message;
-
     FIX::MDReqID mdReqID("ssf");
     message.set(mdReqID);
     message.set(FIX::Symbol(bar.symbol()));
