@@ -3,6 +3,8 @@
 #include <random>
 #include <string>
 
+#include <boost/phoenix.hpp>
+
 #include <quickfix/Exceptions.h>
 #include <quickfix/FixFields.h>
 #include <quickfix/fix44/ExecutionReport.h>
@@ -34,16 +36,17 @@
 
 #include <quickfix/Session.h>
 
-#include <freequant/utils/CsvMarketDataGenerator.h>
+#include <freequant/utils/RandomMarketDataGenerator.h>
 
 #include "Executor.h"
 
 using namespace std;
+using namespace boost::phoenix;
 
 namespace FreeQuant {
 
 Executor::Executor() {
-    _mdGenerator.reset(new FreeQuant::CsvMarketDataGenerator(""));
+    _mdGenerator.reset(new FreeQuant::RandomMarketDataGenerator());
 //    _mdGenerator->connect(std::bind(&Executor::onGenerated, this, std::placeholders::_1));
 }
 
@@ -52,17 +55,17 @@ Executor::~Executor() {
 }
 
 void Executor::onCreate(const FIX::SessionID& sessionID) {
-    cerr << "Executor::onCreate" << endl;
+//    cerr << "Executor::onCreate" << endl;
 }
 
 
 void Executor::onLogon(const FIX::SessionID& sessionID) {
-    _sessionIDs.push_back(sessionID);
+//    _sessionIDs.push_back(sessionID);
 }
 
 
 void Executor::onLogout(const FIX::SessionID& sessionID) {
-    _sessionIDs.remove(sessionID);
+//    _sessionIDs.remove(sessionID);
 }
 
 void Executor::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {
@@ -153,12 +156,12 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
     FIX::Username username;
     FIX::Password password;
-    cout << message.toXML() << endl;
+//    cout << message.toXML() << endl;
 //    message.get(username);
 //    message.get(password);
 
 //    cout << username << password << endl;
-    string expected  = "12345";
+    std::string expected  = "12345";
 
 //    if (password != expected) {
 //         throw new FIX::RejectLogon();
@@ -166,10 +169,34 @@ void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sess
 }
 
 void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionID) {
-    cerr << " Executor::onMessage(const FIX44::MarketDataRequest& message" << endl;
+//    cerr << " Executor::onMessage(const FIX44::MarketDataRequest& message" << endl;
+
+    std::set<std::string> subscribedSymbols = _subscriptions[sessionID];
+    std::set<std::string> requestSymbols;
+    FIX::NoRelatedSym noRelatedSyms;
+    FIX44::MarketDataRequest::NoRelatedSym symGroup;
+    for (int i = 1; i <= noRelatedSyms; i++) {
+        message.getGroup(i, symGroup);
+        FIX::Symbol sym;
+        symGroup.get(sym);
+        requestSymbols.insert(sym);
+    }
+
+    FIX::SubscriptionRequestType subscriptionRequestType;
+    message.get(subscriptionRequestType);
+    if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
+        std::set<std::string> result;
+        std::set_difference(subscribedSymbols.begin(), subscribedSymbols.end(),
+            requestSymbols.begin(), requestSymbols.end(), std::inserter(result, result.end()));
+        subscribedSymbols = result;
+    } else if (subscriptionRequestType == FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES) {
+        subscribedSymbols.insert(requestSymbols.begin(), requestSymbols.end());
+    }
+    _subscriptions[sessionID] = subscribedSymbols;
+
 
     FIX::MDReqID mdReqID;
-    FIX::SubscriptionRequestType subscriptionRequestType;
+
     FIX::MarketDepth marketDepth;
     FIX::MDUpdateType mdUpdateType;
     FIX::AggregatedBook aggregatedBook;
@@ -181,12 +208,6 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
     message.get(mdReqID);
     message.get(subscriptionRequestType);
 
-    if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
-//        _mdGenerator->stop();
-    } else if (subscriptionRequestType == FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES) {
-//        _mdGenerator->start();
-    }
-
 //    message.get(marketDepth);
 //    message.get(mdUpdateType);
 //    message.get(aggregatedBook);
@@ -194,7 +215,7 @@ void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::Ses
 //    message.get(mdImplicitDelete);
 //    message.get(noMDEntryTypes);
 
-    _sessionID = sessionID;
+//    _sessionID = sessionID;
 //    FIX44::MarketDataSnapshotFullRefresh mdFull;
 
 //    mdFull.set(mdReqID);
@@ -279,62 +300,46 @@ void Executor::onMessage(const FIX44::SecurityDefinitionRequest& message, const 
 }
 
 void Executor::onGenerated(const FreeQuant::Bar& bar) {
+//    std::vector<FreeQuant::Bar> bars = _mdGenerator->generate();
+//    std::map<std::string, FreeQuant::Bar> barMap;
 
-    FIX44::MarketDataSnapshotFullRefresh marketData;
+//    barMap["IF1201"] = FreeQuant::Bar(11,1,1,1,1);
+//    barMap["IF1301"] = FreeQuant::Bar(13,1,1,1,1);
+
+//    for (auto i = _subscriptions.begin(); i != _subscriptions.end(); i++) {
+//        auto symbols = i->second();
+//        for (auto j = symbols.begin(); j != symbols.end(); j++) {
+//            auto bar = barMap[*j];
+//            sendBar(*i, bar);
+//        }
+//    }
+}
+
+void Executor::sendBar(const FIX::SessionID& sessionID, const FreeQuant::Bar& bar) {
+
+    FIX44::MarketDataSnapshotFullRefresh message;
 
     FIX::MDReqID mdReqID("ssf");
-    marketData.set(mdReqID);
-    marketData.set(FIX::Symbol("GOOG"));
-//    mdFull.set(FIX::SecurityID("GOOG"));
-//    mdFull.set(FIX::SecurityIDSource());
-//    mdFull.set(FIX::Product());
-//    mdFull.set(FIX::CFICode());
-//    mdFull.set(FIX::SecurityType(FIX::SecurityType_COMMONSTOCK));
-//    mdFull.set(FIX::MaturityMonthYear("2012"));
-//    mdFull.set(FIX::MaturityDate("2012-12-11"));
-//    mdFull.set(FIX::CouponPaymentDate("2012-12-11"));
-//    mdFull.set(FIX::IssueDate("2012-12-11"));
-//    mdFull.set(FIX::RepoCollateralSecurityType(1));
-//    mdFull.set(FIX::RepurchaseTerm(1));
-//    mdFull.set(FIX::RepurchaseRate(0.3));
-//    mdFull.set(FIX::Factor(0.1));
-//    mdFull.set(FIX::CreditRating("AAA"));
-//    mdFull.set(FIX::InstrRegistry("DD"));
-//    mdFull.set(FIX::CountryOfIssue);
-//    mdFull.set(FIX::StateOrProvinceOfIssue);
-//    mdFull.set(FIX::LocaleOfIssue);
-//    mdFull.set(FIX::RedemptionDate);
-//    mdFull.set(FIX::StrikePrice(99.99));
-//    mdFull.set(FIX::OptAttribute('d'));
-//    mdFull.set(FIX::ContractMultiplier(1));
-//    mdFull.set(FIX::CouponRate(0.2));
-//    mdFull.set(FIX::SecurityExchange("NYEX"));
-//    mdFull.set(FIX::Issuer("sf"));
-//    mdFull.set(FIX::EncodedIssuerLen(10));
-//    mdFull.set(FIX::EncodedIssuer("sf"));
-//    mdFull.set(FIX::SecurityDesc("dadad"));
-//    mdFull.set(FIX::EncodedSecurityDescLen(20));
-//    mdFull.set(FIX::EncodedSecurityDesc("fdfs"));
-//    mdFull.set(FIX::NoSecurityAltID(1));
+    message.set(mdReqID);
+    message.set(FIX::Symbol(bar.symbol()));
 
-//    mdInc.set(mdReqID);
-//    FIX::NoMDEntries count;
-
-    marketData.set(FIX::NoMDEntries(2));
+    message.set(FIX::NoMDEntries(2));
     FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries1;
     mdEntries1.set(FIX::MDEntryType(FIX::MDEntryType_BID));
     mdEntries1.set(FIX::MDEntryPx(100));
     mdEntries1.set(FIX::MDEntrySize(1));
 
-    marketData.addGroup(mdEntries1);
+    message.addGroup(mdEntries1);
     FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries2;
     mdEntries2.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
     mdEntries2.set(FIX::MDEntryPx(110));
     mdEntries2.set(FIX::MDEntrySize(2));
 
-    marketData.addGroup(mdEntries2);
+    message.addGroup(mdEntries2);
 
-    FIX::Session::sendToTarget(marketData, _sessionID);
+    try {
+        FIX::Session::sendToTarget(message, sessionID);
+    } catch(FIX::SessionNotFound&) {}
 }
 
 } // namespace FreeQuant

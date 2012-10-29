@@ -5,6 +5,7 @@
 #include <boost/random.hpp>
 #include <freequant/utils/MarketDataGenerator.h>
 #include <random>
+#include <set>
 
 namespace FreeQuant {
 
@@ -12,8 +13,12 @@ class RandomMarketDataGenerator : public MarketDataGenerator {
 public:
     virtual ~RandomMarketDataGenerator() {}
 
-    virtual std::vector<std::string> availableSymbols() const {
-        return std::vector<std::string>();
+    const std::vector<std::string>& symbols() const {
+        return _symbols;
+    }
+
+    void setSymbols(std::vector<std::string>& symbols) {
+        _symbols = symbols;
     }
 
     FreeQuant::Bar generate(std::string symbol) {
@@ -29,8 +34,14 @@ public:
         return FreeQuant::Bar(open, high, low, close, volume);
     }
 
+    std::vector<FreeQuant::Bar> generate() {
+        std::vector<FreeQuant::Bar> bars;
+        return bars;
+    }
+
 private:
     boost::random::mt19937 _rng;
+    std::vector<std::string> _symbols;
 };
 
 } // namespace FreeQuant

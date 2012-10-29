@@ -7,6 +7,7 @@
 #include <quickfix/MessageCracker.h>
 
 #include <freequant/utils/MarketDataGenerator.h>
+#include <freequant/utils/Timer.h>
 
 namespace FreeQuant {
 
@@ -42,10 +43,15 @@ public:
     void onMessage(const FIX44::SecurityDefinitionRequest&, const FIX::SessionID&);
 
 private:
-    boost::shared_ptr<MarketDataGenerator> _mdGenerator;
+    void sendBar(const  FIX::SessionID& sessionID, const FreeQuant::Bar& bar);
+
+    boost::scoped_ptr<FreeQuant::Timer> _timerMd;
+    boost::scoped_ptr<MarketDataGenerator> _mdGenerator;
     void onGenerated(const FreeQuant::Bar&);
-    FIX::SessionID _sessionID;
-    std::list<FIX::SessionID> _sessionIDs;
+    std::set<FIX::SessionID> _sessionIDs;
+    typedef std::set<std::string> Symbols;
+    typedef std::map<FIX::SessionID, Symbols> Subscriptions;
+    Subscriptions _subscriptions;
 };
 
 } // namespace FreeQuant

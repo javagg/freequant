@@ -8,7 +8,7 @@ namespace FreeQuant {
 class FixTradeProvider : public TradeProvider {
 public:
     explicit FixTradeProvider(FreeQuant::TradeProvider::Callback *callback = 0);
-    FixTradeProvider(std::string connection);
+    explicit FixTradeProvider(std::string connection);
     virtual ~FixTradeProvider();
 
     void connect();

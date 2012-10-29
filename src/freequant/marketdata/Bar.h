@@ -13,8 +13,8 @@ public:
     FreeQuant::DateTime beginTime();
     FreeQuant::DateTime endTime();
 
-    std::string& symbol() { return _symbol; }
-    FreeQuant::DateTime& dateTime() { return _dateTime; }
+    const std::string& symbol() const { return _symbol; }
+    const FreeQuant::DateTime& dateTime() const { return _dateTime; }
     double open() const { return _open; }
     double high() const { return _high; }
     double low() const { return _low; }

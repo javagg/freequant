@@ -213,7 +213,7 @@ public:
         FreeQuant::Instrument instrument(i->InstrumentID);
         instrument.setExchange(i->ExchangeInstID);
         instrument.setName(i->InstrumentName);
-        instrument.setExpireDate(FreeQuant::DateTime(i->ExpireDate));
+//        instrument.setExpireDate(FreeQuant::DateTime(i->ExpireDate));
         instrument.setMultipler(i->VolumeMultiple);
         instrument.setTickSize(i->PriceTick);
         instrument.setMargin(i->LongMarginRatio);
