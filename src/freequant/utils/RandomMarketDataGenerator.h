@@ -17,7 +17,7 @@ public:
         return _symbols;
     }
 
-    void setSymbols(std::vector<std::string>& symbols) {
+    void setSymbols(std::vector<std::string> symbols) {
         _symbols = symbols;
     }
 

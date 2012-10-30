@@ -12,7 +12,7 @@ class MarketDataGenerator {
 public:
     virtual ~MarketDataGenerator() {}
     virtual const std::vector<std::string>& symbols() const = 0;
-    virtual void setSymbols(std::vector<std::string>&) = 0;
+    virtual void setSymbols(std::vector<std::string>) = 0;
     virtual std::vector<FreeQuant::Bar> generate() = 0;
 };
 

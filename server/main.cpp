@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -10,36 +9,29 @@
 
 #include <freequant/server/Executor.h>
 
-class Application : public FreeQuant::Executor {
-public:
-    Application() {}
-};
+class Application : public FreeQuant::Executor {};
 
 int main(int argc, char** argv) {
     if (argc != 2) {
-        std::cout << "usage: " << argv[0]
-                  << " FILE." << std::endl;
+        std::cout << "usage: " << argv[0] << " FILE." << std::endl;
         return 0;
     }
-
-    std::string file = argv[1];
-
+    std::string filename = argv[1];
     try {
-        FIX::SessionSettings settings(file);
+        FIX::SessionSettings settings(filename);
         Application application;
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
         FIX::ThreadedSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
-
         acceptor.start();
         std::cout << "Type Ctrl-C to quit" << std::endl;
         while (true) {
             FIX::process_sleep(1);
         }
         acceptor.stop();
-        return 0;
+        return EXIT_SUCCESS;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 }

@@ -12,21 +12,21 @@
 class DmaStrategy : public FreeQuant::Strategy {
 private:
     boost::shared_ptr<FreeQuant::MarketDataProvider> _mdProvider;
-    boost::shared_ptr<FreeQuant::TradeProvider> m_tradeProvider;
+    boost::shared_ptr<FreeQuant::TradeProvider> _tradeProvider;
     FreeQuant::MA ma;
 public:
     void onStart() {
         std::cout << "strategy start..." << std::endl;
 
         _mdProvider.reset(new FreeQuant::CtpMarketDataProvider());
-        m_tradeProvider.reset(new FreeQuant::CtpTradeProvider());
+        _tradeProvider.reset(new FreeQuant::CtpTradeProvider());
 
         addSymbol("IF1209");
         chooseMarketProvider("CTP");
         chooseTradeProvider("CTP");
 
         setMarketDataProvider(_mdProvider.get());
-        setTradeProvider(m_tradeProvider.get());
+        setTradeProvider(_tradeProvider.get());
 
         addIndicator(&ma);
     }
@@ -39,7 +39,6 @@ public:
         std::cout << "close: "<< bar.open() << std::endl;
         std::cout << "ma: "<< ma.value() << std::endl;
     }
-
 };
 
 int main() {

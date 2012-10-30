@@ -1,12 +1,12 @@
 [DEFAULT]
 SocketAcceptPort=7711
 ConnectionType=acceptor
-SenderCompID=FQ
+SenderCompID=FreeQuantServer
 
 [SESSION]
 BeginString=FIX.4.4
 TargetCompID=ME
 DataDictionary=FIX44.xml
-StartTime=00:00:01
-EndTime=23:59:59
+StartTime=00:00:00
+EndTime=00:00:00
 FileStorePath=.
