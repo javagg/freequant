@@ -73,8 +73,9 @@ public:
     }
 
     void logout() {
+        FIX44::Logout message;
         try {
-            FIX::Session::sendToTarget(FIX44::Logout());
+            FIX::Session::sendToTarget(message);
         } catch (FIX::SessionNotFound&) {}
     }
 

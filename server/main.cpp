@@ -8,6 +8,7 @@
 #include <quickfix/SessionSettings.h>
 
 #include <freequant/server/Executor.h>
+#include <freequant/server/DynamicSessionSocketAcceptor.h>
 
 class Application : public FreeQuant::Executor {};
 
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
         Application application;
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
-        FIX::ThreadedSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
+        FreeQuant::DynamicSessionSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
         acceptor.start();
         std::cout << "Type Ctrl-C to quit" << std::endl;
         while (true) {
