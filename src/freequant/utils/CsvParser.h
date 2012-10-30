@@ -1,24 +1,26 @@
 #ifndef FQ_UTILS_CSVPARSER_H
 #define FQ_UTILS_CSVPARSER_H
 
+#include <memory>
+#include <vector>
+#include <string>
+
+class csv_parser;
+
 namespace FreeQuant {
 
 class CsvParser {
 public:
-    CsvParser(char delimiter = ',', char terminator = '\n')
-        : _delimiter(delimiter), _terminator(terminator) {}
+    CsvParser(char delimiter = ',', char terminator = '\n', char enclosing = '\"');
     bool load(const std::string filename);
-    bool parse(const std::string content);
-
-    char delimiter() const { return _delimiter; }
-    char terminator() const { return _terminator; }
     void setSkipRows(int rows);
-    int skippedRows() const { return _skippedRows; }
-    bool hasMoreRows() const;
+    void rewind();
+    std::size_t rowCount();
+    bool hasMore() const;
+    std::vector<std::string> row();
+
 private:
-    char _delimiter;
-    char _terminator;
-    int _skippedRows;
+    std::auto_ptr<csv_parser> _parser;
 };
 
 } // namespace FreeQuant

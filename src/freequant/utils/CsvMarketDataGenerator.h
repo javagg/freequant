@@ -3,17 +3,19 @@
 
 #include <string>
 
-#include <freequant/utils/MarketDataGenerator.h>
+#include <freequant/utils/RandomMarketDataGenerator.h>
 #include <freequant/utils/CsvParser.h>
 
 namespace FreeQuant {
 
-class CsvMarketDataGenerator : public MarketDataGenerator {
+class CsvMarketDataGenerator : public RandomMarketDataGenerator {
 public:
     CsvMarketDataGenerator(std::string filename);
-    virtual ~CsvMarketDataGenerator() {}
-    virtual std::vector<std::string> availableSymbols() const;
-    virtual FreeQuant::Bar generate(std::string symbol);
+    virtual std::vector<FreeQuant::Bar> generate() {
+        auto syms = symbols();
+        return std::vector<FreeQuant::Bar>();
+    }
+
 private:
     FreeQuant::CsvParser _parser;
 };
