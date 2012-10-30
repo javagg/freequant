@@ -1,5 +1,4 @@
-add_subdirectory(dma)
-add_subdirectory(tma)
+add_subdirectory(c++)
 
 
 

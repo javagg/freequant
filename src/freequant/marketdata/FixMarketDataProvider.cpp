@@ -27,11 +27,11 @@ namespace FreeQuant {
 
 class FixMarketDataProvider::Impl : private FIX::Application, private FIX::MessageCracker {
 public:
-    Impl(std::string filename, MarketDataProvider::Callback *callback = 0) :
-        _settings(filename), _storeFactory(_settings),
-        _initiator(*this, _storeFactory, _settings),
-        _callback(callback) {
-    }
+//    Impl(std::string filename, MarketDataProvider::Callback *callback = 0) :
+//        _settings(filename), _storeFactory(_settings),
+//        _initiator(*this, _storeFactory, _settings),
+//        _callback(callback) {
+//    }
 
     Impl(std::istream& istream, MarketDataProvider::Callback *callback = 0) :
         _settings(istream), _storeFactory(_settings),
@@ -43,12 +43,29 @@ public:
 
     }
 
+    void setCallback(FreeQuant::MarketDataProvider::Callback *callback) {
+        _callback = callback;
+    }
+
     void logon() {
         FIX44::Logon message;
         message.set(FIX::EncryptMethod(FIX::EncryptMethod_NONE));
         message.set(FIX::HeartBtInt(10));
-        message.set(FIX::Username("alex"));
-        message.set(FIX::Password("12345"));
+        message.set(FIX::Username("simuser"));
+        message.set(FIX::Password("simuser"));
+
+//        const FIX::Dictionary& dictionary = _settings.get(sessionID);
+//        if (FIELD_GET_REF(message.getHeader(), MsgType) == FIX::MsgType_Logon) {
+//            FIX44::Logon& logon = dynamic_cast<FIX44::Logon&>(message);
+//            if (dictionary.has("Username")) {
+//                FIX::Username username = dictionary.getString("Username");
+//                logon.set(username);
+//            }
+//            if (dictionary.has("Password")) {
+//                FIX::Password password = dictionary.getString("Password");
+//                logon.set(password);
+//            }
+//        }
 
         try {
             FIX::Session::sendToTarget(message);
@@ -56,7 +73,9 @@ public:
     }
 
     void logout() {
-
+        try {
+            FIX::Session::sendToTarget(FIX44::Logout());
+        } catch (FIX::SessionNotFound&) {}
     }
 
     void subscribe(std::vector<std::string> symbols) {
@@ -101,12 +120,6 @@ public:
             symGroup.set(FIX::Symbol(*i));
             message.addGroup(symGroup);
         }
-
-//        FIX44::MarketDataRequest::NoRelatedSym symGroup;
-//        symGroup.set(FIX::Symbol("GOOG"));
-//        message.addGroup(symGroup);
-//        symGroup.set(FIX::Symbol("IF1210"));
-//        message.addGroup(symGroup);
 
         try {
             FIX::Session::sendToTarget(message);
@@ -162,21 +175,17 @@ public:
     }
 
     void connect() {
-        cerr << "connect..." << endl;
         _initiator.start();
-//        logon();
+        logon();
 
-    //    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
-    //    if (session && !session->isLoggedOn()) {
-    //        session->logon();
-    //    }
+//        FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
+//        if (session && !session->isLoggedOn()) {
+//            session->logon();
+//        }
     }
 
     void disconnect() {
-    //    if (m_sessionId != 0) {
-    //        delete m_sessionId;
-    //        m_sessionId = 0;
-    //    }
+        logout();
         _initiator.stop();
 
     //    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
@@ -194,7 +203,9 @@ private:
     void onCreate(const FIX::SessionID&) {}
     void onLogon(const FIX::SessionID&) {}
     void onLogout(const FIX::SessionID&) {}
-    void toAdmin(FIX::Message&, const FIX::SessionID&) {}
+
+    void toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {}
+
     void toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
         try {
             FIX::PossDupFlag possDupFlag;
@@ -303,33 +314,39 @@ private:
     FIX::SessionID _sessionID;
 };
 
-FixMarketDataProvider::FixMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback) :
-    _impl(new FixMarketDataProvider::Impl("", callback)) {
-}
+//FixMarketDataProvider::FixMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback) :
+//    _impl(new FixMarketDataProvider::Impl("", callback)) {
+//}
 
 FixMarketDataProvider::FixMarketDataProvider(std::string connection, FreeQuant::MarketDataProvider::Callback *callback) {
     std::map<string, string> params = parseParamsFromString(connection);
     stringstream ss;
     ss << "[DEFAULT]" << endl
+       << "BeginString=FIX.4.4" << endl
        << "ConnectionType=initiator" << endl
        << "ReconnectInterval=60" << endl
        << "SenderCompID=" << "ME" <<  endl
-       << "[SESSION]" << endl
-       << "BeginString=FIX.4.4" << endl
-       << "TargetCompID=" << "FQ" << endl
        << "DataDictionary=FIX44.xml" << endl
-       << "StartTime=00:00:01" << endl
-       << "EndTime=23:59:59" << endl
+       << "StartTime=00:00:00" << endl
+       << "EndTime=00:00:00" << endl
        << "HeartBtInt=20" << endl
        << "FileStorePath=." << endl
-       << "SocketConnectPort=" << 7711 << endl
-       << "SocketConnectHost=" << "127.0.0.1" << endl;
+       << "Username=" << params["username"] << endl
+       << "Password=" << params["password"] << endl
+       << "[SESSION]" << endl
+       << "TargetCompID=" << "FQMarketDataServer" << endl
+       << "SocketConnectPort=" << params["port"] << endl
+       << "SocketConnectHost=" << params["host"] << endl;
     _impl = new FixMarketDataProvider::Impl(ss, callback);
 }
 
 FixMarketDataProvider::~FixMarketDataProvider() {
     delete _impl;
     _impl = 0;
+}
+
+void FixMarketDataProvider::setCallback(FreeQuant::MarketDataProvider::Callback *callback) {
+    _impl->setCallback(callback);
 }
 
 void FixMarketDataProvider::connect(bool block) {

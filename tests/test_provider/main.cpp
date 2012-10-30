@@ -5,7 +5,7 @@
 #include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/marketdata/YahooMarketDataProvider.h>
 #include <freequant/trade/TwsTradeProvider.h>
-
+#include <freequant/utils/CsvParser.h>
 #include <freequant/marketdata/twsprovider.h>
 
 void test_tws() {
@@ -22,8 +22,18 @@ void test_ib() {
     p->disconnect();
 }
 
+void test_csv() {
+//    FreeQuant::CsvParser parser;
+//    parser.load("test.csv");
+//    while (parser.hasMore()) {
+//        std::vector<std::string> row = parser.row();
+//        std::copy(row.begin(), row.end(), ostream_iteratr<string>(cout, " "));
+//    }
+}
+
 int main(int, char* []) {
 //    test_tws();
     test_ib();
+    test_csv();
     return 0;
 }

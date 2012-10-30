@@ -3,11 +3,18 @@
 
 #include <memory>
 #include <list>
+
+#include <quickfix/Field.h>
 #include <quickfix/Application.h>
 #include <quickfix/MessageCracker.h>
 
 #include <freequant/utils/MarketDataGenerator.h>
 #include <freequant/utils/Timer.h>
+
+namespace FIX {
+    USER_DEFINE_LOCALMKTDATE(SimulationStart, 10000);
+    USER_DEFINE_LOCALMKTDATE(SimulationEnd, 10001);
+}
 
 namespace FreeQuant {
 

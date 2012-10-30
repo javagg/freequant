@@ -7,7 +7,7 @@ namespace FreeQuant {
 
 class FixMarketDataProvider : public MarketDataProvider {
 public:
-    explicit FixMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback = 0);
+//    explicit FixMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback = 0);
     explicit FixMarketDataProvider(std::string connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
     virtual ~FixMarketDataProvider();
     void setCallback(FreeQuant::MarketDataProvider::Callback *callback);
