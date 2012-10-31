@@ -7,7 +7,7 @@
 #include <quickfix/SocketConnection.h>
 #include <quickfix/SocketInitiator.h>
 #include <quickfix/SocketMonitor.h>
-#include <freequant/server/DynamicSessionSocketAcceptor.h>
+#include <freequant/server/FQSocketAcceptor.h>
 
 namespace FIX {
 

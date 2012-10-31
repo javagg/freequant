@@ -27,12 +27,6 @@ namespace FreeQuant {
 
 class FixMarketDataProvider::Impl : private FIX::Application, private FIX::MessageCracker {
 public:
-//    Impl(std::string filename, MarketDataProvider::Callback *callback = 0) :
-//        _settings(filename), _storeFactory(_settings),
-//        _initiator(*this, _storeFactory, _settings),
-//        _callback(callback) {
-//    }
-
     Impl(std::istream& istream, MarketDataProvider::Callback *callback = 0) :
         _settings(istream), _storeFactory(_settings),
         _initiator(*this, _storeFactory, _settings),
@@ -53,7 +47,6 @@ public:
         message.set(FIX::HeartBtInt(10));
         message.set(FIX::Username("simuser"));
         message.set(FIX::Password("simuser"));
-
 //        const FIX::Dictionary& dictionary = _settings.get(sessionID);
 //        if (FIELD_GET_REF(message.getHeader(), MsgType) == FIX::MsgType_Logon) {
 //            FIX44::Logon& logon = dynamic_cast<FIX44::Logon&>(message);
@@ -67,9 +60,14 @@ public:
 //            }
 //        }
 
-        try {
-            FIX::Session::sendToTarget(message);
-        } catch (FIX::SessionNotFound&) {}
+//        try {
+
+        FIX::SessionID sessionID;
+        sessionID.fromString(_sessionString);
+        FIX::Session::sendToTarget(message, sessionID);
+//        } catch (FIX::SessionNotFound&) {
+
+//        }
     }
 
     void logout() {
@@ -177,7 +175,7 @@ public:
 
     void connect() {
         _initiator.start();
-        logon();
+//        logon();
 
 //        FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
 //        if (session && !session->isLoggedOn()) {
@@ -199,13 +197,33 @@ public:
         return _initiator.isLoggedOn();
     }
 
-    MarketDataProvider::Callback *_callback;
 private:
-    void onCreate(const FIX::SessionID&) {}
-    void onLogon(const FIX::SessionID&) {}
+    void onCreate(const FIX::SessionID& sessionID) {
+        _sessionString = sessionID.toString();
+        cout << __FUNCTION__ << ": " << sessionID << endl;
+    }
+    void onLogon(const FIX::SessionID& sessionID) {
+//        _sessionID = sessionID;
+        cout << __FUNCTION__ << ": " << sessionID << endl;
+    }
     void onLogout(const FIX::SessionID&) {}
 
-    void toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {}
+    void toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {
+        const FIX::Dictionary& dictionary = _settings.get(sessionID);
+        if (FIELD_GET_REF(message.getHeader(), MsgType) == FIX::MsgType_Logon) {
+            cout << typeid(message).name() << endl;
+            cout << typeid(FIX44::Logon()).name() << endl;
+            FIX44::Logon& logon = dynamic_cast<FIX44::Logon&>(message);
+            if (dictionary.has("Username")) {
+                FIX::Username username = dictionary.getString("Username");
+                logon.set(username);
+            }
+            if (dictionary.has("Password")) {
+                FIX::Password password = dictionary.getString("Password");
+                logon.set(password);
+            }
+        }
+    }
 
     void toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
         try {
@@ -223,8 +241,21 @@ private:
 
     void fromApp(const FIX::Message& message, const FIX::SessionID& sessionId)
             throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
-        crack(message, sessionId);
+//        crack(message, sessionId);
     }
+
+//    void onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
+//        const FIX::Dictionary& dictionary = _settings.get(sessionID);
+//            FIX44::Logon& logon = message;
+//            if (dictionary.has("Username")) {
+//                FIX::Username username = dictionary.getString("Username");
+//                logon.set(username);
+//            }
+//            if (dictionary.has("Password")) {
+//                FIX::Password password = dictionary.getString("Password");
+//                logon.set(password);
+//            }
+//    }
 
     void onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID& sessionID) {
         FIX::MDReqID mdRegID;
@@ -309,10 +340,11 @@ private:
         }
     }
 
+    string _sessionString;
+    MarketDataProvider::Callback *_callback;
     FIX::SessionSettings _settings;
     FIX::FileStoreFactory _storeFactory;
     mutable FIX::SocketInitiator _initiator;
-    FIX::SessionID _sessionID;
 };
 
 //FixMarketDataProvider::FixMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback) :

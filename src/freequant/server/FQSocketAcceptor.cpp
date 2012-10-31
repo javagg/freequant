@@ -5,7 +5,7 @@
 
 #include <freequant/server/FQSocketConnection.h>
 
-#include "DynamicSessionSocketAcceptor.h"
+#include "FQSocketAcceptor.h"
 
 using namespace FIX;
 
@@ -88,33 +88,31 @@ bool FQSocketAcceptor::isLoggedOn() {
 
 Session *FQSocketAcceptor::getSession(const std::string& msg, Responder& responder) {
     Message message;
-    if (!message.setStringHeader( msg ) )
-      return 0;
+    if (!message.setStringHeader(msg))
+        return 0;
 
     BeginString beginString;
-    SenderCompID clSenderCompID;
-    TargetCompID clTargetCompID;
+    SenderCompID senderCompID;
+    TargetCompID targetCompID;
     MsgType msgType;
-    try
-    {
-      message.getHeader().getField( beginString );
-      message.getHeader().getField( clSenderCompID );
-      message.getHeader().getField( clTargetCompID );
-      message.getHeader().getField( msgType );
-      if ( msgType != "A" ) return 0;
+    try {
+        auto header = message.getHeader();
+        header.getField(beginString);
+        header.getField(senderCompID);
+        header.getField(targetCompID);
+        header.getField(msgType);
+        if (msgType != MsgType_Logon)
+            return 0;
 
-      SenderCompID senderCompID( clTargetCompID );
-      TargetCompID targetCompID( clSenderCompID );
-      SessionID sessionID( beginString, senderCompID, targetCompID );
-
-      Sessions::iterator i = m_sessions.find(sessionID);
-      if ( i != m_sessions.end() )
-      {
-        i->second->setResponder( &responder );
-        return i->second;
-      }
-    }
-    catch ( FieldNotFound& ) {}
+//        SenderCompID senderCompID( targetCompID );
+//      TargetCompID targetCompID( senderCompID );
+        SessionID sessionID(beginString, SenderCompID(targetCompID), TargetCompID(senderCompID));
+        auto i = m_sessions.find(sessionID);
+        if (i != m_sessions.end()) {
+            i->second->setResponder(&responder);
+            return i->second;
+        }
+    } catch (FieldNotFound&) {}
     return 0;
 }
 

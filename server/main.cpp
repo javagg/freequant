@@ -8,7 +8,7 @@
 #include <quickfix/SessionSettings.h>
 
 #include <freequant/server/Executor.h>
-#include <freequant/server/DynamicSessionSocketAcceptor.h>
+#include <freequant/server/FQSocketAcceptor.h>
 
 class Application : public FreeQuant::Executor {};
 

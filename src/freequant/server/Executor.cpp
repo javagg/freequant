@@ -55,11 +55,12 @@ Executor::~Executor() {
 }
 
 void Executor::onCreate(const FIX::SessionID& sessionID) {
+    cout << __FUNCTION__ << ": " << sessionID << endl;
 }
 
 
 void Executor::onLogon(const FIX::SessionID& sessionID) {
-//    _sessionIDs.push_back(sessionID);
+    cout << __FUNCTION__ << ": " << sessionID << endl;
 }
 
 
@@ -149,18 +150,17 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 //    executionReport.setField( message.get(account) );
 
     FIX::Session::sendToTarget(response, sessionID);
-
 }
 
 void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
     FIX::Username username;
     FIX::Password password;
 //    cout << message.toXML() << endl;
-//    message.get(username);
-//    message.get(password);
+    message.get(username);
+    message.get(password);
 
-//    cout << username << password << endl;
-    std::string expected  = "12345";
+    cout << username << password << endl;
+//    std::string expected  = "12345";
 
 //    if (password != expected) {
 //         throw new FIX::RejectLogon();
