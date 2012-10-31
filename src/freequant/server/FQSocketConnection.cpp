@@ -36,8 +36,7 @@ FQSocketConnection::~FQSocketConnection()
 }
 
 bool FQSocketConnection::send( const std::string& msg )
-{ QF_STACK_PUSH(SocketConnection::send)
-
+{
   Locker l( m_mutex );
 
   m_sendQueue.push_back( msg );
@@ -45,12 +44,10 @@ bool FQSocketConnection::send( const std::string& msg )
   signal();
   return true;
 
-  QF_STACK_POP
 }
 
 bool FQSocketConnection::processQueue()
-{ QF_STACK_PUSH(SocketConnection::processQueue)
-
+{
   Locker l( m_mutex );
 
   if( !m_sendQueue.size() ) return true;
@@ -76,21 +73,18 @@ bool FQSocketConnection::processQueue()
 
   return !m_sendQueue.size();
 
-  QF_STACK_POP
 }
 
 void FQSocketConnection::disconnect()
-{ QF_STACK_PUSH(SocketConnection::disconnect)
-
+{
   if ( m_pMonitor )
     m_pMonitor->drop( m_socket );
 
-  QF_STACK_POP
+
 }
 
 bool FQSocketConnection::read( SocketConnector& s )
-{ QF_STACK_PUSH(SocketConnection::read)
-
+{
   if ( !m_pSession ) return false;
 
   try
@@ -105,13 +99,11 @@ bool FQSocketConnection::read( SocketConnector& s )
   }
   return true;
 
-  QF_STACK_POP
 }
 
 bool FQSocketConnection::read(FreeQuant::FQSocketAcceptor& a, SocketServer& s )
-{ QF_STACK_PUSH(SocketConnection::read)
-
-  std::string msg;
+{
+    std::string msg;
   try
   {
     readFromSocket();
@@ -157,12 +149,10 @@ bool FQSocketConnection::read(FreeQuant::FQSocketAcceptor& a, SocketServer& s )
   }
   return false;
 
-  QF_STACK_POP
 }
 
 bool FQSocketConnection::isValidSession()
-{ QF_STACK_PUSH(SocketConnection::isValidSession)
-
+{
   if( m_pSession == 0 )
     return false;
   SessionID sessionID = m_pSession->getSessionID();
@@ -170,23 +160,21 @@ bool FQSocketConnection::isValidSession()
     return false;
   return !( m_sessions.find(sessionID) == m_sessions.end() );
 
-  QF_STACK_POP
+
 }
 
 void FQSocketConnection::readFromSocket()
 throw( SocketRecvFailed )
-{ QF_STACK_PUSH(SocketConnection::readFromSocket)
-
+{
   int size = recv( m_socket, m_buffer, sizeof(m_buffer), 0 );
   if( size <= 0 ) throw SocketRecvFailed( size );
   m_parser.addToStream( m_buffer, size );
 
-  QF_STACK_POP
+
 }
 
 bool FQSocketConnection::readMessage( std::string& msg )
-{ QF_STACK_PUSH(SocketConnection::readMessage)
-
+{
   try
   {
     return m_parser.readFixMessage( msg );
@@ -194,7 +182,6 @@ bool FQSocketConnection::readMessage( std::string& msg )
   catch ( MessageParseError& ) {}
   return true;
 
-  QF_STACK_POP
 }
 
 void FQSocketConnection::readMessages( SocketMonitor& s )
@@ -217,9 +204,8 @@ void FQSocketConnection::readMessages( SocketMonitor& s )
 }
 
 void FQSocketConnection::onTimeout()
-{ QF_STACK_PUSH(SocketConnection::onTimeout)
-  if ( m_pSession ) m_pSession->next();
-  QF_STACK_POP
+{ if ( m_pSession ) m_pSession->next();
+
 }
 
 } // namespace FreeQuant

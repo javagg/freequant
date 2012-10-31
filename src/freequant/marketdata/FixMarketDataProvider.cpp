@@ -41,42 +41,6 @@ public:
         _callback = callback;
     }
 
-    void logon() {
-        FIX44::Logon message;
-        message.set(FIX::EncryptMethod(FIX::EncryptMethod_NONE));
-        message.set(FIX::HeartBtInt(10));
-        message.set(FIX::Username("simuser"));
-        message.set(FIX::Password("simuser"));
-//        const FIX::Dictionary& dictionary = _settings.get(sessionID);
-//        if (FIELD_GET_REF(message.getHeader(), MsgType) == FIX::MsgType_Logon) {
-//            FIX44::Logon& logon = dynamic_cast<FIX44::Logon&>(message);
-//            if (dictionary.has("Username")) {
-//                FIX::Username username = dictionary.getString("Username");
-//                logon.set(username);
-//            }
-//            if (dictionary.has("Password")) {
-//                FIX::Password password = dictionary.getString("Password");
-//                logon.set(password);
-//            }
-//        }
-
-//        try {
-
-        FIX::SessionID sessionID;
-        sessionID.fromString(_sessionString);
-        FIX::Session::sendToTarget(message, sessionID);
-//        } catch (FIX::SessionNotFound&) {
-
-//        }
-    }
-
-    void logout() {
-        FIX44::Logout message;
-        try {
-            FIX::Session::sendToTarget(message);
-        } catch (FIX::SessionNotFound&) {}
-    }
-
     void subscribe(std::vector<std::string> symbols) {
         std::string uuid = FreeQuant::toGuidString();
         FIX::MDReqID mdReqId(uuid);
@@ -96,9 +60,9 @@ public:
         message.set(FIX::MDImplicitDelete(false));
 
         FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
         message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
         message.addGroup(typeGroup);
         typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
         message.addGroup(typeGroup);
@@ -144,9 +108,9 @@ public:
         message.set(FIX::MDImplicitDelete(false));
 
         FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
         message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
         message.addGroup(typeGroup);
         typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
         message.addGroup(typeGroup);
@@ -175,22 +139,10 @@ public:
 
     void connect() {
         _initiator.start();
-//        logon();
-
-//        FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
-//        if (session && !session->isLoggedOn()) {
-//            session->logon();
-//        }
     }
 
     void disconnect() {
-        logout();
         _initiator.stop();
-
-    //    FIX::Session *session = FIX::Session::lookupSession(*m_sessionId);
-    //    if (session && session->isLoggedOn()) {
-    //        session->logout();
-    //    }
     }
 
     bool isConnected() const {
@@ -202,36 +154,21 @@ private:
         _sessionString = sessionID.toString();
         cout << __FUNCTION__ << ": " << sessionID << endl;
     }
+
     void onLogon(const FIX::SessionID& sessionID) {
-//        _sessionID = sessionID;
         cout << __FUNCTION__ << ": " << sessionID << endl;
     }
-    void onLogout(const FIX::SessionID&) {}
+
+    void onLogout(const FIX::SessionID& sessionID) {
+        cout << __FUNCTION__ << ": " << sessionID << endl;
+    }
 
     void toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {
-        const FIX::Dictionary& dictionary = _settings.get(sessionID);
-        if (FIELD_GET_REF(message.getHeader(), MsgType) == FIX::MsgType_Logon) {
-            cout << typeid(message).name() << endl;
-            cout << typeid(FIX44::Logon()).name() << endl;
-            FIX44::Logon& logon = dynamic_cast<FIX44::Logon&>(message);
-            if (dictionary.has("Username")) {
-                FIX::Username username = dictionary.getString("Username");
-                logon.set(username);
-            }
-            if (dictionary.has("Password")) {
-                FIX::Password password = dictionary.getString("Password");
-                logon.set(password);
-            }
-        }
+        crack(message, sessionID);
     }
 
     void toApp(FIX::Message& message, const FIX::SessionID& sessionId) throw(FIX::DoNotSend) {
-        try {
-            FIX::PossDupFlag possDupFlag;
-            message.getHeader().getField(possDupFlag);
-            if (possDupFlag) throw FIX::DoNotSend();
-        }
-        catch (FIX::FieldNotFound&) {}
+        crack(message, sessionId);
     }
 
     void fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionId)
@@ -241,21 +178,20 @@ private:
 
     void fromApp(const FIX::Message& message, const FIX::SessionID& sessionId)
             throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType) {
-//        crack(message, sessionId);
+        crack(message, sessionId);
     }
 
-//    void onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
-//        const FIX::Dictionary& dictionary = _settings.get(sessionID);
-//            FIX44::Logon& logon = message;
-//            if (dictionary.has("Username")) {
-//                FIX::Username username = dictionary.getString("Username");
-//                logon.set(username);
-//            }
-//            if (dictionary.has("Password")) {
-//                FIX::Password password = dictionary.getString("Password");
-//                logon.set(password);
-//            }
-//    }
+    void onMessage(FIX44::Logon& message, const FIX::SessionID& sessionID) {
+        const FIX::Dictionary& dictionary = _settings.get(sessionID);
+        if (dictionary.has("Username")) {
+            FIX::Username username = dictionary.getString("Username");
+            message.set(username);
+        }
+        if (dictionary.has("Password")) {
+            FIX::Password password = dictionary.getString("Password");
+            message.set(password);
+        }
+    }
 
     void onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID& sessionID) {
         FIX::MDReqID mdRegID;
@@ -302,9 +238,8 @@ private:
 //        std::cout << message.toXML() << std::endl;
     }
 
-    void onMessage(const FIX44::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &) {
-        std::cout << "FixTradeProvider::onMessage(const FIX44::MarketDataSnapshotFullRefresh" << std::endl;
-
+    void onMessage(const FIX44::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &sessionID) {
+        cout << __FUNCTION__ << ": " << sessionID << endl;
         FIX::NoMDEntries entries;
         message.get(entries);
 
@@ -346,10 +281,6 @@ private:
     FIX::FileStoreFactory _storeFactory;
     mutable FIX::SocketInitiator _initiator;
 };
-
-//FixMarketDataProvider::FixMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback) :
-//    _impl(new FixMarketDataProvider::Impl("", callback)) {
-//}
 
 FixMarketDataProvider::FixMarketDataProvider(std::string connection, FreeQuant::MarketDataProvider::Callback *callback) {
     std::map<string, string> params = parseParamsFromString(connection);

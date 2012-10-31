@@ -104,8 +104,6 @@ Session *FQSocketAcceptor::getSession(const std::string& msg, Responder& respond
         if (msgType != MsgType_Logon)
             return 0;
 
-//        SenderCompID senderCompID( targetCompID );
-//      TargetCompID targetCompID( senderCompID );
         SessionID sessionID(beginString, SenderCompID(targetCompID), TargetCompID(senderCompID));
         auto i = m_sessions.find(sessionID);
         if (i != m_sessions.end()) {
@@ -143,45 +141,36 @@ bool FQSocketAcceptor::has(const SessionID& sessionID) {
 }
 
 void FQSocketAcceptor::onConfigure(const SessionSettings& s) throw (ConfigError) {
-    auto sessions = s.getSessions();
-    for(auto i = sessions.begin(); i != sessions.end(); ++i) {
-        auto settings = s.get(*i);
-        settings.getLong(SOCKET_ACCEPT_PORT);
-        if (settings.has(SOCKET_REUSE_ADDRESS))
-            settings.getBool( SOCKET_REUSE_ADDRESS);
-        if (settings.has(SOCKET_NODELAY))
-            settings.getBool(SOCKET_NODELAY);
-    }
+//    auto sessions = s.getSessions();
+//    for(auto i = sessions.begin(); i != sessions.end(); ++i) {
+//        auto settings = s.get(*i);
+//        settings.getLong(SOCKET_ACCEPT_PORT);
+//        if (settings.has(SOCKET_REUSE_ADDRESS))
+//            settings.getBool( SOCKET_REUSE_ADDRESS);
+//        if (settings.has(SOCKET_NODELAY))
+//            settings.getBool(SOCKET_NODELAY);
+//    }
 }
 
 void FQSocketAcceptor::onInitialize(const SessionSettings& s) throw(RuntimeError) {
-    short port = 0;
+    long port = 0;
     try {
         _server.reset(new SocketServer(1));
 
         std::set<SessionID> sessions = s.getSessions();
-        std::set<SessionID>::iterator i = sessions.begin();
-        for( ; i != sessions.end(); ++i )
-        {
-          Dictionary settings = s.get( *i );  time_t start = 0;
-
-          short port = (short)settings.getLong( SOCKET_ACCEPT_PORT );
-
-          const bool reuseAddress = settings.has( SOCKET_REUSE_ADDRESS ) ?
+        for (auto i = sessions.begin(); i != sessions.end(); ++i) {
+          Dictionary dictionary = s.get( *i );
+          port = dictionary.getLong( SOCKET_ACCEPT_PORT );
+          bool reuseAddress = dictionary.has(SOCKET_REUSE_ADDRESS) ?
             s.get().getBool( SOCKET_REUSE_ADDRESS ) : true;
-
-          const bool noDelay = settings.has( SOCKET_NODELAY ) ?
+          bool noDelay = dictionary.has( SOCKET_NODELAY ) ?
             s.get().getBool( SOCKET_NODELAY ) : false;
-
-          const int sendBufSize = settings.has( SOCKET_SEND_BUFFER_SIZE ) ?
+          int sendBufSize = dictionary.has( SOCKET_SEND_BUFFER_SIZE ) ?
             s.get().getLong( SOCKET_SEND_BUFFER_SIZE ) : 0;
-
-          const int rcvBufSize = settings.has( SOCKET_RECEIVE_BUFFER_SIZE ) ?
+          int rcvBufSize = dictionary.has( SOCKET_RECEIVE_BUFFER_SIZE ) ?
             s.get().getLong( SOCKET_RECEIVE_BUFFER_SIZE ) : 0;
-
-          m_portToSessions[port].insert( *i );
-          _server->add( port, reuseAddress, noDelay, sendBufSize, rcvBufSize );
-
+          m_portToSessions[port].insert(*i);
+          _server->add(port, reuseAddress, noDelay, sendBufSize, rcvBufSize);
         }
     } catch(SocketException& e) {
         throw RuntimeError("Unable to create, bind, or listen to port "
@@ -232,20 +221,18 @@ bool FQSocketAcceptor::onPoll(double timeout) {
 
 void FQSocketAcceptor::onStop() {}
 
-void FQSocketAcceptor::onConnect( FIX::SocketServer& server, int a, int s )
-{
-  if ( !socket_isValid( s ) ) return;
-  auto i = _connections.find( s );
-  if ( i != _connections.end() ) return;
-  int port = server.socketToPort( a );
-  FQSocketConnection::Sessions sessions = m_portToSessions[port];
-  _connections[ s ] = new FQSocketConnection( s, sessions, &server.getMonitor() );
+void FQSocketAcceptor::onConnect(FIX::SocketServer& server,int accepted, int socket) {
+    if (!socket_isValid( socket)) return;
+    if (_connections.find(socket) != _connections.end()) return;
 
-  std::stringstream stream;
-  stream << "Accepted connection from " << socket_peername( s ) << " on port " << port;
+    int port = server.socketToPort(accepted);
+    auto sessions = m_portToSessions[port];
+    _connections[socket] = new FQSocketConnection(socket, sessions, &server.getMonitor());
 
-  if( getLog() )
-    getLog()->onEvent( stream.str() );
+    std::stringstream stream;
+    stream << "Accepted connection from " << socket_peername(socket) << " on port " << port;
+
+    getLog()->onEvent(stream.str());
 }
 
 void FQSocketAcceptor::onWrite(SocketServer& server, int s) {

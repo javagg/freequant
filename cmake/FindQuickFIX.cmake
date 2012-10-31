@@ -7,7 +7,7 @@ if(MSVC)
         find_library(QUICKFIX_LIBRARY NAMES quickfix HINTS /usr/lib $ENV{QUICKFIX_HOME}/lib/Release)
     endif()
 else()
-    find_library(QUICKFIX_LIBRARY NAMES quickfix HINTS /usr/lib /usr/local/lib)
+    find_library(QUICKFIX_LIBRARY NAMES quickfix HINTS /usr/lib /usr/local/lib $ENV{QUICKFIX_HOME}/lib)
 endif()
 
 set(QUICKFIX_LIBRARIES ${QUICKFIX_LIBRARY})

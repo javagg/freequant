@@ -69,9 +69,11 @@ void Executor::onLogout(const FIX::SessionID& sessionID) {
 }
 
 void Executor::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {
+    crack(message, sessionID);
 }
 
 void Executor::toApp(FIX::Message& message, const FIX::SessionID& sessionID) throw(FIX::DoNotSend) {
+    crack(message, sessionID);
 }
 
 void Executor::fromAdmin(const FIX::Message& message, const FIX::SessionID& sessionID)
@@ -85,9 +87,6 @@ void Executor::fromApp( const FIX::Message& message, const FIX::SessionID& sessi
 }
 
 void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::SessionID& sessionID) {
-    std::mt19937 rng;
-    std::uniform_int_distribution<> six(1,6);
-
     FIX::ClOrdID clOrdID;
     message.get(clOrdID);
     FIX::Side side;
@@ -155,21 +154,16 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
     FIX::Username username;
     FIX::Password password;
-//    cout << message.toXML() << endl;
     message.get(username);
     message.get(password);
 
-    cout << username << password << endl;
-//    std::string expected  = "12345";
-
-//    if (password != expected) {
-//         throw new FIX::RejectLogon();
-//    }
+    string expected = "simuser";
+    if (password != expected) {
+         throw FIX::RejectLogon();
+    }
 }
 
 void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionID) {
-//    cerr << " Executor::onMessage(const FIX44::MarketDataRequest& message" << endl;
-
     std::set<std::string> subscribedSymbols = _subscriptions[sessionID];
     std::set<std::string> requestSymbols;
     FIX::NoRelatedSym noRelatedSyms;

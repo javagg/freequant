@@ -91,9 +91,9 @@ public:
         message.set(FIX::MDImplicitDelete(false));
 
         FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
         message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
         message.addGroup(typeGroup);
         typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
         message.addGroup(typeGroup);
@@ -138,9 +138,9 @@ public:
         message.set(FIX::MDImplicitDelete(false));
 
         FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
         message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING));
+        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
         message.addGroup(typeGroup);
         typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
         message.addGroup(typeGroup);
@@ -217,7 +217,7 @@ public:
         message.set(FIX::Side(FIX::Side_SELL));
         FIX::UtcTimeStamp timestamp(2001,2,2,12,22,22,0);
         message.set(FIX::TransactTime(timestamp));
-        message.set(FIX::HandlInst(FIX::HandlInst_AUTOEXECPUB));
+        message.set(FIX::HandlInst(FIX::HandlInst_AUTOMATED_EXECUTION_ORDER_PUBLIC_BROKER_INTERVENTION_OK));
         message.set(FIX::OrdType(FIX::OrdType_MARKET));
         message.set(FIX::Symbol("GOOG"));
         message.set(FIX::OrderQty(1));
