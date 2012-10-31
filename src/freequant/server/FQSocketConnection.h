@@ -17,7 +17,7 @@ namespace FreeQuant {
 class FQSocketConnection : FIX::Responder {
 public:
 
-      typedef std::set<FIX::SessionID> Sessions;
+    typedef std::set<FIX::SessionID> Sessions;
     FQSocketConnection(int s, Sessions sessions, FIX::SocketMonitor* pMonitor);
     FQSocketConnection(FIX::SocketInitiator&, const FIX::SessionID&, int, FIX::SocketMonitor*);
     virtual ~FQSocketConnection();
@@ -26,7 +26,7 @@ public:
     FIX::Session* getSession() const { return m_pSession; }
 
     bool read(FIX::SocketConnector& s );
-    bool read(FreeQuant::DynamicSessionSocketAcceptor&, FIX::SocketServer& );
+    bool read(FreeQuant::FQSocketAcceptor&, FIX::SocketServer& );
     bool processQueue();
 
     void signal()

@@ -1,4 +1,7 @@
+#include <quickfix/HttpServer.h>
 #include <quickfix/Session.h>
+#include <quickfix/SessionFactory.h>
+#include <quickfix/Message.h>
 
 #include <freequant/server/FQSocketConnection.h>
 
@@ -8,23 +11,140 @@ using namespace FIX;
 
 namespace FreeQuant {
 
-DynamicSessionSocketAcceptor::DynamicSessionSocketAcceptor(Application& application,
+FQSocketAcceptor::FQSocketAcceptor(Application& application,
         MessageStoreFactory& factory, const SessionSettings& settings) throw(ConfigError) :
-    Acceptor(application, factory, settings) {
+    Acceptor(application, factory, settings), m_settings(settings) {
+    initialize();
 }
 
-DynamicSessionSocketAcceptor::DynamicSessionSocketAcceptor(Application& application,
+FQSocketAcceptor::FQSocketAcceptor(Application& application,
         MessageStoreFactory& factory, const SessionSettings& settings, LogFactory& logFactory)
         throw(ConfigError) :
-    Acceptor(application, factory, settings, logFactory) {
+    Acceptor(application, factory, settings, logFactory),  m_settings(settings), m_pLogFactory(&logFactory) {
+    initialize();
 }
 
-DynamicSessionSocketAcceptor::~DynamicSessionSocketAcceptor() {
+FQSocketAcceptor::~FQSocketAcceptor() {
     for (auto i = _connections.begin(); i != _connections.end(); ++i)
         delete i->second;
 }
 
-void DynamicSessionSocketAcceptor::onConfigure(const SessionSettings& s) throw (ConfigError) {
+void FQSocketAcceptor::initialize() throw (ConfigError) {
+    auto sessions = m_settings.getSessions();
+    if (!sessions.size())
+        throw ConfigError( "No sessions defined" );
+
+    FIX::SessionFactory factory(getApplication(), getMessageStoreFactory(), m_pLogFactory);
+    for (auto i = sessions.begin(); i != sessions.end(); ++i) {
+        if (m_settings.get(*i).getString(CONNECTION_TYPE) == "acceptor") {
+            m_sessionIDs.insert(*i);
+            m_sessions[*i] = factory.create(*i, m_settings.get(*i));
+        }
+    }
+
+    if (!m_sessions.size())
+        throw ConfigError("No sessions defined for acceptor");
+}
+
+void FQSocketAcceptor::start() throw (ConfigError, RuntimeError) {
+    Acceptor::start();
+}
+
+void FQSocketAcceptor::block() throw (ConfigError, RuntimeError) {
+    Acceptor::block();
+}
+
+bool FQSocketAcceptor::poll(double timeout) throw (ConfigError, RuntimeError) {
+    return Acceptor::poll(timeout);
+}
+
+void FQSocketAcceptor::stop(bool force) {
+    Acceptor::stop(force);
+
+    std::vector<Session*> enabledSessions;
+
+    for (auto i = m_sessions.begin(); i != m_sessions.end(); ++i )
+    {
+      Session* pSession = Session::lookupSession(i->first);
+      if( pSession->isEnabled() )
+      {
+        enabledSessions.push_back( pSession );
+        pSession->logout();
+        Session::unregisterSession( pSession->getSessionID() );
+      }
+    }
+
+    for(auto session = enabledSessions.begin(); session != enabledSessions.end(); ++session )
+      (*session)->logon();
+}
+
+bool FQSocketAcceptor::isLoggedOn() {
+    for (auto i = m_sessions.begin(); i != m_sessions.end(); ++i) {
+      if (i->second->isLoggedOn())
+        return true;
+    }
+    return false;
+}
+
+Session *FQSocketAcceptor::getSession(const std::string& msg, Responder& responder) {
+    Message message;
+    if (!message.setStringHeader( msg ) )
+      return 0;
+
+    BeginString beginString;
+    SenderCompID clSenderCompID;
+    TargetCompID clTargetCompID;
+    MsgType msgType;
+    try
+    {
+      message.getHeader().getField( beginString );
+      message.getHeader().getField( clSenderCompID );
+      message.getHeader().getField( clTargetCompID );
+      message.getHeader().getField( msgType );
+      if ( msgType != "A" ) return 0;
+
+      SenderCompID senderCompID( clTargetCompID );
+      TargetCompID targetCompID( clSenderCompID );
+      SessionID sessionID( beginString, senderCompID, targetCompID );
+
+      Sessions::iterator i = m_sessions.find(sessionID);
+      if ( i != m_sessions.end() )
+      {
+        i->second->setResponder( &responder );
+        return i->second;
+      }
+    }
+    catch ( FieldNotFound& ) {}
+    return 0;
+}
+
+const std::set<SessionID>& FQSocketAcceptor::getSessions() const {
+    return m_sessionIDs;
+}
+
+Session *FQSocketAcceptor::getSession(const SessionID& sessionID) const {
+    auto i = m_sessions.find( sessionID );
+    if( i != m_sessions.end() )
+      return i->second;
+    else
+      return 0;
+}
+
+const Dictionary* const FQSocketAcceptor::getSessionSettings(const SessionID& sessionID) const {
+    try {
+      return &m_settings.get( sessionID );
+    }
+    catch( ConfigError& )
+    {
+      return 0;
+    }
+}
+
+bool FQSocketAcceptor::has(const SessionID& sessionID) {
+    return m_sessions.find(sessionID) != m_sessions.end();
+}
+
+void FQSocketAcceptor::onConfigure(const SessionSettings& s) throw (ConfigError) {
     auto sessions = s.getSessions();
     for(auto i = sessions.begin(); i != sessions.end(); ++i) {
         auto settings = s.get(*i);
@@ -36,70 +156,42 @@ void DynamicSessionSocketAcceptor::onConfigure(const SessionSettings& s) throw (
     }
 }
 
-void DynamicSessionSocketAcceptor::onInitialize(const SessionSettings& s) throw(RuntimeError) {
+void FQSocketAcceptor::onInitialize(const SessionSettings& s) throw(RuntimeError) {
     short port = 0;
     try {
         _server.reset(new SocketServer(1));
 
-    std::set<SessionID> sessions = s.getSessions();
-    std::set<SessionID>::iterator i = sessions.begin();
-    for( ; i != sessions.end(); ++i )
-    {
-      Dictionary settings = s.get( *i );  time_t start = 0;
-      time_t now = 0;
+        std::set<SessionID> sessions = s.getSessions();
+        std::set<SessionID>::iterator i = sessions.begin();
+        for( ; i != sessions.end(); ++i )
+        {
+          Dictionary settings = s.get( *i );  time_t start = 0;
 
-      if (isStopped()) {
-          if (start == 0)
-              ::time(&start);
-          if (!isLoggedOn()) {
-              start = 0;
-              return false;
-          }
-          if (::time(&now)-5 >= start) {
-              start = 0;
-              return false;
-          }
-      }
+          short port = (short)settings.getLong( SOCKET_ACCEPT_PORT );
 
-      short port = (short)settings.getLong( SOCKET_ACCEPT_PORT );
+          const bool reuseAddress = settings.has( SOCKET_REUSE_ADDRESS ) ?
+            s.get().getBool( SOCKET_REUSE_ADDRESS ) : true;
 
-      const bool reuseAddress = settings.has( SOCKET_REUSE_ADDRESS ) ?
-        s.get().getBool( SOCKET_REUSE_ADDRESS ) : true;
+          const bool noDelay = settings.has( SOCKET_NODELAY ) ?
+            s.get().getBool( SOCKET_NODELAY ) : false;
 
-      const bool noDelay = settings.has( SOCKET_NODELAY ) ?
-        s.get().getBool( SOCKET_NODELAY ) : false;
+          const int sendBufSize = settings.has( SOCKET_SEND_BUFFER_SIZE ) ?
+            s.get().getLong( SOCKET_SEND_BUFFER_SIZE ) : 0;
 
-      const int sendBufSize = settings.has( SOCKET_SEND_BUFFER_SIZE ) ?
-        s.get().getLong( SOCKET_SEND_BUFFER_SIZE ) : 0;
+          const int rcvBufSize = settings.has( SOCKET_RECEIVE_BUFFER_SIZE ) ?
+            s.get().getLong( SOCKET_RECEIVE_BUFFER_SIZE ) : 0;
 
-      const int rcvBufSize = settings.has( SOCKET_RECEIVE_BUFFER_SIZE ) ?
-        s.get().getLong( SOCKET_RECEIVE_BUFFER_SIZE ) : 0;
+          m_portToSessions[port].insert( *i );
+          _server->add( port, reuseAddress, noDelay, sendBufSize, rcvBufSize );
 
-      m_portToSessions[port].insert( *i );
-      _server->add( port, reuseAddress, noDelay, sendBufSize, rcvBufSize );  time_t start = 0;
-      time_t now = 0;
-
-      if (isStopped()) {
-          if (start == 0)
-              ::time(&start);
-          if (!isLoggedOn()) {
-              start = 0;
-              return false;
-          }
-          if (::time(&now)-5 >= start) {
-              start = 0;
-              return false;
-          }
-      }
-
-    }
+        }
     } catch(SocketException& e) {
         throw RuntimeError("Unable to create, bind, or listen to port "
             + IntConvertor::convert((unsigned short)port) + " (" + e.what() + ")");
     }
 }
 
-void DynamicSessionSocketAcceptor::onStart() {
+void FQSocketAcceptor::onStart() {
     while (!isStopped() && bool(_server) && _server->block(*this)) {}
 
     if (!_server) return;
@@ -117,7 +209,7 @@ void DynamicSessionSocketAcceptor::onStart() {
     _server.reset();
 }
 
-bool DynamicSessionSocketAcceptor::onPoll(double timeout) {
+bool FQSocketAcceptor::onPoll(double timeout) {
     if (!_server) return false;
 
     time_t start = 0;
@@ -140,15 +232,15 @@ bool DynamicSessionSocketAcceptor::onPoll(double timeout) {
     return true;
 }
 
-void DynamicSessionSocketAcceptor::onStop() {}
+void FQSocketAcceptor::onStop() {}
 
-void DynamicSessionSocketAcceptor::onConnect( FIX::SocketServer& server, int a, int s )
+void FQSocketAcceptor::onConnect( FIX::SocketServer& server, int a, int s )
 {
   if ( !socket_isValid( s ) ) return;
   auto i = _connections.find( s );
   if ( i != _connections.end() ) return;
   int port = server.socketToPort( a );
-  Sessions sessions = m_portToSessions[port];
+  FQSocketConnection::Sessions sessions = m_portToSessions[port];
   _connections[ s ] = new FQSocketConnection( s, sessions, &server.getMonitor() );
 
   std::stringstream stream;
@@ -158,7 +250,7 @@ void DynamicSessionSocketAcceptor::onConnect( FIX::SocketServer& server, int a, 
     getLog()->onEvent( stream.str() );
 }
 
-void DynamicSessionSocketAcceptor::onWrite(SocketServer& server, int s) {
+void FQSocketAcceptor::onWrite(SocketServer& server, int s) {
   auto i = _connections.find( s );
   if ( i == _connections.end() ) return ;
   FQSocketConnection* socketConnection = i->second;
@@ -167,7 +259,7 @@ void DynamicSessionSocketAcceptor::onWrite(SocketServer& server, int s) {
 
 }
 
-bool DynamicSessionSocketAcceptor::onData(SocketServer& server, int s) {
+bool FQSocketAcceptor::onData(SocketServer& server, int s) {
     auto i = _connections.find(s);
     if (i == _connections.end()) return false;
 
@@ -175,7 +267,7 @@ bool DynamicSessionSocketAcceptor::onData(SocketServer& server, int s) {
     return socketConnection->read(*this, server);
 }
 
-void DynamicSessionSocketAcceptor::onDisconnect(SocketServer&, int s) {
+void FQSocketAcceptor::onDisconnect(SocketServer&, int s) {
     auto i = _connections.find(s);
     if (i == _connections.end()) return;
 
@@ -188,9 +280,9 @@ void DynamicSessionSocketAcceptor::onDisconnect(SocketServer&, int s) {
     _connections.erase(s);
 }
 
-void DynamicSessionSocketAcceptor::onError(SocketServer&) {}
+void FQSocketAcceptor::onError(SocketServer&) {}
 
-void DynamicSessionSocketAcceptor::onTimeout(SocketServer&) {
+void FQSocketAcceptor::onTimeout(SocketServer&) {
   for (auto i = _connections.begin(); i != _connections.end(); ++i )
     i->second->onTimeout();
 }

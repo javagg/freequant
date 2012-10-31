@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
         Application application;
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
-        FreeQuant::DynamicSessionSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
+        FreeQuant::FQSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
         acceptor.start();
         std::cout << "Type Ctrl-C to quit" << std::endl;
         while (true) {

@@ -12,19 +12,36 @@ namespace FreeQuant {
 
 class FQSocketConnection;
 
-class DynamicSessionSocketAcceptor : public FIX::Acceptor, FIX::SocketServer::Strategy {
+class FQSocketAcceptor : public FIX::Acceptor, FIX::SocketServer::Strategy {
 public:
-    DynamicSessionSocketAcceptor(FIX::Application&, FIX::MessageStoreFactory&,
+    FQSocketAcceptor(FIX::Application&, FIX::MessageStoreFactory&,
         const FIX::SessionSettings&) throw(FIX::ConfigError);
-    DynamicSessionSocketAcceptor( FIX::Application&, FIX::MessageStoreFactory&,
+    FQSocketAcceptor( FIX::Application&, FIX::MessageStoreFactory&,
         const FIX::SessionSettings&, FIX::LogFactory&) throw(FIX::ConfigError);
-    virtual ~DynamicSessionSocketAcceptor();
+    virtual ~FQSocketAcceptor();
+
+    // We have to reimplement all the public functions in order to add a feature.
+    void start() throw (FIX::ConfigError, FIX::RuntimeError);
+    void block() throw (FIX::ConfigError, FIX::RuntimeError);
+    bool poll(double timeout = 0.0) throw (FIX::ConfigError, FIX::RuntimeError);
+    void stop(bool force = false);
+    bool isLoggedOn();
+    FIX::Session *getSession(const std::string&, FIX::Responder&);
+    const std::set<FIX::SessionID>& getSessions() const;
+    FIX::Session *getSession(const FIX::SessionID&) const;
+    const FIX::Dictionary* const getSessionSettings(const FIX::SessionID&) const;
+    bool has(const FIX::SessionID&);
+
 
 private:
+    void initialize() throw (FIX::ConfigError);
+
     bool readSettings(const FIX::SessionSettings&);
 
-    typedef std::set<FIX::SessionID> Sessions;
-    typedef std::map<int, Sessions> PortToSessions;
+    typedef std::set<FIX::SessionID> SessionIDs;
+    typedef std::map<FIX::SessionID, FIX::Session*> Sessions;
+
+    typedef std::map<int, SessionIDs> PortToSessions;
     typedef std::map<int, FQSocketConnection*> SocketConnections;
 
     void onConfigure(const FIX::SessionSettings&) throw (FIX::ConfigError );
@@ -44,6 +61,11 @@ private:
     boost::scoped_ptr<FIX::SocketServer> _server;
     PortToSessions m_portToSessions;
     SocketConnections _connections;
+
+    Sessions m_sessions;
+    SessionIDs m_sessionIDs;
+    FIX::LogFactory* m_pLogFactory;
+    FIX::SessionSettings m_settings;
 };
 
 } // namespace FreeQuant

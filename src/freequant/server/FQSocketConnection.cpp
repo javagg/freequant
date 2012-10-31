@@ -108,7 +108,7 @@ bool FQSocketConnection::read( SocketConnector& s )
   QF_STACK_POP
 }
 
-bool FQSocketConnection::read(FreeQuant::DynamicSessionSocketAcceptor& a, SocketServer& s )
+bool FQSocketConnection::read(FreeQuant::FQSocketAcceptor& a, SocketServer& s )
 { QF_STACK_PUSH(SocketConnection::read)
 
   std::string msg;
