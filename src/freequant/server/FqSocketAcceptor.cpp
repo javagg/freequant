@@ -3,9 +3,8 @@
 #include <quickfix/SessionFactory.h>
 #include <quickfix/Message.h>
 
-#include <freequant/server/FQSocketConnection.h>
-
-#include "FQSocketAcceptor.h"
+#include <freequant/server/FqSocketConnection.h>
+#include "FqSocketAcceptor.h"
 
 using namespace FIX;
 

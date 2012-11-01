@@ -1,5 +1,4 @@
-#include "FQSocketConnection.h"
-
+#include "FqSocketConnection.h"
 
 #include <quickfix/Utility.h>
 
