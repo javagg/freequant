@@ -10,10 +10,14 @@ namespace FreeQuant {
 
 class MarketDataGenerator {
 public:
+    typedef std::vector<std::string> Symbols;
+    typedef std::vector<FreeQuant::Bar> Bars;
+
     virtual ~MarketDataGenerator() {}
-    virtual const std::vector<std::string>& symbols() const = 0;
-    virtual void setSymbols(std::vector<std::string>) = 0;
-    virtual std::vector<FreeQuant::Bar> generate() = 0;
+    virtual const Symbols& symbols() const = 0;
+    virtual void addSymbols(Symbols&) = 0;
+    virtual void removeSymbols(Symbols&) = 0;
+    virtual Bars generate() = 0;
 };
 
 } // namespace FreeQuant

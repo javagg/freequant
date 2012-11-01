@@ -1,18 +1,19 @@
 #ifndef FQ_UTILS_YAHOOMARKETDATAGENERATOR_H
 #define FQ_UTILS_YAHOOMARKETDATAGENERATOR_H
 
-#include <freequant/utils/MarketDataGenerator.h>
+#include <freequant/utils/RandomMarketDataGenerator.h>
 #include <freequant/utils/HttpClient.h>
 #include <freequant/utils/CsvParser.h>
 
 namespace FreeQuant {
 
-class YahooMarketDataGenerator : public MarketDataGenerator {
+class YahooMarketDataGenerator : public RandomMarketDataGenerator {
 public:
+    YahooMarketDataGenerator();
     virtual ~YahooMarketDataGenerator() {}
-    virtual std::vector<std::string> availableSymbols() const;
-    FreeQuant::Bar generate(std::string symbol);
+    Bars generate();
 private:
+    FreeQuant::Bar generate(std::string symbol);
     FreeQuant::HttpClient _http;
     FreeQuant::CsvParser _parser;
 };

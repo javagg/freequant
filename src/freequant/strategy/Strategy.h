@@ -117,7 +117,6 @@ public:
     void setTradeProvider(FreeQuant::TradeProvider *provider);
     void setMarketDataProvider(FreeQuant::MarketDataProvider *provider);
 
-    std::vector<Exchange *>& exchanges() const {}
     std::vector<Instrument *>& instruments() const {}
     std::vector<Order *>& orders() const {}
 
@@ -128,6 +127,8 @@ public:
 private:
     void start();
     void stop();
+
+    virtual void onMarketDataProviderConnected();
 
     void handleBar(const FreeQuant::Bar&);
     std::vector<FreeQuant::Indicator *> m_indictors;
@@ -141,8 +142,10 @@ private:
     TradeProvider *m_tradeProvider;
 
     class MdProviderCallback;
-    MdProviderCallback *_mdCallback;
     class TradeProviderCallback;
+    friend class MdProviderCallback;
+    friend class TradeProviderCallback;
+    MdProviderCallback *_mdCallback;
     TradeProviderCallback *_tradeCallback;
     std::set<std::string> _symbols;
 };

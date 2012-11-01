@@ -10,15 +10,15 @@
 
 namespace FreeQuant {
 
-class FQSocketConnection;
+class FqSocketConnection;
 
-class FQSocketAcceptor : public FIX::Acceptor, FIX::SocketServer::Strategy {
+class FqSocketAcceptor : public FIX::Acceptor, FIX::SocketServer::Strategy {
 public:
-    FQSocketAcceptor(FIX::Application&, FIX::MessageStoreFactory&,
+    FqSocketAcceptor(FIX::Application&, FIX::MessageStoreFactory&,
         const FIX::SessionSettings&) throw(FIX::ConfigError);
-    FQSocketAcceptor( FIX::Application&, FIX::MessageStoreFactory&,
+    FqSocketAcceptor( FIX::Application&, FIX::MessageStoreFactory&,
         const FIX::SessionSettings&, FIX::LogFactory&) throw(FIX::ConfigError);
-    virtual ~FQSocketAcceptor();
+    virtual ~FqSocketAcceptor();
 
     // We have to reimplement all the public functions in order to add a feature.
     void start() throw (FIX::ConfigError, FIX::RuntimeError);
@@ -42,7 +42,7 @@ private:
     typedef std::map<FIX::SessionID, FIX::Session*> Sessions;
 
     typedef std::map<int, SessionIDs> PortToSessions;
-    typedef std::map<int, FQSocketConnection*> SocketConnections;
+    typedef std::map<int, FqSocketConnection*> SocketConnections;
 
     void onConfigure(const FIX::SessionSettings&) throw (FIX::ConfigError );
     void onInitialize(const FIX::SessionSettings&) throw (FIX::RuntimeError );

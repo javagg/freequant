@@ -14,19 +14,19 @@ namespace FIX {
 }
 namespace FreeQuant {
 
-class FQSocketConnection : FIX::Responder {
+class FqSocketConnection : FIX::Responder {
 public:
 
     typedef std::set<FIX::SessionID> Sessions;
-    FQSocketConnection(int s, Sessions sessions, FIX::SocketMonitor* pMonitor);
-    FQSocketConnection(FIX::SocketInitiator&, const FIX::SessionID&, int, FIX::SocketMonitor*);
-    virtual ~FQSocketConnection();
+    FqSocketConnection(int s, Sessions sessions, FIX::SocketMonitor* pMonitor);
+    FqSocketConnection(FIX::SocketInitiator&, const FIX::SessionID&, int, FIX::SocketMonitor*);
+    virtual ~FqSocketConnection();
 
     int getSocket() const { return m_socket; }
     FIX::Session* getSession() const { return m_pSession; }
 
     bool read(FIX::SocketConnector& s );
-    bool read(FreeQuant::FQSocketAcceptor&, FIX::SocketServer& );
+    bool read(FreeQuant::FqSocketAcceptor&, FIX::SocketServer& );
     bool processQueue();
 
     void signal()

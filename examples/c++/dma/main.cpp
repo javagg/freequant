@@ -44,8 +44,7 @@ public:
     }
 
     void onBar(const FreeQuant::Bar& bar) {
-        std::cout << "close: "<< bar.open() << std::endl;
-        std::cout << "ma: "<< ma.value() << std::endl;
+        cout << "bar: "<< bar << endl;
     }
 };
 

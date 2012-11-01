@@ -1,20 +1,18 @@
 #ifndef FQ_MARKETDATA_BAR_H
 #define FQ_MARKETDATA_BAR_H
 
+#include <iostream>
 #include <freequant/utils/DateTime.h>
 
 namespace FreeQuant {
 
 class Bar {
 public:
-    Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0) :
-        _open(open), _high(high), _low(low), _close(close), _volume(volume) {
-    }
-
+    Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0);
     Bar(std::string symbol, FreeQuant::DateTime dateTime, double open, double high,
-        double low, double close, long volume) :
-        _symbol(symbol), _dateTime(dateTime), _open(open), _high(high),
-        _low(low), _close(close), _volume(volume){}
+        double low, double close, long volume);
+    Bar& operator=(const Bar& bar);
+
     FreeQuant::DateTime beginTime();
     FreeQuant::DateTime endTime();
 
@@ -39,6 +37,8 @@ private:
     double _close;
     long _volume;
 };
+
+std::ostream& operator<<(std::ostream& os, const FreeQuant::Bar& bar);
 
 } // namespace FreeQuant
 

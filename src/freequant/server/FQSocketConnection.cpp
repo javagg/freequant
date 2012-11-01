@@ -8,7 +8,7 @@ using namespace FIX;
 namespace FreeQuant {
 
 
-FQSocketConnection::FQSocketConnection( int s, Sessions sessions,
+FqSocketConnection::FqSocketConnection( int s, Sessions sessions,
                                     SocketMonitor* pMonitor )
 : m_socket( s ), m_sendLength( 0 ),
   m_sessions(sessions), m_pSession( 0 ), m_pMonitor( pMonitor )
@@ -17,7 +17,7 @@ FQSocketConnection::FQSocketConnection( int s, Sessions sessions,
   FD_SET( m_socket, &m_fds );
 }
 
-FQSocketConnection::FQSocketConnection( SocketInitiator& i,
+FqSocketConnection::FqSocketConnection( SocketInitiator& i,
                                     const SessionID& sessionID, int s,
                                     SocketMonitor* pMonitor )
 : m_socket( s ), m_sendLength( 0 ),
@@ -29,13 +29,13 @@ FQSocketConnection::FQSocketConnection( SocketInitiator& i,
   m_sessions.insert( sessionID );
 }
 
-FQSocketConnection::~FQSocketConnection()
+FqSocketConnection::~FqSocketConnection()
 {
   if ( m_pSession )
     Session::unregisterSession( m_pSession->getSessionID() );
 }
 
-bool FQSocketConnection::send( const std::string& msg )
+bool FqSocketConnection::send( const std::string& msg )
 {
   Locker l( m_mutex );
 
@@ -46,7 +46,7 @@ bool FQSocketConnection::send( const std::string& msg )
 
 }
 
-bool FQSocketConnection::processQueue()
+bool FqSocketConnection::processQueue()
 {
   Locker l( m_mutex );
 
@@ -75,7 +75,7 @@ bool FQSocketConnection::processQueue()
 
 }
 
-void FQSocketConnection::disconnect()
+void FqSocketConnection::disconnect()
 {
   if ( m_pMonitor )
     m_pMonitor->drop( m_socket );
@@ -83,7 +83,7 @@ void FQSocketConnection::disconnect()
 
 }
 
-bool FQSocketConnection::read( SocketConnector& s )
+bool FqSocketConnection::read( SocketConnector& s )
 {
   if ( !m_pSession ) return false;
 
@@ -101,7 +101,7 @@ bool FQSocketConnection::read( SocketConnector& s )
 
 }
 
-bool FQSocketConnection::read(FreeQuant::FQSocketAcceptor& a, SocketServer& s )
+bool FqSocketConnection::read(FreeQuant::FqSocketAcceptor& a, SocketServer& s )
 {
     std::string msg;
   try
@@ -151,7 +151,7 @@ bool FQSocketConnection::read(FreeQuant::FQSocketAcceptor& a, SocketServer& s )
 
 }
 
-bool FQSocketConnection::isValidSession()
+bool FqSocketConnection::isValidSession()
 {
   if( m_pSession == 0 )
     return false;
@@ -163,7 +163,7 @@ bool FQSocketConnection::isValidSession()
 
 }
 
-void FQSocketConnection::readFromSocket()
+void FqSocketConnection::readFromSocket()
 throw( SocketRecvFailed )
 {
   int size = recv( m_socket, m_buffer, sizeof(m_buffer), 0 );
@@ -173,7 +173,7 @@ throw( SocketRecvFailed )
 
 }
 
-bool FQSocketConnection::readMessage( std::string& msg )
+bool FqSocketConnection::readMessage( std::string& msg )
 {
   try
   {
@@ -184,7 +184,7 @@ bool FQSocketConnection::readMessage( std::string& msg )
 
 }
 
-void FQSocketConnection::readMessages( SocketMonitor& s )
+void FqSocketConnection::readMessages( SocketMonitor& s )
 {
   if( !m_pSession ) return;
 
@@ -203,7 +203,7 @@ void FQSocketConnection::readMessages( SocketMonitor& s )
   }
 }
 
-void FQSocketConnection::onTimeout()
+void FqSocketConnection::onTimeout()
 { if ( m_pSession ) m_pSession->next();
 
 }

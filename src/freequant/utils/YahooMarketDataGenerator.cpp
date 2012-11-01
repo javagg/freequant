@@ -1,5 +1,8 @@
+#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+
+#include <freequant/utils/Utility.h>
 
 #include "YahooMarketDataGenerator.h"
 
@@ -9,16 +12,43 @@ namespace FreeQuant {
 
 static string format = "http://download.finance.yahoo.com/d/quotes.csv?s=%1%&f=%2%";
 
-vector<string> YahooMarketDataGenerator::availableSymbols() const {
-    return vector<string>();
+YahooMarketDataGenerator::YahooMarketDataGenerator() :
+    RandomMarketDataGenerator() {
 }
 
-FreeQuant::Bar YahooMarketDataGenerator::generate(string symbol) {
+MarketDataGenerator::Bars YahooMarketDataGenerator::generate() {
+    std::string r;
+    auto syms = symbols();
+    for (auto i = syms.begin(); i != syms.end(); ++i) {
+        r += (i == syms.begin()) ? *i : "+" + *i;
+    }
+
+    string url = str(boost::format(format) % r % "sohgpv");
+    string content = _http.get(url);
+
+    string fname = FreeQuant::createGuid();
+    ofstream fout(fname.c_str(), ios::out);
+    fout << content;
+    fout.flush();
+    fout.close();
+
+    _parser.load(fname);
+    Bars bars(_parser.rowCount());
+    while (_parser.hasMore()) {
+        auto row = _parser.row();
+        copy(row.begin(), row.end(), ostream_iterator<string>(cout, " ")); cout << endl;
+        bars.push_back(Bar());
+    }
+
+    boost::filesystem::remove(boost::filesystem::path(fname));
+
+    return bars;
+}
+
+Bar YahooMarketDataGenerator::generate(string symbol) {
     string url = str(boost::format(format) % symbol % "d1t1k3l1");
     std::cout << url << std::endl;
     string content = _http.get(url);
-
-    // "10/17/2012","3:01am",N/A,2105.618
 
     vector<string> items;
     string token;

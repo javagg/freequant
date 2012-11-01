@@ -50,13 +50,13 @@ public:
     void onMessage(const FIX44::SecurityDefinitionRequest&, const FIX::SessionID&);
 
 private:
-    void generatedBars();
+    void generateBars();
     void sendBar(const  FIX::SessionID& sessionID, const FreeQuant::Bar& bar);
 
     boost::scoped_ptr<FreeQuant::Timer> _timerMd;
     boost::scoped_ptr<MarketDataGenerator> _mdGenerator;
     std::set<FIX::SessionID> _sessionIDs;
-    typedef std::set<std::string> Symbols;
+    typedef MarketDataGenerator::Symbols Symbols;
     typedef std::map<FIX::SessionID, Symbols> Subscriptions;
     Subscriptions _subscriptions;
 };

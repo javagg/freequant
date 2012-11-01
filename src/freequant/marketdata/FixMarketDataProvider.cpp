@@ -42,51 +42,73 @@ public:
     }
 
     void subscribe(std::vector<std::string> symbols) {
-//        std::string uuid = FreeQuant::createGuid();
-//        FIX::MDReqID mdReqId(FreeQuant::createGuid());
-//        FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES);
-//        FIX::MarketDepth marketDepth(1);
-
+        cout << __FUNCTION__ << endl;
         FIX44::MarketDataRequest message;
         message.set(FIX::MDReqID(FreeQuant::createGuid()));
         message.set(FIX::SubscriptionRequestType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES));
         message.set(FIX::MarketDepth(0));
         message.set(FIX::MDUpdateType(FIX::MDUpdateType_FULL_REFRESH));
-//        message.set(FIX::AggregatedBook(true));
-//        string s;
-//        s.append(1, FIX::Scope_LOCAL);
 
-//        FIX::Scope scope(s);
-//        message.set(scope);
-
-//        message.set(FIX::MDImplicitDelete(false));
-
-        FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_LOW_PRICE));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_BID));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADE_VOLUME));
-        message.addGroup(typeGroup);
-        typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
-        message.addGroup(typeGroup);
-
-        for (auto i = symbols.begin(); i != symbols.end(); i++) {
-            FIX44::MarketDataRequest::NoRelatedSym symGroup;
-            symGroup.set(FIX::Symbol(*i));
-            message.addGroup(symGroup);
+        vector<char> types;
+        types.push_back(FIX::MDEntryType_OPENING_PRICE);
+        types.push_back(FIX::MDEntryType_CLOSING_PRICE);
+        for (auto i = types.begin(); i != types.end(); ++i) {
+            FIX44::MarketDataRequest::NoMDEntryTypes group;
+            FIX::MDEntryType type(*i);
+            group.set(type);
+            message.addGroup(group);
         }
 
+        for (auto i = symbols.begin(); i != symbols.end(); i++) {
+            FIX44::MarketDataRequest::NoRelatedSym group;
+            group.set(FIX::Symbol(*i));
+            message.addGroup(group);
+        }
+
+//                std::string uuid = FreeQuant::toGuidString();
+//                FIX::MDReqID mdReqId(uuid);
+//                FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES);
+//                FIX::MarketDepth marketDepth(1);
+
+//                FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
+
+//                message.set(FIX::MDUpdateType(FIX::MDUpdateType_INCREMENTAL_REFRESH));
+//                message.set(FIX::AggregatedBook(true));
+//                string s;
+//                s.append(1, FIX::Scope_LOCAL);
+
+//                FIX::Scope scope(s);
+//                message.set(scope);
+
+//                message.set(FIX::MDImplicitDelete(false));
+
+//                FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_HIGH_PRICE));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADING_SESSION_LOW_PRICE));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_BID));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_TRADE_VOLUME));
+//                message.addGroup(typeGroup);
+//                typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPEN_INTEREST));
+//                message.addGroup(typeGroup);
+
+//                FIX44::MarketDataRequest::NoRelatedSym symGroup;
+//                symGroup.set(FIX::Symbol("GOOG"));
+//                message.addGroup(symGroup);
+//                symGroup.set(FIX::Symbol("IF1210"));
+//                message.addGroup(symGroup);
+        FIX::SessionID sessionID;
+        sessionID.fromString(_sessionString);
         try {
-            FIX::Session::sendToTarget(message);
+            FIX::Session::sendToTarget(message, sessionID);
         } catch (FIX::SessionNotFound&) {}
     }
 
@@ -160,6 +182,7 @@ private:
 
     void onLogon(const FIX::SessionID& sessionID) {
         cout << __FUNCTION__ << ": " << sessionID << endl;
+        if (_callback) _callback->onConnected();
     }
 
     void onLogout(const FIX::SessionID& sessionID) {
@@ -196,83 +219,46 @@ private:
         }
     }
 
-    void onMessage(const FIX44::MarketDataRequestReject& message, const FIX::SessionID& sessionID) {
-        FIX::MDReqID mdRegID;
-        FIX::MDReqRejReason mdReqRejReason;
-        FIX::Text text;
-        if (message.isSet(mdRegID)) {
-
-        }
-        if (message.isSet(mdReqRejReason)) {
-
-        }
-        if (message.isSet(text)) {
-
-        }
-    }
-
-    void onMessage(const FIX44::MarketDataIncrementalRefresh& message, const FIX::SessionID& sessionID) {
-        FIX::NoMDEntries noMDEntries;
-        message.get(noMDEntries);
-
-        for (int i = 1; i <= noMDEntries; i++) {
-            FIX44::MarketDataIncrementalRefresh::NoMDEntries group;
-            message.getGroup(i, group);
-            FIX::MDEntryID mdEntryID;
-            group.get(mdEntryID);
-            FIX::MDUpdateAction mdUpdateAction;
-            group.get(mdUpdateAction);
-            switch (mdUpdateAction) {
-            case FIX::MDUpdateAction_NEW:
-                break;
-            case FIX::MDUpdateAction_CHANGE:
-            default:
-                break;
-            }
-        }
-
-        FIX44::MarketDataIncrementalRefresh::NoMDEntries group;
-        message.getGroup(1, group);
-
-        FIX::MDEntryID entryID; group.get(entryID);
-        FIX::MDUpdateAction action; group.get(action);
-
-        char actionvalue = action.getValue();//0=New, 1=Update, 2=Delete)
-//        std::cout << message.toXML() << std::endl;
-    }
+    void onMessage(const FIX44::MarketDataRequestReject&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::MarketDataIncrementalRefresh&, const FIX::SessionID&) {}
 
     void onMessage(const FIX44::MarketDataSnapshotFullRefresh& message, const FIX::SessionID &sessionID) {
-        cout << __FUNCTION__ << ": " << sessionID << endl;
+        cout << "MarketDataSnapshotFullRefresh" << ": " << sessionID << endl;
+
+        FIX::Symbol symbol;
+        message.get(symbol);
+
+        double close;
+        double open;
         FIX::NoMDEntries entries;
         message.get(entries);
-
         for (int i = 1; i <= entries; i++) {
             FIX44::MarketDataSnapshotFullRefresh::NoMDEntries group;
             message.getGroup(i, group);
-            FIX::MDEntrySize mdEntrySize;
             FIX::MDEntryDate mdEntryDate;
             FIX::MDEntryTime mdEntryTime;
             FIX::MDEntryType mdEntryType;
             FIX::MDEntryPx mdEntryPx;
-            group.get(mdEntrySize);
             group.get(mdEntryType);
             group.get(mdEntryPx);
 
             switch (mdEntryType) {
-            case FIX::MDEntryType_BID:
-                cout << "bid" << mdEntryPx << " size:" << mdEntrySize << endl;
+            case FIX::MDEntryType_CLOSING_PRICE:
+                close = mdEntryPx;
+                cout << "close" << mdEntryPx << endl;
                 break;
-            case FIX::MDEntryType_OFFER:
-                cout << "offer" << mdEntryPx << " size:" << mdEntrySize << endl;
+            case FIX::MDEntryType_OPENING_PRICE:
+                open = mdEntryPx;
+                cout << "open" << mdEntryPx << endl;
                 break;
             default:
                 break;
             }
         }
-        FIX::Symbol symbol;
-        message.get(symbol);
 
-        Bar bar(1,2,1,1,1);
+
+//        Bar bar(1,2,1,1,1);
+        Bar bar(symbol, FreeQuant::DateTime(), open, 1, 1, close, 1);
         if (_callback) {
             _callback->onBar(bar);
         }

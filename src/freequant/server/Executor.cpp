@@ -37,8 +37,10 @@
 #include <quickfix/Session.h>
 
 #include <freequant/utils/RandomMarketDataGenerator.h>
+#include <freequant/utils/Utility.h>
 
 #include "Executor.h"
+
 
 using namespace std;
 using namespace boost::phoenix;
@@ -47,7 +49,7 @@ namespace FreeQuant {
 
 Executor::Executor() {
     _mdGenerator.reset(new FreeQuant::RandomMarketDataGenerator());
-    _timerMd.reset(new FreeQuant::Timer(1000, boost::bind(&Executor::generatedBars, this)));
+    _timerMd.reset(new FreeQuant::Timer(1000, boost::bind(&Executor::generateBars, this)));
     _timerMd->start();
 }
 
@@ -164,49 +166,56 @@ void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sess
 }
 
 void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionID) {
-    std::set<std::string> subscribedSymbols = _subscriptions[sessionID];
-    std::set<std::string> requestSymbols;
-    FIX::NoRelatedSym noRelatedSyms;
-    FIX44::MarketDataRequest::NoRelatedSym symGroup;
-    for (int i = 1; i <= noRelatedSyms; i++) {
-        message.getGroup(i, symGroup);
-        FIX::Symbol sym;
-        symGroup.get(sym);
-        requestSymbols.insert(sym);
+    Symbols requested;
+    FIX::NoRelatedSym numSyms;
+    message.get(numSyms);
+
+    for (int i = 1; i <= numSyms; i++) {
+        FIX44::MarketDataRequest::NoRelatedSym group;
+        message.getGroup(i, group);
+        FIX::Symbol symbol;
+        group.get(symbol);
+        requested.push_back(symbol);
     }
 
-    std::set<std::string> allSyms;
-    for (auto i = _subscriptions.begin(); i != _subscriptions.end(); i++) {
-        std::set<std::string>& syms = i->second;
-        allSyms.insert(syms.begin(), syms.end());
-    }
-    _mdGenerator->setSymbols(std::vector<std::string>(allSyms.begin(), allSyms.end()));
-
-    FIX::SubscriptionRequestType subscriptionRequestType;
-    message.get(subscriptionRequestType);
-    if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
-        std::set<std::string> result;
-        std::set_difference(subscribedSymbols.begin(), subscribedSymbols.end(),
-            requestSymbols.begin(), requestSymbols.end(), std::inserter(result, result.end()));
-        subscribedSymbols = result;
-    } else if (subscriptionRequestType == FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES) {
-        subscribedSymbols.insert(requestSymbols.begin(), requestSymbols.end());
-    }
-    _subscriptions[sessionID] = subscribedSymbols;
+    _mdGenerator->addSymbols(requested);
+    Symbols& subscribed = _subscriptions[sessionID];
+    subscribed.insert(subscribed.end(), requested.begin(), requested.end());
+//    _subscriptions[sessionID] = subscribed;
+//    _subscriptions.insert()
+    //    std::set<std::string> allSyms;
+//    for (auto i = _subscriptions.begin(); i != _subscriptions.end(); i++) {
+//        std::set<std::string>& syms = i->second;
+//        allSyms.insert(syms.begin(), syms.end());
+//    }
+//    _mdGenerator->setSymbols(std::vector<std::string>(requestedSymbols.begin(), requestedSymbols.end()));
 
 
-    FIX::MDReqID mdReqID;
+//    FIX::SubscriptionRequestType subscriptionRequestType;
+//    message.get(subscriptionRequestType);
+//    if (subscriptionRequestType == FIX::SubscriptionRequestType_DISABLE_PREVIOUS_SNAPSHOT_PLUS_UPDATE_REQUEST) {
+//        std::set<std::string> result;
+//        std::set_difference(subscribedSymbols.begin(), subscribedSymbols.end(),
+//            requestSymbols.begin(), requestSymbols.end(), std::inserter(result, result.end()));
+//        subscribedSymbols = result;
+//    } else if (subscriptionRequestType == FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES) {
+//        subscribedSymbols.insert(requestSymbols.begin(), requestSymbols.end());
+//    }
+//    _subscriptions[sessionID] = subscribedSymbols;
 
-    FIX::MarketDepth marketDepth;
-    FIX::MDUpdateType mdUpdateType;
-    FIX::AggregatedBook aggregatedBook;
-    FIX::OpenCloseSettleFlag settleFlag;
-    FIX::Scope scope;
-    FIX::MDImplicitDelete mdImplicitDelete;
-    FIX::NoMDEntryTypes noMDEntryTypes;
 
-    message.get(mdReqID);
-    message.get(subscriptionRequestType);
+//    FIX::MDReqID mdReqID;
+
+//    FIX::MarketDepth marketDepth;
+//    FIX::MDUpdateType mdUpdateType;
+//    FIX::AggregatedBook aggregatedBook;
+//    FIX::OpenCloseSettleFlag settleFlag;
+//    FIX::Scope scope;
+//    FIX::MDImplicitDelete mdImplicitDelete;
+//    FIX::NoMDEntryTypes noMDEntryTypes;
+
+//    message.get(mdReqID);
+//    message.get(subscriptionRequestType);
 
 //    message.get(marketDepth);
 //    message.get(mdUpdateType);
@@ -299,10 +308,11 @@ void Executor::onMessage(const FIX44::SecurityDefinitionRequest& message, const 
     FIX::Session::sendToTarget(response, sessionID);
 }
 
-void Executor::generatedBars() {
+void Executor::generateBars() {
     std::vector<FreeQuant::Bar> bars = _mdGenerator->generate();
-    std::map<std::string, FreeQuant::Bar> barMap;
+    if (bars.empty()) return;
 
+    std::map<std::string, FreeQuant::Bar> barMap;
     for (auto i = bars.begin(); i != bars.end(); i++) {
         FreeQuant::Bar& bar = *i;
         barMap[bar.symbol()] = bar;
@@ -318,23 +328,20 @@ void Executor::generatedBars() {
 
 void Executor::sendBar(const FIX::SessionID& sessionID, const FreeQuant::Bar& bar) {
     FIX44::MarketDataSnapshotFullRefresh message;
-    FIX::MDReqID mdReqID("ssf");
-    message.set(mdReqID);
+    message.set(FIX::MDReqID(FreeQuant::createGuid()));
     message.set(FIX::Symbol(bar.symbol()));
+//    message.set(FIX::NoMDEntries(2));
 
-    message.set(FIX::NoMDEntries(2));
-    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries1;
-    mdEntries1.set(FIX::MDEntryType(FIX::MDEntryType_BID));
-    mdEntries1.set(FIX::MDEntryPx(100));
-    mdEntries1.set(FIX::MDEntrySize(1));
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries group;
+    group.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
+    group.set(FIX::MDEntryPx(bar.open()));
+//    group.set(FIX::MDEntrySize(1));
+    message.addGroup(group);
 
-    message.addGroup(mdEntries1);
-    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries mdEntries2;
-    mdEntries2.set(FIX::MDEntryType(FIX::MDEntryType_OFFER));
-    mdEntries2.set(FIX::MDEntryPx(110));
-    mdEntries2.set(FIX::MDEntrySize(2));
-
-    message.addGroup(mdEntries2);
+    group.set(FIX::MDEntryType(FIX::MDEntryType_CLOSING_PRICE));
+    group.set(FIX::MDEntryPx(bar.close()));
+//    group.set(FIX::MDEntrySize(2));
+    message.addGroup(group);
 
     try {
         FIX::Session::sendToTarget(message, sessionID);

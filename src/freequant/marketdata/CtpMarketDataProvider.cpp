@@ -74,6 +74,8 @@ public:
         _api->UnSubscribeMarketData(const_cast<char**>(&items[0]), items.size());
     }
 
+    FreeQuant::MarketDataProvider::Callback *_callback;
+
     boost::mutex _mutex;
     boost::condition_variable _condition;
     std::string _front;
@@ -83,8 +85,6 @@ public:
 
     CThostFtdcMdApi *_api;
     bool _connected;
-
-    FreeQuant::MarketDataProvider::Callback *_callback;
 
     void OnFrontConnected() {
         cerr << "--->>> " << __FUNCTION__ <<  endl;
@@ -142,18 +142,6 @@ public:
         string str = boost::str(boost::format("%s %s.%s") % sdate %
             depthMarketData->UpdateTime % depthMarketData->UpdateMillisec);
         boost::posix_time::ptime dt = boost::posix_time::time_from_string(str);
-//        cerr<<" mardate | symbol:"<<depthMarketData->InstrumentID
-//              << "timestamp: " << str
-//              << " " << dt
-//           <<" lastprice:"<<depthMarketData->LastPrice
-//          <<" high:" << depthMarketData->HighestPrice
-//          <<" low:" << depthMarketData->LowestPrice
-//          <<" ask1:" << depthMarketData->AskPrice1
-//          <<" asksize1:" << depthMarketData->AskVolume1
-//          <<" bid1:" << depthMarketData->BidPrice1
-//          <<" bidsize1:" << depthMarketData->BidVolume1
-//          <<" openinterest:"<< depthMarketData->OpenInterest <<endl;
-
         Bar bar(depthMarketData->OpenPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice,
             depthMarketData->ClosePrice, depthMarketData->Volume);
         if (_callback) _callback->onBar(bar);

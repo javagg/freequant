@@ -20,6 +20,10 @@ public:
     void onBar(FreeQuant::Bar& bar) {
         _strategy->onBar(bar);
     }
+
+    void onConnected() {
+        _strategy->onMarketDataProviderConnected();
+    }
 };
 
 class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
@@ -50,7 +54,6 @@ void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
 void Strategy::start() {
     Engine::start();
     _mdProvider->connect(true);
-    _mdProvider->subscribe(vector<string>(_symbols.begin(), _symbols.end()));
 }
 
 void Strategy::stop() {
@@ -73,6 +76,11 @@ void Strategy::addIndicator(Indicator *indicator) {
 
 void Strategy::addSymbols(std::vector<std::string>& symbols) {
     _symbols.insert(symbols.begin(), symbols.end());
+}
+
+void Strategy::onMarketDataProviderConnected() {
+    std::cout << "onMarketDataProviderConnected" << std::endl;
+    _mdProvider->subscribe(vector<string>(_symbols.begin(), _symbols.end()));
 }
 
 } // namespace FreeQuant
