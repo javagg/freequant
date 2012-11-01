@@ -10,6 +10,8 @@
 #include <freequant/trade/TradeProvider.h>
 #include <freequant/trade/CtpTradeProvider.h>
 
+using namespace std;
+
 class DmaStrategy : public FreeQuant::Strategy {
 private:
     boost::shared_ptr<FreeQuant::MarketDataProvider> _mdProvider;
@@ -23,7 +25,11 @@ public:
         _mdProvider.reset(new FreeQuant::FixMarketDataProvider("host=127.0.0.1;port=7711;username=simuser;password=simuser"));
         _tradeProvider.reset(new FreeQuant::CtpTradeProvider());
 
-        addSymbol("IF1209");
+        vector<string> symbols;
+        symbols.push_back("IF1212");
+        symbols.push_back("GOOG");
+        addSymbols(symbols);
+
         chooseMarketProvider("CTP");
         chooseTradeProvider("CTP");
 

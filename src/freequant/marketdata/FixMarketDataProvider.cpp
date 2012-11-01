@@ -42,22 +42,24 @@ public:
     }
 
     void subscribe(std::vector<std::string> symbols) {
-        std::string uuid = FreeQuant::toGuidString();
-        FIX::MDReqID mdReqId(uuid);
-        FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES);
-        FIX::MarketDepth marketDepth(1);
+//        std::string uuid = FreeQuant::createGuid();
+//        FIX::MDReqID mdReqId(FreeQuant::createGuid());
+//        FIX::SubscriptionRequestType subType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES);
+//        FIX::MarketDepth marketDepth(1);
 
-        FIX44::MarketDataRequest message(mdReqId, subType, marketDepth);
+        FIX44::MarketDataRequest message;
+        message.set(FIX::MDReqID(FreeQuant::createGuid()));
+        message.set(FIX::SubscriptionRequestType(FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES));
+        message.set(FIX::MarketDepth(0));
+        message.set(FIX::MDUpdateType(FIX::MDUpdateType_FULL_REFRESH));
+//        message.set(FIX::AggregatedBook(true));
+//        string s;
+//        s.append(1, FIX::Scope_LOCAL);
 
-        message.set(FIX::MDUpdateType(FIX::MDUpdateType_INCREMENTAL_REFRESH));
-        message.set(FIX::AggregatedBook(true));
-        string s;
-        s.append(1, FIX::Scope_LOCAL);
+//        FIX::Scope scope(s);
+//        message.set(scope);
 
-        FIX::Scope scope(s);
-        message.set(scope);
-
-        message.set(FIX::MDImplicitDelete(false));
+//        message.set(FIX::MDImplicitDelete(false));
 
         FIX44::MarketDataRequest::NoMDEntryTypes typeGroup;
         typeGroup.set(FIX::MDEntryType(FIX::MDEntryType_OPENING_PRICE));
@@ -78,7 +80,6 @@ public:
         message.addGroup(typeGroup);
 
         for (auto i = symbols.begin(); i != symbols.end(); i++) {
-            auto sym = *i;
             FIX44::MarketDataRequest::NoRelatedSym symGroup;
             symGroup.set(FIX::Symbol(*i));
             message.addGroup(symGroup);
@@ -131,10 +132,12 @@ public:
         symGroup.set(FIX::Symbol("IF1210"));
         message.addGroup(symGroup);
 
-        try {
-            FIX::Session::sendToTarget(message);
-        } catch (FIX::SessionNotFound&) {}
 
+        FIX::SessionID sessionID;
+        sessionID.fromString(_sessionString);
+        try {
+            FIX::Session::sendToTarget(message, sessionID);
+        } catch (FIX::SessionNotFound&) {}
     }
 
     void connect() {

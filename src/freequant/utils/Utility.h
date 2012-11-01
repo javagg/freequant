@@ -7,7 +7,7 @@
 namespace FreeQuant {
 
 std::string toGuidString();
-std::string toGuidString1();
+std::string createGuid();
 std::map<std::string, std::string> parseParamsFromString(const std::string& str);
 
 }

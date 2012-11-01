@@ -49,9 +49,8 @@ void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
 
 void Strategy::start() {
     Engine::start();
-    _mdProvider->connect();
-    vector<string> symbols = boost::assign::list_of("IF1212")("IF1301");
-    _mdProvider->subscribe(symbols);
+    _mdProvider->connect(true);
+    _mdProvider->subscribe(vector<string>(_symbols.begin(), _symbols.end()));
 }
 
 void Strategy::stop() {
@@ -70,6 +69,10 @@ void Strategy::handleBar(const FreeQuant::Bar& bar) {
 
 void Strategy::addIndicator(Indicator *indicator) {
     m_indictors.push_back(indicator);
+}
+
+void Strategy::addSymbols(std::vector<std::string>& symbols) {
+    _symbols.insert(symbols.begin(), symbols.end());
 }
 
 } // namespace FreeQuant

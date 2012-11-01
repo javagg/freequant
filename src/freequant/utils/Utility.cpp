@@ -21,7 +21,7 @@ string toGuidString() {
     return ss.str();
 }
 
-string toGuidString1() {
+string createGuid() {
     boost::uuids::uuid u = boost::uuids::random_generator()();
     return boost::lexical_cast<std::string>(u);
 }

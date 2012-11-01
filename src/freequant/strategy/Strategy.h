@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <set>
 #include <vector>
 
 #include <boost/shared_ptr.hpp>
@@ -108,7 +109,7 @@ public:
 
     FreeQuant::Task::TaskId addTask(FreeQuant::Task task);
     void addSymbol(const std::string symbol) {}
-    void addSymbols(std::vector<std::string> symbols) {}
+    void addSymbols(std::vector<std::string>& symbols);
 
     void chooseTradeProvider(std::string name) {}
     void chooseMarketProvider(std::string name) {}
@@ -143,6 +144,7 @@ private:
     MdProviderCallback *_mdCallback;
     class TradeProviderCallback;
     TradeProviderCallback *_tradeCallback;
+    std::set<std::string> _symbols;
 };
 
 } // FQ_STRATEGY_STRATEGY_H

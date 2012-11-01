@@ -361,7 +361,7 @@ public:
 
     void updateIntrument(FreeQuant::Instrument& instrument) {
         FIX44::SecurityDefinitionRequest message;
-        string id = FreeQuant::toGuidString1();
+        string id = FreeQuant::createGuid();
         message.set(FIX::SecurityReqID(id));
         message.set(FIX::SecurityRequestType(FIX::SecurityRequestType_SYMBOL));
         message.set(FIX::Symbol(instrument.symbol()));
