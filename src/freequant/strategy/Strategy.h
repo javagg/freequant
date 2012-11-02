@@ -32,6 +32,8 @@ class Order;
 class OrderBook;
 class Position;
 class Instrument;
+class TimeSeries;
+class Tick;
 
 /*!
  * \class Strategy
@@ -85,13 +87,20 @@ public:
      * \param c1 the first argument.
      * \param c2 the second argument.
      */
-    virtual void onBreak() {}
+
+    virtual void onInit() {}
     virtual void onStart() {}
     virtual void onStop() {}
-    virtual void onBar(const FreeQuant::Bar&) = 0;
+    virtual void onProviderConnected(const std::string& provider) {}
+    virtual void onProviderDisconnected(const std::string& provider) {}
+    virtual void onProviderError(const std::string& provider) {}
+
+    virtual void onBarOpen(const FreeQuant::Bar&) {}
+    virtual void onBar(const FreeQuant::Bar&) {}
+    virtual void onTick(const FreeQuant::Tick&) {}
     virtual void onQuote(const FreeQuant::Quote&) {}
-    virtual void onTrade(const Trade&) {}
-    virtual void onTask(const FreeQuant::DateTime dt) {}
+    virtual void onTrade(const FreeQuant::Trade&) {}
+    virtual void onTask(const FreeQuant::DateTime&) {}
     virtual void onOrderCreated(const Order&) {}
     virtual void onOrderFilled(const Order&) {}
     virtual void onOrderPartiallyFilled(const Order&) {}
@@ -103,6 +112,9 @@ public:
     virtual void onPositionOpened(const Position& position) {}
     virtual void onPositionClosed(const Position& position) {}
     virtual void onPositionValueChanged(const Position& position) {}
+
+    void start();
+    void stop();
 
     void addIndicator(FreeQuant::Indicator *indicator);
     void addInstrument(const Instrument& instrument) {}
@@ -124,10 +136,16 @@ public:
     TradeProvider *tradeProvider() const { return m_tradeProvider; }
     OrderBook *orderBook() const { return 0; }
 
-private:
-    void start();
-    void stop();
+    FreeQuant::TimeSeries& fetchHistoricalBars(const std::string& provider, const FreeQuant::DateTime& begin,
+        const FreeQuant::DateTime& end);
+    FreeQuant::TimeSeries& fetchHistoricalQuotes(const std::string& provider, const FreeQuant::DateTime& begin,
+        const FreeQuant::DateTime& end);
+    FreeQuant::TimeSeries& fetchHistoricalTrades(const std::string& provider, const FreeQuant::DateTime& begin,
+        const FreeQuant::DateTime& end);
 
+private:
+
+    virtual void onBreak() {}
     virtual void onMarketDataProviderConnected();
 
     void handleBar(const FreeQuant::Bar&);

@@ -9,11 +9,18 @@ class TimeSeries
 {
 public:
     TimeSeries();
-    bool contains(FreeQuant::DateTime) const;
     std::size_t size() const;
     FreeQuant::DateTime cross(TimeSeries&);
-    FreeQuant::DateTime first();
+    const FreeQuant::DateTime& first();
     FreeQuant::DateTime last();
+
+    const FreeQuant::DateTime& beginTime() const;
+    const FreeQuant::DateTime& endTime() const;
+    bool contains(const FreeQuant::DateTime&) const;
+    void get(FreeQuant::DateTime&);
+
+    FreeQuant::TimeSeries& between(const FreeQuant::DateTime& from, const FreeQuant::DateTime& to);
+
 };
 
 } // namespace FreeQuant

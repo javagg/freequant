@@ -1,3 +1,7 @@
+#include <boost/algorithm/cxx11/any_of.hpp>
+#include <boost/phoenix/core.hpp>
+#include <boost/phoenix/stl/container.hpp>
+
 #include <quickfix/HttpServer.h>
 #include <quickfix/Session.h>
 #include <quickfix/SessionFactory.h>
@@ -6,6 +10,8 @@
 #include <freequant/server/FqSocketConnection.h>
 #include "FqSocketAcceptor.h"
 
+using namespace boost::phoenix;
+using namespace boost::algorithm;
 using namespace FIX;
 
 namespace FreeQuant {
@@ -78,6 +84,8 @@ void FqSocketAcceptor::stop(bool force) {
 }
 
 bool FqSocketAcceptor::isLoggedOn() {
+//    using boost::phoenix::arg_names::arg1;
+//    any_of(m_sessions.begin(), m_sessions.end(), arg1.second->isLoggedOn());
     for (auto i = m_sessions.begin(); i != m_sessions.end(); ++i) {
       if (i->second->isLoggedOn())
         return true;

@@ -13,10 +13,7 @@ public:
     Engine();
     virtual ~Engine() {}
     virtual int exec();
-    virtual void onStart() = 0;
-    virtual void onStop() = 0;
-    virtual void onBreak() = 0;
-protected:
+    virtual bool running() const { return false; }
     virtual void start() {
         onStart();
     }
@@ -24,7 +21,9 @@ protected:
     virtual void stop() {
         onStop();
     }
-
+    virtual void onStart() = 0;
+    virtual void onStop() = 0;
+    virtual void onBreak() = 0;
 private:
     boost::asio::io_service _io_service;
     boost::asio::signal_set _signal_set;

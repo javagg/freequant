@@ -13,16 +13,34 @@ public:
         double low, double close, long volume);
     Bar& operator=(const Bar& bar);
 
-    FreeQuant::DateTime beginTime();
-    FreeQuant::DateTime endTime();
-
+    const FreeQuant::DateTime& beginTime();
+    const FreeQuant::DateTime& endTime();
     const std::string& symbol() const { return _symbol; }
     const FreeQuant::DateTime& dateTime() const { return _dateTime; }
+
+    /*!
+     *  Open - the price at which the bar was opened
+     */
     double open() const { return _open; }
+
+    /*!
+     *  High -the maximum that was achieved during this bar
+     */
     double high() const { return _high; }
+
+    /*!
+     *  Low - the minimum that was achieved during this bar;
+     */
     double low() const { return _low; }
+
+    /*!
+     *  Close - the closing price of the bar.
+     */
     double close() const { return _close; }
+
     long volume() const { return _volume; }
+
+    long tickVolume() { return _tickVolume; }
 
     double median() const { return (high()+low())/2; }
     double typical() const { return (high()+low()+close())/3; }
@@ -36,6 +54,7 @@ private:
     double _low;
     double _close;
     long _volume;
+    long _tickVolume;
 };
 
 std::ostream& operator<<(std::ostream& os, const FreeQuant::Bar& bar);
