@@ -9,9 +9,6 @@
 #include <quickfix/SocketMonitor.h>
 #include <freequant/server/FqSocketAcceptor.h>
 
-namespace FIX {
-
-}
 namespace FreeQuant {
 
 class FqSocketConnection : FIX::Responder {

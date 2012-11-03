@@ -6,8 +6,6 @@
 #include <quickfix/SocketServer.h>
 #include <quickfix/SocketConnection.h>
 
-//#include <freequant/server/FQSocketConnection.h>
-
 namespace FreeQuant {
 
 class FqSocketConnection;
@@ -65,7 +63,7 @@ private:
     Sessions m_sessions;
     SessionIDs m_sessionIDs;
     FIX::LogFactory* m_pLogFactory;
-    FIX::SessionSettings m_settings;
+    FIX::SessionSettings _settings;
 };
 
 } // namespace FreeQuant

@@ -18,14 +18,14 @@ namespace FreeQuant {
 
 FqSocketAcceptor::FqSocketAcceptor(Application& application,
         MessageStoreFactory& factory, const SessionSettings& settings) throw(ConfigError) :
-    Acceptor(application, factory, settings), m_settings(settings) {
+    Acceptor(application, factory, settings), _settings(settings) {
     initialize();
 }
 
 FqSocketAcceptor::FqSocketAcceptor(Application& application,
         MessageStoreFactory& factory, const SessionSettings& settings, LogFactory& logFactory)
         throw(ConfigError) :
-    Acceptor(application, factory, settings, logFactory),  m_settings(settings), m_pLogFactory(&logFactory) {
+    Acceptor(application, factory, settings, logFactory),  _settings(settings), m_pLogFactory(&logFactory) {
     initialize();
 }
 
@@ -35,15 +35,15 @@ FqSocketAcceptor::~FqSocketAcceptor() {
 }
 
 void FqSocketAcceptor::initialize() throw (ConfigError) {
-    auto sessions = m_settings.getSessions();
+    auto sessions = _settings.getSessions();
     if (!sessions.size())
         throw ConfigError( "No sessions defined" );
 
     FIX::SessionFactory factory(getApplication(), getMessageStoreFactory(), m_pLogFactory);
     for (auto i = sessions.begin(); i != sessions.end(); ++i) {
-        if (m_settings.get(*i).getString(CONNECTION_TYPE) == "acceptor") {
+        if (_settings.get(*i).getString(CONNECTION_TYPE) == "acceptor") {
             m_sessionIDs.insert(*i);
-            m_sessions[*i] = factory.create(*i, m_settings.get(*i));
+            m_sessions[*i] = factory.create(*i, _settings.get(*i));
         }
     }
 
@@ -135,7 +135,7 @@ Session *FqSocketAcceptor::getSession(const SessionID& sessionID) const {
 
 const Dictionary* const FqSocketAcceptor::getSessionSettings(const SessionID& sessionID) const {
     try {
-      return &m_settings.get( sessionID );
+      return &_settings.get( sessionID );
     }
     catch( ConfigError& )
     {
