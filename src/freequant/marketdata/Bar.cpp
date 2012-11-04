@@ -20,6 +20,7 @@ Bar& Bar::operator=(const Bar& bar) {
         this->_close = bar._close;
         this->_volume = bar._volume;
     }
+    return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const FreeQuant::Bar& bar) {

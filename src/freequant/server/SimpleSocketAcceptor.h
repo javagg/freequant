@@ -40,6 +40,7 @@ public:
     bool send(const std::string& message) {
         _socket.async_send(boost::asio::buffer(message), 0, boost::bind(&SimpleSocketConnection::handleWrite, this,
             boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+        return true;
     }
 
     void disconnect() {

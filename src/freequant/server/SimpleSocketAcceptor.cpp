@@ -40,7 +40,7 @@ void SimpleSocketAcceptor::stop(bool force) {
 void SimpleSocketAcceptor::startAccept() {
     pendingConnection.reset(new SimpleSocketConnection(_io_service, this));
     ip::tcp::endpoint remote;
-    _acceptor.async_accept(pendingConnection->socket(), remote, bind(&SimpleSocketAcceptor::handleAccept,
+    _acceptor.async_accept(pendingConnection->socket(), remote, boost::bind(&SimpleSocketAcceptor::handleAccept,
         this, boost::asio::placeholders::error));
 }
 
