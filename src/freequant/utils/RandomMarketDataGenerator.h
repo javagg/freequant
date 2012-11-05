@@ -5,7 +5,7 @@
 #include <random>
 #include <set>
 
-#include <boost/random.hpp>
+//#include <boost/random.hpp>
 #include <freequant/utils/MarketDataGenerator.h>
 
 namespace FreeQuant {
@@ -19,7 +19,7 @@ public:
     Bars generate();
 
 private:
-    boost::random::mt19937 _rng;
+    std::mt19937 _rng;
     Symbols _symbols;
 };
 

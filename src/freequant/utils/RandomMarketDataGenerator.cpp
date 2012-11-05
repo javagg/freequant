@@ -1,6 +1,4 @@
 #include <vector>
-#include <boost/random.hpp>
-
 #include "RandomMarketDataGenerator.h"
 
 using namespace std;
@@ -8,7 +6,7 @@ using namespace std;
 namespace FreeQuant {
 
 MarketDataGenerator::Bars RandomMarketDataGenerator::generate() {
-    boost::random::uniform_real_distribution<> dist(100,200);
+    std::uniform_real_distribution<> dist(100,200);
     vector<Bar> bars(_symbols.size());
     for (auto i = _symbols.begin(); i != _symbols.end(); ++i) {
         double open = dist(_rng);

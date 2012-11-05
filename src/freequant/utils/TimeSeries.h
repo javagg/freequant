@@ -5,8 +5,7 @@
 
 namespace FreeQuant {
 
-class TimeSeries
-{
+class TimeSeries {
 public:
     TimeSeries();
     std::size_t size() const;

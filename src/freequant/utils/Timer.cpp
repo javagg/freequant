@@ -3,7 +3,7 @@
 
 namespace FreeQuant {
 
-Timer::Timer(int milliseconds, boost::function<void()> observer) :
+Timer::Timer(int milliseconds, std::function<void()> observer) :
     _duration(boost::posix_time::milliseconds(milliseconds)),
     _io_service(),
     _timer(_io_service, _duration) {
