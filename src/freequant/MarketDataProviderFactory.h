@@ -12,8 +12,6 @@ public:
     virtual ~ProviderFactory() {}
     virtual Provider *create() = 0;
     virtual void destroy(Provider *) = 0;
-
-//    static MarketDataProvider *createMarketDataProvider(std::string name);
 };
 
 

@@ -110,7 +110,7 @@ private:
         while (true) {
             if (!running())
                 break;
-            if (runningTick() > runningLength()) {
+            if (runningTick() >= runningLength()) {
                 setRunning(false);
                 break;
             }

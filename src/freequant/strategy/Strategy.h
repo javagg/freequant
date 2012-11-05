@@ -79,6 +79,7 @@ public:
     void onStop() {}
     void start();
     void stop();
+
     /*!
      * A pure virtual member.
      * \see testMe()
