@@ -25,8 +25,8 @@ int main(int argc, char** argv) {
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
 //        FreeQuant::FQSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
-//        FIX::SocketAcceptor acceptor(application, storeFactory, settings, logFactory);
-        FreeQuant::SimpleSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
+        FIX::SocketAcceptor acceptor(application, storeFactory, settings, logFactory);
+//        FreeQuant::SimpleSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
         acceptor.start();
         std::cout << "Type Ctrl-C to quit" << std::endl;
         while (true) {

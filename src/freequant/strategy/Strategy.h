@@ -57,16 +57,6 @@ public:
 
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
-    /*!
-     * \enum RunningMode
-     * An enum type.
-     * The documentation block cannot be put after the enum!
-     */
-    enum RunningMode {
-        Simulation,
-        Paper,
-        Live
-    };
 
     enum BarType {
         Tick,
@@ -144,7 +134,6 @@ public:
         const FreeQuant::DateTime& end);
 
 private:
-
     virtual void onBreak() {}
     virtual void onMarketDataProviderConnected();
 

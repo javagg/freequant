@@ -3,6 +3,7 @@
 
 #include <set>
 #include <freequant/marketdata/MarketDataProvider.h>
+#include <freequant/utils/MarketDataGenerator.h>
 
 namespace FreeQuant {
 
@@ -18,12 +19,14 @@ public:
             _callback->onConnected();
         }
     }
+
     void disconnect(bool block = true) {
         _connected = false;
         if (_callback) {
             _callback->onDisconnected();
         }
     }
+
     bool isConnected() const { return _connected; }
     std::string name() const { return "Bogus"; }
     void subscribe(std::vector<std::string> symbols) {}
@@ -32,7 +35,7 @@ private:
     bool _connected;
     std::set<std::string> _symbols;
     MarketDataProvider::Callback *_callback;
-
+    MarketDataGenerator *_mdGenerator;
 };
 
 } // namespace FreeQuant

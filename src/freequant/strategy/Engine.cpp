@@ -2,6 +2,12 @@
 
 namespace FreeQuant {
 
+class SimulationEngine {
+    virtual int exec() {
+
+    }
+};
+
 Engine::Engine() :
     _io_service(),
     _signal_set(_io_service, SIGINT, SIGTERM) {

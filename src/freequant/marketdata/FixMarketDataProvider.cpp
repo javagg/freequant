@@ -278,7 +278,7 @@ FixMarketDataProvider::FixMarketDataProvider(std::string connection, FreeQuant::
        << "BeginString=FIX.4.4" << endl
        << "ConnectionType=initiator" << endl
        << "ReconnectInterval=60" << endl
-       << "SenderCompID=" << "ME" <<  endl
+       << "SenderCompID=" << params["senderid"] <<  endl
        << "DataDictionary=FIX44.xml" << endl
        << "StartTime=00:00:00" << endl
        << "EndTime=00:00:00" << endl
@@ -287,7 +287,7 @@ FixMarketDataProvider::FixMarketDataProvider(std::string connection, FreeQuant::
        << "Username=" << params["username"] << endl
        << "Password=" << params["password"] << endl
        << "[SESSION]" << endl
-       << "TargetCompID=" << "FQMarketDataServer" << endl
+       << "TargetCompID=" << params["targetid"] << endl
        << "SocketConnectPort=" << params["port"] << endl
        << "SocketConnectHost=" << params["host"] << endl;
     _impl = new FixMarketDataProvider::Impl(ss, callback);

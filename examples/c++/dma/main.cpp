@@ -22,7 +22,7 @@ public:
         std::cout << "strategy start..." << std::endl;
 
         _mdProvider.reset(new FreeQuant::CtpMarketDataProvider());
-        _mdProvider.reset(new FreeQuant::FixMarketDataProvider("host=127.0.0.1;port=7711;username=simuser;password=simuser"));
+        _mdProvider.reset(new FreeQuant::FixMarketDataProvider("senderid=ME;targetid=FQMarketDataServer;host=127.0.0.1;port=7711;username=simuser;password=simuser"));
         _tradeProvider.reset(new FreeQuant::CtpTradeProvider());
 
         vector<string> symbols;

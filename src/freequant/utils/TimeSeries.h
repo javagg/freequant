@@ -21,7 +21,7 @@ public:
 
     FreeQuant::TimeSeries& between(const FreeQuant::DateTime& from, const FreeQuant::DateTime& to);
 
-    void remove(int start, int end, boolean notify = false);
+    void remove(int start, int end, bool notify = false);
 
     friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
 private:

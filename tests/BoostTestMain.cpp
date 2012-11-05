@@ -1,6 +1,8 @@
 #define BOOST_TEST_MODULE freequant
 #include <boost/test/unit_test.hpp>
 
+#include <boost/any.hpp>
+#include <boost/variant.hpp>
 #include <boost/smart_ptr.hpp>
 
 using namespace boost;

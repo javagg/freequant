@@ -13,7 +13,7 @@ public:
     Indicator();
     virtual ~Indicator() {}
     virtual void onBar(const FreeQuant::Bar&) = 0;
-    virtual void onCalculate(const FreeQuant::Bar&) = 0;
+//    virtual void onCalculate(const FreeQuant::Bar&) = 0;
     std::string name();
 
 private:
