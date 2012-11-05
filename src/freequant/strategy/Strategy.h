@@ -12,9 +12,11 @@
 #include <freequant/marketdata/Bar.h>
 #include <freequant/marketdata/Quote.h>
 #include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/strategy/Engine.h>
 #include <freequant/strategy/Task.h>
 #include <freequant/utils/DateTime.h>
+
+#include <freequant/strategy/Engine.h>
+#include <freequant/strategy/BaseStrategy.h>
 
 namespace FreeQuant {
 class TradeProvider;
@@ -41,7 +43,7 @@ class Tick;
  *
  * Detailed description starts here.
  */
-class Strategy : public Engine {
+class Strategy : public BaseStrategy {
 public:
     typedef boost::shared_ptr<FreeQuant::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;
@@ -71,6 +73,12 @@ public:
     explicit Strategy();
 	virtual ~Strategy();
 
+    void onInit() {}
+    void onDestroy() {}
+    void onStart() {}
+    void onStop() {}
+    void start();
+    void stop();
     /*!
      * A pure virtual member.
      * \see testMe()
@@ -78,9 +86,6 @@ public:
      * \param c2 the second argument.
      */
 
-    virtual void onInit() {}
-    virtual void onStart() {}
-    virtual void onStop() {}
     virtual void onProviderConnected(const std::string& provider) {}
     virtual void onProviderDisconnected(const std::string& provider) {}
     virtual void onProviderError(const std::string& provider) {}
@@ -103,9 +108,6 @@ public:
     virtual void onPositionClosed(const Position& position) {}
     virtual void onPositionValueChanged(const Position& position) {}
 
-    void start();
-    void stop();
-
     void addIndicator(FreeQuant::Indicator *indicator);
     void addInstrument(const Instrument& instrument) {}
 
@@ -118,6 +120,7 @@ public:
 
     void setTradeProvider(FreeQuant::TradeProvider *provider);
     void setMarketDataProvider(FreeQuant::MarketDataProvider *provider);
+    void setMarketDataProvider(boost::shared_ptr<FreeQuant::MarketDataProvider> provider);
 
     std::vector<Instrument *>& instruments() const {}
     std::vector<Order *>& orders() const {}
@@ -134,7 +137,7 @@ public:
         const FreeQuant::DateTime& end);
 
 private:
-    virtual void onBreak() {}
+    void onStep();
     virtual void onMarketDataProviderConnected();
 
     void handleBar(const FreeQuant::Bar&);

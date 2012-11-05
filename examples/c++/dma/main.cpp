@@ -18,11 +18,10 @@ private:
     boost::shared_ptr<FreeQuant::TradeProvider> _tradeProvider;
     FreeQuant::MA ma;
 public:
-    void onStart() {
-        std::cout << "strategy start..." << std::endl;
-
+    void onInit() {
+        setRunningMode(Strategy::Live);
         _mdProvider.reset(new FreeQuant::CtpMarketDataProvider());
-        _mdProvider.reset(new FreeQuant::FixMarketDataProvider("senderid=ME;targetid=FQMarketDataServer;host=127.0.0.1;port=7711;username=simuser;password=simuser"));
+//        _mdProvider.reset(new FreeQuant::FixMarketDataProvider("senderid=ME;targetid=FQMarketDataServer;host=127.0.0.1;port=7711;username=simuser;password=simuser"));
         _tradeProvider.reset(new FreeQuant::CtpTradeProvider());
 
         vector<string> symbols;
@@ -38,6 +37,11 @@ public:
 
         addIndicator(&ma);
     }
+    void onStart() {
+        std::cout << "strategy start..." << std::endl;
+
+
+    }
 
     void onStop() {
         std::cout << "strategy exit..." << std::endl;
@@ -46,10 +50,19 @@ public:
     void onBar(const FreeQuant::Bar& bar) {
         cout << "bar: "<< bar << endl;
     }
+
+    void onDestroy() {
+        std::cout << "strategy destroy..." << std::endl;
+    }
 };
 
 int main() {
     DmaStrategy strategy;
-    return strategy.exec();
+    strategy.init();
+    strategy.start();
+    while (strategy.running()) {
+        boost::this_thread::sleep_for(boost::chrono::seconds(1));
+    }
+    strategy.destroy();
 }
 

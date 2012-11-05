@@ -1,13 +1,12 @@
 #ifndef FQ_STRATEGY_BASESTRATEGY_H
 #define FQ_STRATEGY_BASESTRATEGY_H
 
+#include <boost/asio/io_service.hpp>
 #include <boost/asio/signal_set.hpp>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/thread.hpp>
-#include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/condition_variable.hpp>
 
 namespace FreeQuant {
 
@@ -35,18 +34,33 @@ public:
         _length = length;
     }
 
-    bool running() const {
-        boost::unique_lock<boost::mutex> lock(_mutex);
+    bool running() {
+        boost::lock_guard<boost::mutex> lock(_mutex);
         return _running;
+    }
+
+    int exec() {
+        return 0;
+    }
+
+    void init() {
+        onInit();
+    }
+
+    void destroy() {
+        onDestroy();
     }
 
     void start() {
         _signal_set.async_wait(boost::bind(&BaseStrategy::onBreak, this));
-        boost::thread(boost::bind(&boost::asio::io_service::run, _io_service));
+        boost::thread(boost::bind(&boost::asio::io_service::run, &_io_service));
+
+        setRunning(true);
+        onStart();
+
         switch (runningMode()) {
         case Simulation:
             _thread.reset(new boost::thread(boost::bind(&BaseStrategy::runSimulation, this)));
-            break;
         case Paper:
         case Live:
         default:
@@ -55,12 +69,13 @@ public:
     }
 
     void stop() {
+        setRunning(false);
         switch (runningMode()) {
         case Simulation:
-            setRunning(false);
             break;
         case Paper:
         case Live:
+            onStop();
         default:
             break;
         }
@@ -69,12 +84,17 @@ public:
     RunningMode runningMode() const { return _runningMode; }
     void setRunningMode(RunningMode mode) { _runningMode = mode; }
 
+    virtual void onInit() = 0;
+    virtual void onDestroy() = 0;
+    virtual void onStart() = 0;
+    virtual void onStop() = 0;
+
+protected:
+    virtual void onStep() = 0;
+private:
     unsigned long runningLength() const { return _length; }
     unsigned long runningTick() const { return _tick; }
 
-    virtual void onStart();
-    virtual void onStop();
-private:
     void onBreak() {
         if (running()) {
             stop();
@@ -82,13 +102,11 @@ private:
     }
 
     void setRunning(bool value) {
-        boost::unique_lock<boost::mutex> lock(_mutex);
+        boost::lock_guard<boost::mutex> lock(_mutex);
         _running = value;
     }
 
     void runSimulation() {
-        setRunning(true);
-        onStart();
         while (true) {
             if (!running())
                 break;
@@ -96,18 +114,15 @@ private:
                 setRunning(false);
                 break;
             }
-            doStep();
+            onStep();
             ++_tick;
         }
         onStop();
     }
 
-    void doStep() {
-        boost::this_thread::sleep_for(boost::chrono::milliseconds(500));
-        std::cout << "doing work..." << std::endl;
-    }
+    void runLiveOrPaper() {
 
-    void runLiveOrPaper();
+    }
 
     RunningMode _runningMode;
     bool _running;

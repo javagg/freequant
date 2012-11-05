@@ -6,6 +6,7 @@
 
 #include <freequant/indicators/Indicator.h>
 #include <freequant/trade/CtpTradeProvider.h>
+#include <freequant/marketdata/BogusMarketDataProvider.h>
 
 #include "Strategy.h"
 
@@ -30,8 +31,7 @@ class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
 
 };
 
-
-Strategy::Strategy() :
+Strategy::Strategy() : BaseStrategy(),
     _mdProvider(0), m_tradeProvider(0),
     _mdCallback(new Strategy::MdProviderCallback(this)),
     _tradeCallback(new Strategy::TradeProviderCallback()) {
@@ -40,6 +40,21 @@ Strategy::Strategy() :
 Strategy::~Strategy() {
     delete _mdCallback; _mdCallback = 0;
     delete _tradeCallback; _tradeCallback = 0;
+}
+
+void Strategy::start() {
+    if (_mdProvider) _mdProvider->connect();
+    BaseStrategy::start();
+}
+
+void Strategy::stop() {
+    BaseStrategy::stop();
+    if (_mdProvider) _mdProvider->disconnect();
+}
+
+void Strategy::onStep() {
+    BogusMarketDataProvider *provider = dynamic_cast<BogusMarketDataProvider*>(_mdProvider);
+    provider->generateBars();
 }
 
 void Strategy::setTradeProvider(FreeQuant::TradeProvider *provider) {
@@ -51,16 +66,11 @@ void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
     _mdProvider->setCallback(_mdCallback);
 }
 
-void Strategy::start() {
-    Engine::start();
-    _mdProvider->connect(true);
+void Strategy::setMarketDataProvider(boost::shared_ptr<FreeQuant::MarketDataProvider> provider) {
+    _mdProvider = provider.get();
+    _mdProvider->setCallback(_mdCallback);
 }
 
-void Strategy::stop() {
-    _mdProvider->disconnect();
-//    m_tradeProvider->disconnect();
-    Engine::stop();
-}
 
 void Strategy::handleBar(const FreeQuant::Bar& bar) {
     std::for_each(

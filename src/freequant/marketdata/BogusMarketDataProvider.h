@@ -7,35 +7,27 @@
 
 namespace FreeQuant {
 
+class Strategy;
+
 class BogusMarketDataProvider : public MarketDataProvider {
 public:
-    explicit BogusMarketDataProvider(MarketDataProvider::Callback *callback = 0) :
-        _callback(callback), _connected(false) {}
-    ~BogusMarketDataProvider();
+    explicit BogusMarketDataProvider(Strategy *strategy = 0);
+    ~BogusMarketDataProvider() {}
 
-    void connect(bool block = true) {
-        _connected = true;
-        if (_callback) {
-            _callback->onConnected();
-        }
-    }
-
-    void disconnect(bool block = true) {
-        _connected = false;
-        if (_callback) {
-            _callback->onDisconnected();
-        }
-    }
-
+    void setCallback(MarketDataProvider::Callback *callback) { _callback = callback; }
+    void connect(bool block = true);
+    void disconnect(bool block = true);
     bool isConnected() const { return _connected; }
     std::string name() const { return "Bogus"; }
-    void subscribe(std::vector<std::string> symbols) {}
-    void unsubscribe(std::vector<std::string> symbols) {}
+    void subscribe(std::vector<std::string> symbols);
+    void unsubscribe(std::vector<std::string> symbols);
+    void generateBars();
 private:
     bool _connected;
     std::set<std::string> _symbols;
     MarketDataProvider::Callback *_callback;
-    MarketDataGenerator *_mdGenerator;
+    Strategy *_strategy;
+    boost::shared_ptr<MarketDataGenerator> _mdGenerator;
 };
 
 } // namespace FreeQuant
