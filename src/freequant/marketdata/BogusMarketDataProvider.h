@@ -11,6 +11,7 @@ class Strategy;
 
 class BogusMarketDataProvider : public MarketDataProvider {
 public:
+    typedef MarketDataProvider::Symbols Symbols;
     explicit BogusMarketDataProvider(Strategy *strategy = 0);
     ~BogusMarketDataProvider() {}
 
@@ -19,12 +20,12 @@ public:
     void disconnect(bool block = true);
     bool isConnected() const { return _connected; }
     std::string name() const { return "Bogus"; }
-    void subscribe(std::vector<std::string> symbols);
-    void unsubscribe(std::vector<std::string> symbols);
+    void subscribe(const Symbols&);
+    void unsubscribe(const Symbols&);
     void generateBars();
 private:
     bool _connected;
-    std::set<std::string> _symbols;
+
     MarketDataProvider::Callback *_callback;
     Strategy *_strategy;
     boost::shared_ptr<MarketDataGenerator> _mdGenerator;

@@ -17,14 +17,12 @@ public:
     const FreeQuant::DateTime& endTime() const;
     bool contains(const FreeQuant::DateTime&) const;
     void get(FreeQuant::DateTime&);
-
+    void append(const std::pair<FreeQuant::DateTime, double>& value) { _data.push_back(value); }
     FreeQuant::TimeSeries& between(const FreeQuant::DateTime& from, const FreeQuant::DateTime& to);
-
     void remove(int start, int end, bool notify = false);
-
     friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
 private:
-
+    std::vector<std::pair<FreeQuant::DateTime, double> > _data;
 };
 
 } // namespace FreeQuant

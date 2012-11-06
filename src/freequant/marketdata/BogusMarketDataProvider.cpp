@@ -28,11 +28,11 @@ void BogusMarketDataProvider::disconnect(bool block) {
     }
 }
 
-void BogusMarketDataProvider::subscribe(std::vector<std::string> symbols) {
+void BogusMarketDataProvider::subscribe(const Symbols& symbols) {
     _mdGenerator->addSymbols(symbols);
 }
 
-void BogusMarketDataProvider::unsubscribe(std::vector<std::string> symbols) {
+void BogusMarketDataProvider::unsubscribe(const Symbols& symbols) {
     _mdGenerator->removeSymbols(symbols);
 }
 

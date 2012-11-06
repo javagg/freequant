@@ -22,14 +22,14 @@ MarketDataGenerator::Bars RandomMarketDataGenerator::generate() {
     return bars;
 }
 
-void RandomMarketDataGenerator::addSymbols(Symbols& symbols) {
+void RandomMarketDataGenerator::addSymbols(const Symbols& symbols) {
     set<string> s(_symbols.begin(), _symbols.end());
     s.insert(symbols.begin(), symbols.end());
     _symbols.clear();
     _symbols.insert(_symbols.end(), s.begin(), s.end());
 }
 
-void RandomMarketDataGenerator::removeSymbols(Symbols& symbols) {
+void RandomMarketDataGenerator::removeSymbols(const Symbols& symbols) {
     for (auto i = symbols.begin(); i != symbols.end(); ++i) {
         remove(_symbols.begin(), _symbols.end(), *i);
     }

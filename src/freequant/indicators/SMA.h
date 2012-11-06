@@ -1,6 +1,7 @@
-#ifndef FQ_INDICATORS_MA_H
-#define FQ_INDICATORS_MA_H
+#ifndef FQ_INDICATORS_SMA_H
+#define FQ_INDICATORS_SMA_H
 
+#include <vector>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
@@ -9,17 +10,17 @@
 
 namespace FreeQuant {
 
-class MA : public Indicator {
+template<typename std::size_t Window>
+class SMA : public Indicator {
 public:
-    MA() : acc(boost::accumulators::tag::rolling_window::window_size = 5) {}
-//    void onBar(const FreeQuant::Bar& bar) {
-//        acc(bar.typical());
-//        _data.push_back(bar.typical());
-//    }
-
-    void append(double value) {}
+    SMA() : _acc(boost::accumulators::tag::rolling_window::window_size = Window) {}
     double value() const {
-        return boost::accumulators::rolling_mean(acc);
+        return boost::accumulators::rolling_mean(_acc);
+    }
+
+    void append(double v) {
+        _data.push_back(v);
+        _acc(_data.back());
     }
 
     std::size_t size() { return _data.size(); }
@@ -27,11 +28,9 @@ private:
     boost::accumulators::accumulator_set<
         double,
         boost::accumulators::stats<boost::accumulators::tag::rolling_mean>
-    > acc;
-
+    > _acc;
     std::vector<double> _data;
 };
 
-} // namespace FreeQuant
-
-#endif // MA_H
+}
+#endif // FQ_INDICATORS_SMA_H

@@ -14,8 +14,8 @@ class RandomMarketDataGenerator : public MarketDataGenerator {
 public:
     virtual ~RandomMarketDataGenerator() {}
     const Symbols& symbols() const { return _symbols; }
-    void addSymbols(Symbols&);
-    void removeSymbols(Symbols&);
+    void addSymbols(const Symbols&);
+    void removeSymbols(const Symbols&);
     Bars generate();
 
 private:

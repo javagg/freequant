@@ -10,14 +10,12 @@ namespace FreeQuant {
 
 class Indicator {
 public:
-    Indicator();
     virtual ~Indicator() {}
-    virtual void onBar(const FreeQuant::Bar&) = 0;
+//    virtual void onBar(const FreeQuant::Bar&) = 0;
+    virtual void append(double value) = 0;
+    virtual std::size_t size() = 0;
 //    virtual void onCalculate(const FreeQuant::Bar&) = 0;
-    std::string name();
-
-private:
-    std::vector<double> _data;
+//    std::string name();
 };
 
 } // namespace FreeQuant

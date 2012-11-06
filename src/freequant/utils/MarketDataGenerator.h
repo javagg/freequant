@@ -15,8 +15,8 @@ public:
 
     virtual ~MarketDataGenerator() {}
     virtual const Symbols& symbols() const = 0;
-    virtual void addSymbols(Symbols&) = 0;
-    virtual void removeSymbols(Symbols&) = 0;
+    virtual void addSymbols(const Symbols&) = 0;
+    virtual void removeSymbols(const Symbols&) = 0;
     virtual Bars generate() = 0;
 };
 

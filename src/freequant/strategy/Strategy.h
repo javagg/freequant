@@ -6,29 +6,21 @@
 #include <set>
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <freequant/FreeQuantPlatform.h>
 #include <freequant/marketdata/Bar.h>
 #include <freequant/marketdata/Quote.h>
-#include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/strategy/Task.h>
 #include <freequant/utils/DateTime.h>
-
-#include <freequant/strategy/Engine.h>
 #include <freequant/strategy/BaseStrategy.h>
+#include <freequant/strategy/Task.h>
 
 namespace FreeQuant {
-class TradeProvider;
+
 class MarketDataProvider;
+class TradeProvider;
 class Indicator;
-}
-
-namespace FreeQuant {
-
-class Rule;
 class Portfolio;
-class Exchange;
 class Trade;
 class Order;
 class OrderBook;
@@ -48,7 +40,7 @@ public:
     typedef std::shared_ptr<FreeQuant::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;
 
-    typedef Task *TaskPtr;
+    typedef std::shared_ptr<Task> TaskPtr;
     typedef std::vector<TaskPtr> Tasks;
 
     typedef std::shared_ptr<FreeQuant::Order> OrderPtr;
@@ -59,6 +51,10 @@ public:
 
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
+
+    typedef std::shared_ptr<FreeQuant::TimeSeries> TimeSeriesPtr;
+    typedef std::vector<TimeSeriesPtr> TimeSeriesVector;
+    typedef std::map<std::string, TimeSeriesPtr> TimeSeriesMap;
 
     typedef std::vector<std::string> Symbols;
 
@@ -79,6 +75,8 @@ public:
     void onDestroy() {}
     void onStart() {}
     void onStop() {}
+
+    void init();
     void start();
     void stop();
 
@@ -123,8 +121,9 @@ public:
     void chooseMarketProvider(std::string name) {}
 
     void setTradeProvider(FreeQuant::TradeProvider *provider);
+    void setTradeProvider(std::shared_ptr<FreeQuant::TradeProvider> provider);
     void setMarketDataProvider(FreeQuant::MarketDataProvider *provider);
-    void setMarketDataProvider(boost::shared_ptr<FreeQuant::MarketDataProvider> provider);
+    void setMarketDataProvider(std::shared_ptr<FreeQuant::MarketDataProvider> provider);
 
     const Instruments& instruments() const { return _instruments; }
     std::vector<Order *>& orders() const {}
@@ -143,18 +142,21 @@ public:
 private:
     void onStep();
     virtual void onMarketDataProviderConnected();
-
+    void onMarketDataProviderBar(const FreeQuant::Bar&);
     void handleBar(const FreeQuant::Bar&);
     std::vector<FreeQuant::Indicator *> m_indictors;
 
-    Indicators _indictors;
+    Indicators _indicators;
     Instruments _instruments;
     Orders _orders;
     Tasks _tasks;
 
+    TimeSeriesVector _tsVector;
+    TimeSeriesMap _tsMap;
     MarketDataProvider *_mdProvider;
     TradeProvider *m_tradeProvider;
 
+    std::shared_ptr<TradeProvider> _tradeProvider;
     class MdProviderCallback;
     class TradeProviderCallback;
     friend class MdProviderCallback;

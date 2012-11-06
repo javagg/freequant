@@ -9,32 +9,52 @@ namespace FreeQuant {
 class DateTime {
 public:
     DateTime() {}
-    ~DateTime() {}
+    DateTime(const DateTime& other) : _datetime(other._datetime) {}
+    DateTime& operator=(const DateTime& other) {
+        if (this != &other) {
+            _datetime = other._datetime;
+        }
+        return *this;
+    }
+//    DateTime(DateTime&& other);
+    DateTime& operator=(DateTime&& other) {
+        if (this != &other) {
+
+        }
+        return *this;
+    }
+
     DateTime(const std::string&);
+    ~DateTime() {}
 
     DateTime fromString(const std::string& string, const std::string& format);
     DateTime fromTimeT(const std::time_t t);
-    std::string toString();
 
-    DateTime& addYears(int nyears) const;
-    DateTime& addMonths(int nmonths) const;
-    DateTime& addDays(int ndays) const;
-    DateTime& addHours(int nhours) const;
-    DateTime& addMinutes(int nminutes) const;
-    DateTime& addSeconds(int nseconds) const;
-    DateTime& addMilliSeconds(long milliseconds) const;
+    int year() const;
+    int month() const;
+    int day() const;
+    int hour() const;
+    int minute() const;
+    int second() const;
+    long long msec() const;
 
-    DateTime toLocalTime() const;
-    DateTime toUTC() const;
+    DateTime& addYears(int years) const;
+    DateTime& addMonths(int months) const;
+    DateTime& addDays(int days) const;
+    DateTime& addHours(int hours) const;
+    DateTime& addMinutes(int minutes) const;
+    DateTime& addSeconds(int seconds) const;
+    DateTime& addMSecs(long long msecs) const;
 
-    bool operator!=(const DateTime&) const;
-    bool operator<(const DateTime&) const;
-    bool operator<=(const DateTime&) const;
-    DateTime& operator=(const DateTime&) { return *this; }
-    bool operator>=(const DateTime&) const;
-    bool operator==(const DateTime&) const;
-    bool operator>(const DateTime&) const;
+    bool operator==(const DateTime& other) const { return _datetime == other._datetime; }
+    bool operator!=(const DateTime& other) const { return _datetime != other._datetime; }
+    bool operator<(const DateTime& other) const { return _datetime < other._datetime; }
+    bool operator<=(const DateTime& other) const { return _datetime <= other._datetime; }
+    bool operator>(const DateTime& other) const { return _datetime > other._datetime; }
+    bool operator>=(const DateTime& other) const { return _datetime >= other._datetime; }
 
+    friend std::ostream& operator<<(std::ostream& out, const DateTime& dateTime);
+    friend std::istream& operator>>(std::istream& in, DateTime& dateTime);
 private:
     boost::posix_time::ptime _datetime;
 };

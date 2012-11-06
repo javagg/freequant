@@ -2,8 +2,5 @@
 
 namespace FreeQuant {
 
-Indicator::Indicator() {
-
-}
 
 } // namespace FreeQuant

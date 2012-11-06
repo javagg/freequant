@@ -4,14 +4,16 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/assign.hpp>
-
+#include <boost/assign/std/vector.hpp>
 #include <freequant/indicators/Indicator.h>
 #include <freequant/trade/CtpTradeProvider.h>
 #include <freequant/marketdata/BogusMarketDataProvider.h>
+#include <freequant/utils/TimeSeries.h>
 
 #include "Strategy.h"
 
 using namespace std;
+using namespace boost::assign;
 
 namespace FreeQuant {
 
@@ -40,8 +42,8 @@ class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
 public:
     Strategy *_strategy;
     MdProviderCallback(Strategy *strategy) : _strategy(strategy) {}
-    void onBar(FreeQuant::Bar& bar) {
-        _strategy->onBar(bar);
+    void onBar(const FreeQuant::Bar& bar) {
+        _strategy->onMarketDataProviderBar(bar);
     }
 
     void onConnected() {
@@ -64,6 +66,16 @@ Strategy::~Strategy() {
     delete _tradeCallback; _tradeCallback = 0;
 }
 
+void Strategy::init() {
+    BaseStrategy::init();
+
+    vector<string> tsNames;
+    tsNames += "open", "high", "low", "close", "volume";
+    for(auto i = tsNames.begin(); i != tsNames.end(); ++i) {
+        _tsMap[*i] = TimeSeriesPtr(new TimeSeries());
+    };
+}
+
 void Strategy::start() {
     if (_mdProvider) _mdProvider->connect();
     BaseStrategy::start();
@@ -83,23 +95,27 @@ void Strategy::setTradeProvider(FreeQuant::TradeProvider *provider) {
     m_tradeProvider = provider;
 }
 
+void Strategy::setTradeProvider(std::shared_ptr<FreeQuant::TradeProvider> provider) {
+    _tradeProvider = provider;
+}
+
 void Strategy::setMarketDataProvider(FreeQuant::MarketDataProvider *provider) {
     _mdProvider = provider;
     _mdProvider->setCallback(_mdCallback);
 }
 
-void Strategy::setMarketDataProvider(boost::shared_ptr<FreeQuant::MarketDataProvider> provider) {
+void Strategy::setMarketDataProvider(std::shared_ptr<FreeQuant::MarketDataProvider> provider) {
     _mdProvider = provider.get();
     _mdProvider->setCallback(_mdCallback);
 }
 
 
 void Strategy::handleBar(const FreeQuant::Bar& bar) {
-    std::for_each(
-        m_indictors.begin(),
-        m_indictors.end(),
-        boost::bind(&Indicator::onBar, _1, bar)
-    );
+//    std::for_each(
+//        m_indictors.begin(),
+//        m_indictors.end(),
+//        boost::bind(&Indicator::onBar, _1, bar)
+//    );
 }
 
 void Strategy::addIndicator(Indicator *indicator) {
@@ -107,7 +123,7 @@ void Strategy::addIndicator(Indicator *indicator) {
 }
 
 void Strategy::addIndicator(IndicatorPtr indicator) {
-    _indictors.push_back(indicator);
+    _indicators.push_back(indicator);
 }
 
 void Strategy::addSymbols(const Symbols& symbols) {
@@ -115,8 +131,18 @@ void Strategy::addSymbols(const Symbols& symbols) {
 }
 
 void Strategy::onMarketDataProviderConnected() {
-    std::cout << "onMarketDataProviderConnected" << std::endl;
+    std::cout << "onMarketDataProviderConnected: "  << std::endl;
     _mdProvider->subscribe(vector<string>(_symbols.begin(), _symbols.end()));
+}
+
+void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {
+    TimeSeriesPtr closeTs = _tsMap["close"];
+    closeTs->append(std::make_pair(bar.dateTime(), bar.close()));
+
+    for (auto i = _indicators.begin(); i != _indicators.end(); ++i) {
+        (*i)->append(bar.close());
+    }
+    onBar(bar);
 }
 
 } // namespace FreeQuant

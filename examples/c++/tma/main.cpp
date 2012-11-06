@@ -3,20 +3,24 @@
 
 #include <freequant/strategy/Strategy.h>
 #include <freequant/marketdata/BogusMarketDataProvider.h>
+#include <freequant/indicators/SMA.h>
 
 class DmaStrategy : public FreeQuant::Strategy {
 private:
-    boost::shared_ptr<MarketDataProvider> _mdProvider;
+    std::shared_ptr<MarketDataProvider> _mdProvider;
+    std::shared_ptr<FreeQuant::SMA<5> > sma;
 public:
     void onInit() {
         std::cout << "strategy init..." << std::endl;
         setRunningMode(FreeQuant::Strategy::Simulation);
-        setRunningLength(10);
+        setRunningLength(100);
         _mdProvider.reset(new FreeQuant::BogusMarketDataProvider(this));
         setMarketDataProvider(_mdProvider);
         std::vector<std::string> syms;
         syms.push_back("IF1210");
         addSymbols(syms);
+        sma.reset(new FreeQuant::SMA<5>());
+        addIndicator(sma);
     }
 
     void onDestroy() {
@@ -32,7 +36,8 @@ public:
     }
 
     void onBar(const FreeQuant::Bar& bar) {
-        std::cout << "bar: "<< bar << std::endl;
+
+        std::cout << "bar: "<< bar << " sma: " << sma->value() << std::endl;
     }
 };
 
