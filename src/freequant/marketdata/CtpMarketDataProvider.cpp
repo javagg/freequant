@@ -270,11 +270,11 @@ bool CtpMarketDataProvider::isConnected() const {
     return _impl->isConnected();
 }
 
-void CtpMarketDataProvider::subscribe(std::vector<std::string> symbols) {
+void CtpMarketDataProvider::subscribe(const Symbols& symbols) {
     _impl->subscribe(symbols);
 }
 
-void CtpMarketDataProvider::unsubscribe(std::vector<std::string> symbols) {
+void CtpMarketDataProvider::unsubscribe(const Symbols& symbols) {
     _impl->unsubscribe(symbols);
 }
 

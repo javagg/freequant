@@ -14,8 +14,8 @@ public:
     void disconnect(bool block = true);
     bool isConnected() const;
     std::string name() const { return "CTP"; }
-    void subscribe(std::vector<std::string> symbols);
-    void unsubscribe(std::vector<std::string> symbols);
+    void subscribe(const Symbols& symbols);
+    void unsubscribe(const Symbols& symbols);
 
 private:
     class Impl;

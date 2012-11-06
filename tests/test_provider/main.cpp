@@ -9,17 +9,17 @@
 #include <freequant/marketdata/twsprovider.h>
 
 void test_tws() {
-    boost::shared_ptr<FreeQuant::MarketDataProvider> p(new FreeQuant::TwsProvider());
-    p->connect();
-    boost::this_thread::sleep_for(boost::chrono::seconds(5));
-    p->disconnect();
+//    boost::shared_ptr<FreeQuant::MarketDataProvider> p(new FreeQuant::TwsProvider());
+//    p->connect();
+//    boost::this_thread::sleep_for(boost::chrono::seconds(5));
+//    p->disconnect();
 }
 
 void test_ib() {
-    boost::shared_ptr<FreeQuant::TradeProvider> p(new FreeQuant::TwsTradeProvider());
-    p->connect();
-    boost::this_thread::sleep_for(boost::chrono::seconds(5));
-    p->disconnect();
+//    boost::shared_ptr<FreeQuant::TradeProvider> p(new FreeQuant::TwsTradeProvider());
+//    p->connect();
+//    boost::this_thread::sleep_for(boost::chrono::seconds(5));
+//    p->disconnect();
 }
 
 void test_csv() {

@@ -1,6 +1,7 @@
 #ifndef FQ_MARKETDATA_FIXMARKETDATAPROVIDER_H
 #define FQ_MARKETDATA_FIXMARKETDATAPROVIDER_H
 
+#include <memory>
 #include <freequant/marketdata/MarketDataProvider.h>
 
 namespace FreeQuant {
@@ -14,12 +15,12 @@ public:
     void disconnect(bool block = true);
     bool isConnected() const;
     std::string name() const { return "FIX"; }
-    void subscribe(std::vector<std::string> symbols);
-    void unsubscribe(std::vector<std::string> symbols);
+    void subscribe(const Symbols& symbols);
+    void unsubscribe(const Symbols& symbols);
 
 private:
     class Impl;
-    Impl *_impl;
+    std::unique_ptr<Impl> _impl;
 };
 
 } // namespace FreeQuant

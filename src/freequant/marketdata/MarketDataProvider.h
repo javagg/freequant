@@ -17,14 +17,16 @@ namespace FreeQuant {
 
 class MarketDataProvider {
 public:
+    typedef std::vector<std::string> Symbols;
+
     class Callback {
     public:
         virtual ~Callback() {}
-        virtual void onConnected() {}
-        virtual void onDisconnected() {}
-        virtual void onSubscribed() {}
-        virtual void onUnsubscribed() {}
-        virtual void onBar(FreeQuant::Bar& bar) {}
+        virtual void onConnected() = 0;
+        virtual void onDisconnected() = 0;
+        virtual void onSubscribed() = 0;
+        virtual void onUnsubscribed() = 0;
+        virtual void onBar(const FreeQuant::Bar& bar) = 0;
     };
 
     virtual ~MarketDataProvider() {}
@@ -33,8 +35,8 @@ public:
     virtual void disconnect(bool block = true) = 0;
     virtual bool isConnected() const = 0;
     virtual std::string name() const = 0;
-    virtual void subscribe(std::vector<std::string> symbols) = 0;
-    virtual void unsubscribe(std::vector<std::string> symbols) = 0;
+    virtual void subscribe(const Symbols& symbols) = 0;
+    virtual void unsubscribe(const Symbols& symbols) = 0;
 };
 
 class DefaultMarketDataProviderCallback : public MarketDataProvider::Callback {
@@ -43,7 +45,7 @@ public:
     void onDisconnected() {}
     void onSubscribed() {}
     void onUnsubscribed() {}
-    void onBar(FreeQuant::Bar& bar) {}
+    void onBar(const FreeQuant::Bar& bar) {}
 };
 
 } // namespace FreeQuant

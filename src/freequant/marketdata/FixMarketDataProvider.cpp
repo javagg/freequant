@@ -290,14 +290,10 @@ FixMarketDataProvider::FixMarketDataProvider(std::string connection, FreeQuant::
        << "TargetCompID=" << params["targetid"] << endl
        << "SocketConnectPort=" << params["port"] << endl
        << "SocketConnectHost=" << params["host"] << endl;
-    _impl = new FixMarketDataProvider::Impl(ss, callback);
+    _impl.reset(new FixMarketDataProvider::Impl(ss, callback));
 }
 
-FixMarketDataProvider::~FixMarketDataProvider() {
-    delete _impl;
-    _impl = 0;
-}
-
+FixMarketDataProvider::~FixMarketDataProvider() {}
 void FixMarketDataProvider::setCallback(FreeQuant::MarketDataProvider::Callback *callback) {
     _impl->setCallback(callback);
 }
@@ -314,11 +310,11 @@ bool FixMarketDataProvider::isConnected() const {
     return _impl->isConnected();
 }
 
-void FixMarketDataProvider::subscribe(std::vector<std::string> symbols) {
+void FixMarketDataProvider::subscribe(const Symbols& symbols) {
     _impl->subscribe(symbols);
 }
 
-void FixMarketDataProvider::unsubscribe(std::vector<std::string> symbols) {
+void FixMarketDataProvider::unsubscribe(const Symbols& symbols) {
     _impl->unsubscribe(symbols);
 }
 

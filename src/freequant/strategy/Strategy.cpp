@@ -1,3 +1,4 @@
+#include <memory>
 #include <iostream>
 
 #include <boost/bind.hpp>
@@ -13,6 +14,27 @@
 using namespace std;
 
 namespace FreeQuant {
+
+class StrategyMarketDataProvider : public MarketDataProvider {
+public:
+    explicit StrategyMarketDataProvider(Strategy *strategy = 0);
+    ~StrategyMarketDataProvider() {}
+
+    void setCallback(MarketDataProvider::Callback *callback) { _callback = callback; }
+    void connect(bool block = true);
+    void disconnect(bool block = true);
+    bool isConnected() const { return _connected; }
+    std::string name() const { return "Bogus"; }
+    void subscribe(std::vector<std::string> symbols);
+    void unsubscribe(std::vector<std::string> symbols);
+    void generateBars();
+private:
+    bool _connected;
+    std::set<std::string> _symbols;
+    MarketDataProvider::Callback *_callback;
+    Strategy *_strategy;
+    std::shared_ptr<MarketDataGenerator> _mdGenerator;
+};
 
 class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
 public:
@@ -84,7 +106,11 @@ void Strategy::addIndicator(Indicator *indicator) {
     m_indictors.push_back(indicator);
 }
 
-void Strategy::addSymbols(std::vector<std::string>& symbols) {
+void Strategy::addIndicator(IndicatorPtr indicator) {
+    _indictors.push_back(indicator);
+}
+
+void Strategy::addSymbols(const Symbols& symbols) {
     _symbols.insert(symbols.begin(), symbols.end());
 }
 

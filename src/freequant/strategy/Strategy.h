@@ -45,20 +45,22 @@ class Tick;
  */
 class Strategy : public BaseStrategy {
 public:
-    typedef boost::shared_ptr<FreeQuant::Indicator> IndicatorPtr;
+    typedef std::shared_ptr<FreeQuant::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;
 
     typedef Task *TaskPtr;
     typedef std::vector<TaskPtr> Tasks;
 
-    typedef boost::shared_ptr<FreeQuant::Order> OrderPtr;
+    typedef std::shared_ptr<FreeQuant::Order> OrderPtr;
     typedef std::vector<OrderPtr> Orders;
 
-    typedef boost::shared_ptr<FreeQuant::Instrument> InstrumentPtr;
+    typedef std::shared_ptr<FreeQuant::Instrument> InstrumentPtr;
     typedef std::vector<InstrumentPtr> Instruments;
 
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
+
+    typedef std::vector<std::string> Symbols;
 
     enum BarType {
         Tick,
@@ -110,11 +112,12 @@ public:
     virtual void onPositionValueChanged(const Position& position) {}
 
     void addIndicator(FreeQuant::Indicator *indicator);
+    void addIndicator(IndicatorPtr indicator);
     void addInstrument(const Instrument& instrument) {}
 
     FreeQuant::Task::TaskId addTask(FreeQuant::Task task);
     void addSymbol(const std::string symbol) {}
-    void addSymbols(std::vector<std::string>& symbols);
+    void addSymbols(const Symbols& symbols);
 
     void chooseTradeProvider(std::string name) {}
     void chooseMarketProvider(std::string name) {}
@@ -123,7 +126,7 @@ public:
     void setMarketDataProvider(FreeQuant::MarketDataProvider *provider);
     void setMarketDataProvider(boost::shared_ptr<FreeQuant::MarketDataProvider> provider);
 
-    std::vector<Instrument *>& instruments() const {}
+    const Instruments& instruments() const { return _instruments; }
     std::vector<Order *>& orders() const {}
 
     MarketDataProvider *marketDataProvider() const { return _mdProvider; }
