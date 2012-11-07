@@ -2,10 +2,4 @@
 
 namespace FreeQuant {
 
-
-TimeSeries::TimeSeries()
-{
-}
-
-
 } // namespace FreeQuant

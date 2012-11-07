@@ -26,14 +26,14 @@ class Order;
 class OrderBook;
 class Position;
 class Instrument;
-class TimeSeries;
+//class TimeSeries;
 class Tick;
 
 /*!
- * \class Strategy
- * \brief dddddddddd
+ *  \class Strategy
+ *  \brief dddddddddd
  *
- * Detailed description starts here.
+ *  Detailed description starts here.
  */
 class Strategy : public BaseStrategy {
 public:
@@ -52,10 +52,14 @@ public:
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
 
-    typedef std::shared_ptr<FreeQuant::TimeSeries> TimeSeriesPtr;
-    typedef std::vector<TimeSeriesPtr> TimeSeriesVector;
-    typedef std::map<std::string, TimeSeriesPtr> TimeSeriesMap;
+//    typedef std::shared_ptr<FreeQuant::TimeSeries> TimeSeriesPtr;
+//    typedef std::vector<TimeSeriesPtr> TimeSeriesVector;
+//    typedef std::map<std::string, TimeSeriesPtr> TimeSeriesMap;
 
+    typedef int TickSeries;
+    typedef int BarSeries;
+    typedef std::map<std::string, BarSeries> BarSeriesMap;
+    typedef int TradeSeries;
     typedef std::vector<std::string> Symbols;
 
     enum BarType {
@@ -73,7 +77,15 @@ public:
 
     void onInit() {}
     void onDestroy() {}
+
+    /*!
+     *  onStart – called when strategy first starts up, before the first bar
+     */
     void onStart() {}
+
+    /*!
+     *  onStop – called when the strategy shuts down, after the last bar
+     */
     void onStop() {}
 
     void init();
@@ -105,8 +117,19 @@ public:
     virtual void onOrderRejected(const Order&) {}
     virtual void onOrderReplaced(const Order&) {}
 
+    /*!
+     *  OnPositionOpened - fired whenever a new position is established as a result of
+     *  a completed trade.
+     */
     virtual void onPositionOpened(const Position& position) {}
+    virtual void OnPositionChanged(const Position& position) {}
     virtual void onPositionClosed(const Position& position) {}
+
+    /*!
+     * \brief onPositionValueChanged - fired whenever a new incoming trade price changes
+     *                                 the value of a position.
+     * \param position
+     */
     virtual void onPositionValueChanged(const Position& position) {}
 
     void addIndicator(FreeQuant::Indicator *indicator);
@@ -126,18 +149,18 @@ public:
     void setMarketDataProvider(std::shared_ptr<FreeQuant::MarketDataProvider> provider);
 
     const Instruments& instruments() const { return _instruments; }
-    std::vector<Order *>& orders() const {}
+    const Orders& orders() const { return _orders; }
 
     MarketDataProvider *marketDataProvider() const { return _mdProvider; }
     TradeProvider *tradeProvider() const { return m_tradeProvider; }
     OrderBook *orderBook() const { return 0; }
 
-    FreeQuant::TimeSeries& fetchHistoricalBars(const std::string& provider, const FreeQuant::DateTime& begin,
-        const FreeQuant::DateTime& end);
-    FreeQuant::TimeSeries& fetchHistoricalQuotes(const std::string& provider, const FreeQuant::DateTime& begin,
-        const FreeQuant::DateTime& end);
-    FreeQuant::TimeSeries& fetchHistoricalTrades(const std::string& provider, const FreeQuant::DateTime& begin,
-        const FreeQuant::DateTime& end);
+//    FreeQuant::TimeSeries& fetchHistoricalBars(const std::string& provider, const FreeQuant::DateTime& begin,
+//        const FreeQuant::DateTime& end);
+//    FreeQuant::TimeSeries& fetchHistoricalQuotes(const std::string& provider, const FreeQuant::DateTime& begin,
+//        const FreeQuant::DateTime& end);
+//    FreeQuant::TimeSeries& fetchHistoricalTrades(const std::string& provider, const FreeQuant::DateTime& begin,
+//        const FreeQuant::DateTime& end);
 
 private:
     void onStep();
@@ -151,8 +174,8 @@ private:
     Orders _orders;
     Tasks _tasks;
 
-    TimeSeriesVector _tsVector;
-    TimeSeriesMap _tsMap;
+//    TimeSeriesVector _tsVector;
+//    TimeSeriesMap _tsMap;
     MarketDataProvider *_mdProvider;
     TradeProvider *m_tradeProvider;
 
@@ -164,6 +187,10 @@ private:
     MdProviderCallback *_mdCallback;
     TradeProviderCallback *_tradeCallback;
     std::set<std::string> _symbols;
+
+    TickSeries _tickSeries;
+    BarSeries _barSeries;
+    BarSeriesMap _barSeriesMap;
 };
 
 } // FQ_STRATEGY_STRATEGY_H

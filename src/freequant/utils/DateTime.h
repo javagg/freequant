@@ -2,14 +2,17 @@
 #define FQ_UTILS_DATETIME_H
 
 #include <ctime>
+#include <ctime>
 #include <boost/date_time.hpp>
 
 namespace FreeQuant {
 
 class DateTime {
 public:
-    DateTime() {}
+    DateTime() : _datetime(boost::posix_time::min_date_time) {}
     DateTime(const DateTime& other) : _datetime(other._datetime) {}
+    DateTime(const std::time_t& t) : _datetime(boost::posix_time::from_time_t(t)) {}
+
     DateTime& operator=(const DateTime& other) {
         if (this != &other) {
             _datetime = other._datetime;
@@ -38,14 +41,21 @@ public:
     int second() const;
     long long msec() const;
 
-    DateTime& addYears(int years) const;
-    DateTime& addMonths(int months) const;
-    DateTime& addDays(int days) const;
-    DateTime& addHours(int hours) const;
-    DateTime& addMinutes(int minutes) const;
-    DateTime& addSeconds(int seconds) const;
-    DateTime& addMSecs(long long msecs) const;
+    bool valid() const { return !_datetime.is_not_a_date_time(); }
 
+    DateTime& addYears(int years);
+    DateTime& addMonths(int months);
+    DateTime& addDays(int days) {
+////        boost::posix_time::ptime::days d(days);
+//        _datetime = _datetime + d;
+        return *this;
+    }
+    DateTime& addHours(int hours);
+    DateTime& addMinutes(int minutes);
+    DateTime& addSeconds(int seconds);
+    DateTime& addMSecs(long long msecs);
+
+    static DateTime now();
     bool operator==(const DateTime& other) const { return _datetime == other._datetime; }
     bool operator!=(const DateTime& other) const { return _datetime != other._datetime; }
     bool operator<(const DateTime& other) const { return _datetime < other._datetime; }

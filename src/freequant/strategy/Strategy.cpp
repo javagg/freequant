@@ -71,9 +71,9 @@ void Strategy::init() {
 
     vector<string> tsNames;
     tsNames += "open", "high", "low", "close", "volume";
-    for(auto i = tsNames.begin(); i != tsNames.end(); ++i) {
-        _tsMap[*i] = TimeSeriesPtr(new TimeSeries());
-    };
+//    for(auto i = tsNames.begin(); i != tsNames.end(); ++i) {
+//        _tsMap[*i] = TimeSeriesPtr(new TimeSeries());
+//    };
 }
 
 void Strategy::start() {
@@ -136,12 +136,12 @@ void Strategy::onMarketDataProviderConnected() {
 }
 
 void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {
-    TimeSeriesPtr closeTs = _tsMap["close"];
-    closeTs->append(std::make_pair(bar.dateTime(), bar.close()));
+//    TimeSeriesPtr closeTs = _tsMap["close"];
+//    closeTs->append(std::make_pair(bar.dateTime(), bar.close()));
 
-    for (auto i = _indicators.begin(); i != _indicators.end(); ++i) {
-        (*i)->append(bar.close());
-    }
+//    for (auto i = _indicators.begin(); i != _indicators.end(); ++i) {
+//        (*i)->append(bar.close());
+//    }
     onBar(bar);
 }
 

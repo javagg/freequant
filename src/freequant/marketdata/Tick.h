@@ -9,8 +9,9 @@
 namespace FreeQuant {
 
 struct Tick {
-    std::string symbol;
     FreeQuant::DateTime dateTime;
+    std::string symbol;
+    std::string exchange;
 
     double bid;
     long bidSize;

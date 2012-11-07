@@ -40,4 +40,10 @@ std::ostream& operator<<(std::ostream& out, const DateTime& dt) {
     return out << dt._datetime;
 }
 
+DateTime DateTime::now() {
+    DateTime dt;
+    dt._datetime = boost::posix_time::microsec_clock::local_time();
+    return dt;
+}
+
 }
