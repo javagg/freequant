@@ -12,20 +12,20 @@ public:
     TimeSeries() {}
     virtual ~TimeSeries() {}
     std::size_t size() const {
-        return _data2.size();
+        return _data.size();
     }
     FreeQuant::DateTime cross(TimeSeries&);
 
     T& first(long long pos = 0) const {
         double r = pos % size();
-        auto i = _data2.begin();
+        auto i = _data.begin();
         for (; r != 0; r--) i++;
         return const_cast<T&>(i->second);
     }
 
     T& last(long long pos = 0) {
         double r = pos % size();
-        auto i = _data2.end();
+        auto i = _data.end();
         for (; r != 0; r--) i--;
         return const_cast<T&>(i->second);
     }
@@ -35,22 +35,30 @@ public:
     T& operator[](const FreeQuant::DateTime& at) const;
     T& operator[](long long pos) const;
 
-    const FreeQuant::DateTime& beginTime() const;
-    const FreeQuant::DateTime& endTime() const;
+    const FreeQuant::DateTime& beginTime() const {
+        auto i = _data.begin();
+        return i->first;
+    }
+
+    const FreeQuant::DateTime& endTime() const {
+        auto i = _data.end();
+        return (i--)->first;
+    }
+
     bool contains(const FreeQuant::DateTime&) const;
+
     void append(const T& value) {
         append(FreeQuant::DateTime::now(), value);
     }
 
     void append(const FreeQuant::DateTime& datetime, const T& value) {
-//        _data.push_back(std::make_pair(datetime, value));
-        _data2.insert(std::make_pair(datetime, value));
+        _data.insert(std::make_pair(datetime, value));
     }
 //    FreeQuant::TimeSeries& between(const FreeQuant::DateTime<T>& from, const FreeQuant::DateTime<T>& to);
     void remove(int start, int end, bool notify = false);
 
     void clear() {
-        _data2.clear();
+        _data.clear();
     }
 
     friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
@@ -64,7 +72,7 @@ private:
     typedef std::set<Pair, Comp> Set;
     typedef typename Set::iterator Iterator;
 
-    Set _data2;
+    Set _data;
 
     T _max;
     T _min;

@@ -9,6 +9,8 @@ namespace FreeQuant { namespace Exp {
 
 class Indicator {
 public:
+    typedef double Value;
+
     virtual ~Indicator() {}
     virtual std::size_t size() = 0;
     virtual void add(const FreeQuant::DateTime& datetime, const std::map<std::string, double>& values) = 0;

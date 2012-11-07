@@ -15,4 +15,7 @@ BOOST_AUTO_TEST_CASE(TimeSeries) {
     ts.append(dt1, 20);
     BOOST_CHECK_EQUAL(ts.last(), 100);
     BOOST_CHECK_EQUAL(ts.last(1), 20);
+
+    BOOST_CHECK_EQUAL(ts.beginTime(), FreeQuant::DateTime("2012-12-12"));
+    BOOST_CHECK_EQUAL(ts.endTime(), FreeQuant::DateTime("2012-12-13"));
 }
