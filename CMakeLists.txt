@@ -97,7 +97,6 @@ add_subdirectory(examples)
 add_subdirectory(server)
 add_subdirectory(tools)
 
-configure_file(${PROJECT_SOURCE_DIR}/config.h.cmake ${PROJECT_BINARY_DIR}/config.h)
 include_directories(${PROJECT_BINARY_DIR})
 
 option(BUILD_TESTS "Build tests." TRUE)

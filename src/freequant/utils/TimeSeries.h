@@ -16,14 +16,14 @@ public:
     }
     FreeQuant::DateTime cross(TimeSeries&);
 
-    T& first(long long pos = 0) const {
+    T& first(long long pos = 1) const {
         double r = pos % size();
         auto i = _data.begin();
         for (; r != 0; r--) i++;
         return const_cast<T&>(i->second);
     }
 
-    T& last(long long pos = 0) {
+    T& last(long long pos = 1) {
         double r = pos % size();
         auto i = _data.end();
         for (; r != 0; r--) i--;

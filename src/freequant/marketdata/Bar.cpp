@@ -7,13 +7,13 @@ Bar::Bar(double open, double high, double low, double close, long volume) :
 }
 
 Bar::Bar(std::string s, FreeQuant::DateTime dt, double o, double h, double l, double c, long v) :
-    _symbol(s), _dateTime(dt), _open(o), _high(h), _low(l), _close(c), _volume(v) {
+    _symbol(s), _end(dt), _open(o), _high(h), _low(l), _close(c), _volume(v) {
 }
 
 Bar& Bar::operator=(const Bar& bar) {
     if (this != &bar) {
         this->_symbol = bar._symbol;
-        this->_dateTime = bar._dateTime;
+        this->_end = bar._end;
         this->_open = bar._open;
         this->_high = bar._high;
         this->_low = bar._low;

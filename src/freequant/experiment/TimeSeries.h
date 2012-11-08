@@ -1,75 +1,103 @@
 #ifndef FQ_EXP_TIMESERIES_H
 #define FQ_EXP_TIMESERIES_H
 
-#include <string>
-#include <map>
-#include <freequant/utils/TimeSeries.h>
+#include <set>
+#include <freequant/utils/DateTime.h>
 
 namespace FreeQuant { namespace Exp {
 
-template <typename T>
+template<typename T>
 class TimeSeries {
 public:
-//    TimeSeries() {}
-//    virtual ~TimeSeries() {}
-//    std::size_t size() const {
-//        return _data.size();
-//    }
-//    FreeQuant::DateTime cross(TimeSeries&);
+    typedef std::pair<FreeQuant::DateTime, T> Pair;
+    struct Comp {
+        bool operator()(const Pair& s1, const Pair& s2) const {
+            return s1.first < s2.first;
+        }
+    };
+    typedef std::set<Pair, Comp> Set;
+    typedef typename Set::iterator Iterator;
+    typedef typename Set::const_iterator ConstIterator;
 
-//    T& first(long long pos = 0) const {
-//        double r = pos % size();
-//        auto i = _data.begin();
-//        for (; r != 0; r--) i++;
-//        return const_cast<T&>(i->second);
-//    }
+    TimeSeries() {}
+    virtual ~TimeSeries() {}
+    std::size_t size() const {
+        return _data.size();
+    }
+    FreeQuant::DateTime cross(TimeSeries&);
 
-//    T& last(long long pos = 0) {
-//        double r = pos % size();
-//        auto i = _data.end();
-//        for (; r != 0; r--) i--;
-//        return const_cast<T&>(i->second);
-//    }
+    T& first(long long pos = 1) const {
+        double r = pos % size();
+        auto i = _data.begin();
+        for (r--; r != 0; r--) i++;
+        return const_cast<T&>(i->second);
+    }
 
-//    T& max();
-//    T& min();
-//    T& operator[](const FreeQuant::DateTime& at) const;
-//    T& operator[](long long pos) const;
+    T& last(long long pos = 1) const {
+        double r = pos % size();
+        auto i = _data.end();
+        for (; r != 0; r--) i--;
+        return const_cast<T&>(i->second);
+    }
 
-//    const FreeQuant::DateTime& beginTime() const;
-//    const FreeQuant::DateTime& endTime() const;
-//    bool contains(const FreeQuant::DateTime&) const;
-//    void append(const T& value) {
-//        append(FreeQuant::DateTime::now(), value);
-//    }
+    T& operator[](const FreeQuant::DateTime& at) const;
+    T& operator[](long long pos) const;
 
-//    void append(const FreeQuant::DateTime& datetime, const T& value) {
-////        _data.push_back(std::make_pair(datetime, value));
-//        _data2.insert(std::make_pair(datetime, value));
-//    }
-////    FreeQuant::TimeSeries& between(const FreeQuant::DateTime<T>& from, const FreeQuant::DateTime<T>& to);
-//    void remove(int start, int end, bool notify = false);
+    const FreeQuant::DateTime& beginTime() const {
+        auto i = _data.begin();
+        return i->first;
+    }
 
-//    void clear() {
-//        _data2.clear();
-//    }
+    const FreeQuant::DateTime& endTime() const {
+        auto i = _data.end();
+        return (i--)->first;
+    }
 
-//    friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
-//private:
-//    typedef std::pair<FreeQuant::DateTime, T> Pair;
-//    struct Comp {
-//        bool operator()(const Pair& s1, const Pair& s2) const {
-//            return s1.first < s2.first;
-//        }
-//    };
-//    typedef std::set<Pair, Comp> Set;
-//    typedef typename Set::iterator Iterator;
+    bool contains(const FreeQuant::DateTime&) const;
 
-//    Set _data;
+    void append(const T& value) {
+        append(FreeQuant::DateTime::now(), value);
+    }
 
-//    T _max;
-//    T _min;
+    void append(const FreeQuant::DateTime& datetime, const T& value) {
+        _data.insert(std::make_pair(datetime, value));
+    }
+
+    void clear() {
+        _data.clear();
+    }
+
+    Iterator begin() const { return _data.begin(); }
+    Iterator end() const { return _data.end(); }
+
+    T max();
+    T min();
+    T mean();
+    T sum();
+    T median();
+    T var();
+    T sd();
+    T moment();
+    T kurtosis();
+    T skewness();
+
+    friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
+    template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const TimeSeries<U>& dateTime);
+private:
+    Set _data;
+
+    T _max;
+    T _min;
 };
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const TimeSeries<T>& dateTime) {
+    for (auto i = dateTime.begin(); i != dateTime.end(); ++i) {
+        os << i->first << " " << i->second << std::endl;
+    }
+    return os;
+}
 
 }} // namespace FreeQuant
 

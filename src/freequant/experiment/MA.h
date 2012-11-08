@@ -1,6 +1,7 @@
 #ifndef FQ_EXP_MA_H
 #define FQ_EXP_MA_H
 
+#include <vector>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>
@@ -18,14 +19,16 @@ public:
     }
 
     void add(const FreeQuant::DateTime& datetime, const std::map<std::string, double>& values) {
-//        _data.append(datetiem, values);
+
     }
+
+    void onCalculate(const FreeQuant::Bar& bar);
 
     void add(const FreeQuant::DateTime& datetime, std::vector<double>& values) {
         if (!values.empty()) {
-            double calculated = values[0];
-            acc(calculated);
-            _data.append(datetime, boost::accumulators::rolling_mean(acc));
+            acc(values.front());
+            double calculated = boost::accumulators::rolling_mean(acc);
+            _data.append(datetime, calculated);
         }
     }
 
@@ -34,16 +37,16 @@ public:
     }
 
     void add(double value) {
-        std::vector<double> v(1);
+        std::vector<double> v;
         v.push_back(value);
         add(v);
     }
 
-    double last(const std::string& column, long long pos = 0) {
+    double last(const std::string& column, long long pos = 1) {
         return _data.last(pos);
     }
 
-    double last(long long pos = 0) {
+    double last(long long pos = 1) {
         return _data.last(pos);
     }
 

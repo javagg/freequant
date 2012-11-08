@@ -23,8 +23,12 @@ BOOST_AUTO_TEST_CASE(Indicators) {
     ma.add(4);
     ma.add(8);
     ma.add(6);
+    BOOST_CHECK_CLOSE(ma.last(1), 6.0, 1e-6);
+    BOOST_CHECK_CLOSE(ma.last(2), 5.25, 1e-6);
 
-    BOOST_CHECK_EQUAL(ma.last(), 5.25);
-    BOOST_CHECK_EQUAL(ma.last(1), 6.0);
 }
 
+BOOST_AUTO_TEST_CASE(DispatchIndicators) {
+
+
+}

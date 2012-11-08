@@ -22,11 +22,13 @@ public:
 
     }
 
+    void onCalculate(const FreeQuant::Bar& bar);
+
     void add(const FreeQuant::DateTime& datetime, std::vector<double>& values) {
 
     }
 
-    double last(const std::string& column, long long pos = 0) {
+    double last(const std::string& column, long long pos = 1) {
 
     }
 

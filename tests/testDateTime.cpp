@@ -17,9 +17,9 @@ BOOST_AUTO_TEST_CASE(DateTime) {
     BOOST_CHECK_EQUAL(d1, d2);
     BOOST_CHECK_LT(d2, d3);
 
-    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1").valid(), true);
-    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1").hour(), 0);
-    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1").minute(), 0);
-    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1").second(), 0);
+    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1 0:0:0").valid(), true);
+    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1 0:0:0").hour(), 0);
+    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1 0:0:0").minute(), 0);
+    BOOST_CHECK_EQUAL(FreeQuant::DateTime("2011-11-1 0:0:0").second(), 0);
 }
 

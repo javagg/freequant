@@ -10,24 +10,26 @@
 
 #include <freequant/FreeQuantPlatform.h>
 #include <freequant/marketdata/Bar.h>
+#include <freequant/marketdata/Tick.h>
 #include <freequant/marketdata/Quote.h>
 #include <freequant/utils/DateTime.h>
 #include <freequant/strategy/BaseStrategy.h>
 #include <freequant/strategy/Task.h>
+#include <freequant/strategy/Order.h>
+#include <freequant/experiment/Indicator.h>
+#include <freequant/experiment/TimeSeries.h>
 
 namespace FreeQuant {
 
+class Account;
 class MarketDataProvider;
 class TradeProvider;
 class Indicator;
 class Portfolio;
 class Trade;
-class Order;
 class OrderBook;
 class Position;
 class Instrument;
-//class TimeSeries;
-class Tick;
 
 /*!
  *  \class Strategy
@@ -37,7 +39,7 @@ class Tick;
  */
 class Strategy : public BaseStrategy {
 public:
-    typedef std::shared_ptr<FreeQuant::Indicator> IndicatorPtr;
+    typedef std::shared_ptr<FreeQuant::Exp::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;
 
     typedef std::shared_ptr<Task> TaskPtr;
@@ -52,25 +54,12 @@ public:
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
 
-//    typedef std::shared_ptr<FreeQuant::TimeSeries> TimeSeriesPtr;
-//    typedef std::vector<TimeSeriesPtr> TimeSeriesVector;
-//    typedef std::map<std::string, TimeSeriesPtr> TimeSeriesMap;
+//    typedef FreeQuant::Exp::TimeSeries<Bar> BarSeries;
+    typedef FreeQuant::Exp::TimeSeries<Tick> TickSeries;
+    typedef FreeQuant::Exp::TimeSeries<Trade> TradeSeries;
 
-    typedef int TickSeries;
-    typedef int BarSeries;
     typedef std::map<std::string, BarSeries> BarSeriesMap;
-    typedef int TradeSeries;
     typedef std::vector<std::string> Symbols;
-
-    enum BarType {
-        Tick,
-        OneMinuent,
-        FiveMinuents,
-        TenMinuents,
-        OneHour,
-        OneDay,
-        Custom
-    };
 
     explicit Strategy();
 	virtual ~Strategy();
@@ -136,9 +125,12 @@ public:
     void addIndicator(IndicatorPtr indicator);
     void addInstrument(const Instrument& instrument) {}
 
-    FreeQuant::Task::TaskId addTask(FreeQuant::Task task);
-    void addSymbol(const std::string symbol) {}
+    FreeQuant::Task::TaskId addTask(std::shared_ptr<FreeQuant::Task> task);
+    void removeTask(FreeQuant::Task::TaskId taskId);
+
     void addSymbols(const Symbols& symbols);
+    void removeSymbols(const Symbols& symbols);
+    const Symbols& symbols() const;
 
     void chooseTradeProvider(std::string name) {}
     void chooseMarketProvider(std::string name) {}
@@ -150,18 +142,27 @@ public:
 
     const Instruments& instruments() const { return _instruments; }
     const Orders& orders() const { return _orders; }
+    const Orders& orders(FreeQuant::Order::Status status) const { return _orders; }
+    const Orders& orders(std::string symbol) const { return _orders; }
 
+    bool hasPosition() const { return false; }
     MarketDataProvider *marketDataProvider() const { return _mdProvider; }
     TradeProvider *tradeProvider() const { return m_tradeProvider; }
     OrderBook *orderBook() const { return 0; }
 
-//    FreeQuant::TimeSeries& fetchHistoricalBars(const std::string& provider, const FreeQuant::DateTime& begin,
-//        const FreeQuant::DateTime& end);
-//    FreeQuant::TimeSeries& fetchHistoricalQuotes(const std::string& provider, const FreeQuant::DateTime& begin,
-//        const FreeQuant::DateTime& end);
-//    FreeQuant::TimeSeries& fetchHistoricalTrades(const std::string& provider, const FreeQuant::DateTime& begin,
-//        const FreeQuant::DateTime& end);
+    BarSeries *createBarSeries();
+//    const BarSeries& barSeries() const { return _barSeries; }
+    const BarSeries& barSeries(const std::string symbol) {
+        return _barSeriesMap[symbol];
+    }
 
+
+    long position(std::string symbol) { return 0; }
+    void clearPositions();
+    void clearPosition(std::string symbol);
+    void cancelOrders();
+
+    Account *account() { return nullptr; }
 private:
     void onStep();
     virtual void onMarketDataProviderConnected();

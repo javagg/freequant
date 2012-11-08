@@ -8,15 +8,17 @@ namespace FreeQuant {
 
 class Bar {
 public:
+    enum Item { Close, Open, High, Low, Median, Typical, Weighted, Volume, OpenInterest };
+
     Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0);
     Bar(std::string symbol, FreeQuant::DateTime dateTime, double open, double high,
         double low, double close, long volume);
     Bar& operator=(const Bar& bar);
 
-    const FreeQuant::DateTime& beginTime();
-    const FreeQuant::DateTime& endTime();
     const std::string& symbol() const { return _symbol; }
-    const FreeQuant::DateTime& dateTime() const { return _dateTime; }
+    const FreeQuant::DateTime& dateTime() const { return endTime(); }
+    const FreeQuant::DateTime& beginTime() const { return _begin; }
+    const FreeQuant::DateTime& endTime() const { return _end; }
 
     /*!
      *  Open - the price at which the bar was opened
@@ -48,7 +50,8 @@ public:
 
 private:
     std::string _symbol;
-    FreeQuant::DateTime _dateTime;
+    FreeQuant::DateTime _begin;
+    FreeQuant::DateTime _end;
     double _open;
     double _high;
     double _low;

@@ -9,7 +9,7 @@
 namespace FreeQuant {
 
 struct Tick {
-    FreeQuant::DateTime dateTime;
+    FreeQuant::DateTime datetime;
     std::string symbol;
     std::string exchange;
 

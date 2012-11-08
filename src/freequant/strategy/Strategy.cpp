@@ -109,6 +109,9 @@ void Strategy::setMarketDataProvider(std::shared_ptr<FreeQuant::MarketDataProvid
     _mdProvider->setCallback(_mdCallback);
 }
 
+FreeQuant::Task::TaskId Strategy::addTask(std::shared_ptr<FreeQuant::Task> task) {
+    _tasks.push_back(task);
+}
 
 void Strategy::handleBar(const FreeQuant::Bar& bar) {
 //    std::for_each(
@@ -136,6 +139,12 @@ void Strategy::onMarketDataProviderConnected() {
 }
 
 void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {
+    BarSeries& bars = _barSeriesMap[bar.symbol()];
+    bars.append(bar.dateTime(), bar);
+
+    for (auto i = _indicators.begin(); i != _indicators.end(); ++i) {
+        (*i)->onCalculate(bar);
+    }
 //    TimeSeriesPtr closeTs = _tsMap["close"];
 //    closeTs->append(std::make_pair(bar.dateTime(), bar.close()));
 
