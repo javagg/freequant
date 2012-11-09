@@ -7,9 +7,6 @@ namespace FreeQuant {
 
 class Exception : public std::logic_error {
 public:
-//    Exception() {}
-//    explicit Exception(const std::string& message) {
-//    }
     virtual ~Exception() throw() {}
 };
 
@@ -22,6 +19,10 @@ class SocketException : public Exception {
 };
 
 class RuntimeError : public Exception {
+
+};
+
+class OrderTypeNotSupport : public Exception {
 
 };
 

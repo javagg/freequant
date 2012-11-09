@@ -154,4 +154,40 @@ void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {
     onBar(bar);
 }
 
+// Low-level order management functions
+FreeQuant::Order *Strategy::createMarketOrder() {
+
+}
+
+FreeQuant::Order *Strategy::createStopOrder() {
+
+}
+
+FreeQuant::Order *Strategy::createLimitOrder() {
+
+}
+
+FreeQuant::Order *Strategy::createStopLimitOrder() {
+
+}
+
+// High-level order management functions;
+void Strategy::buyMarket() {
+    FreeQuant::Order *order = createMarketOrder();
+    order->send();
+}
+void Strategy::sellMarket() {}
+void Strategy::buyStop() {}
+void Strategy::sellStop() {}
+void Strategy::buyStopLimit() {}
+void Strategy::sellStopLimit() {}
+void Strategy::buyLimit() {}
+void Strategy::sellLimit() {}
+
+FreeQuant::Order *createOrder(FreeQuant::Order::Type type, FreeQuant::Order::Side side,
+    double price, long qty) {
+    FreeQuant::Order *order = new FreeQuant::Order;
+    return order;
+}
+
 } // namespace FreeQuant

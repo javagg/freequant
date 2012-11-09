@@ -10,6 +10,10 @@
 
 #include "Utility.h"
 
+#include <freequant/strategy/Order.h>
+#include <quickfix/fix44/NewOrderSingle.h>
+
+
 using namespace std;
 
 namespace FreeQuant {
@@ -40,6 +44,16 @@ map<string, string> parseParamsFromString(const string& str) {
     };
     transform(parts.begin(), parts.end(), inserter(params, params.end()), func());
     return params;
+}
+
+FreeQuant::Order orderFrom(const FIX44::NewOrderSingle& message) {
+    FreeQuant::Order order;
+    return order;
+}
+
+FIX44::NewOrderSingle messageFrom(const FreeQuant::Order& order) {
+    FIX44::NewOrderSingle message;
+    return message;
 }
 
 }

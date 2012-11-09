@@ -38,6 +38,8 @@
 #include <freequant/utils/Utility.h>
 #include <freequant/strategy/Instrument.h>
 
+#include <freequant/detail/FixProviderImpl.h>
+
 using namespace std;
 
 namespace FreeQuant {
@@ -210,128 +212,7 @@ public:
     }
 
     void sendOrder(FreeQuant::Order& order) {
-        std::string clOrdID = FreeQuant::toGuidString();
 
-        FIX44::NewOrderSingle message;
-        message.set(FIX::ClOrdID(clOrdID));
-        message.set(FIX::Side(FIX::Side_SELL));
-        FIX::UtcTimeStamp timestamp(2001,2,2,12,22,22,0);
-        message.set(FIX::TransactTime(timestamp));
-        message.set(FIX::HandlInst(FIX::HandlInst_AUTOMATED_EXECUTION_ORDER_PUBLIC_BROKER_INTERVENTION_OK));
-        message.set(FIX::OrdType(FIX::OrdType_MARKET));
-        message.set(FIX::Symbol("GOOG"));
-        message.set(FIX::OrderQty(1));
-
-    //    if (order.Instrument.AltSource == TTFIX.PROVIDER_NAME)
-    //    {
-    //        message.set(new Symbol(order.Instrument.AltSymbol));
-    //        message.set(new SecurityExchange(order.Instrument.AltExchange));
-    //    }
-    //    else
-    //    {
-    //        message.set(new Symbol(order.Instrument.Symbol));
-    //        message.set(new SecurityExchange(order.Instrument.Exchange));
-    //    }
-
-    //    switch (order.Side)
-    //    {
-    //        case OrderSide.Buy:
-    //            message.set(new Side(Side.BUY));
-    //            break;
-    //        case OrderSide.Sell:
-    //            message.set(new Side(Side.SELL));
-    //            break;
-    //    }
-
-    //    message.set(new TransactTime(order.DateTime));
-
-    //    switch (order.Type)
-    //    {
-    //        case OrderType.Market:
-    //            {
-    //                message.set(new OrdType(OrdType.MARKET));
-    //            }
-    //            break;
-    //        case OrderType.Limit:
-    //            {
-    //                message.set(new OrdType(OrdType.LIMIT));
-    //                message.set(new Price(order.Price));
-    //            }
-    //            break;
-    //        case OrderType.Stop:
-    //            {
-    //                message.set(new OrdType(OrdType.STOP));
-    //                message.set(new StopPx(order.StopPrice));
-    //            }
-    //            break;
-    //        case OrderType.StopLimit:
-    //            {
-    //                message.set(new OrdType(OrdType.STOP_LIMIT));
-    //                message.set(new Price(order.Price));
-    //                message.set(new StopPx(order.StopPrice));
-    //            }
-    //            break;
-    //    }
-
-    //    message.set(new OrderQty(order.Qty));
-
-    //    switch (order.Instrument.Type)
-    //    {
-    //        case InstrumentType.Stock:
-    //            {
-    //                message.set(new SecurityType(SecurityType.COMMON_STOCK));
-    //            }
-    //            break;
-    //        case InstrumentType.Index:
-    //            {
-    //                message.set(new SecurityType("IDX"));
-    //            }
-    //            break;
-    //        case InstrumentType.FX:
-    //            {
-    //                message.set(new SecurityType(SecurityType.FOREIGN_EXCHANGE_CONTRACT));
-    //            }
-    //            break;
-    //        case InstrumentType.Futures:
-    //            {
-    //                message.set(new SecurityType(SecurityType.FUTURE));
-    //                message.set(new MaturityMonthYear(order.Instrument.Maturity.ToString("yyyyMM")));
-    //            }
-    //            break;
-    //        case InstrumentType.Option:
-    //            {
-    //                message.set(new SecurityType(SecurityType.OPTION));
-    //                message.set(new MaturityMonthYear(order.Instrument.Maturity.ToString("yyyyMM")));
-
-    //                switch (order.Instrument.PutCall)
-    //                {
-    //                    case PutCall.Put:
-    //                        message.set(new PutOrCall(PutOrCall.PUT));
-    //                        break;
-    //                    case PutCall.Call:
-    //                        message.set(new PutOrCall(PutOrCall.CALL));
-    //                        break;
-    //                }
-
-    //                message.set(new StrikePrice(order.Instrument.Strike));
-    //            }
-    //            break;
-    //    }
-
-    //    if (order.Account != string.Empty)
-    //        message.set(new Account(order.Account));
-    //    else
-    //        message.set(new Account(provider.Account));
-
-    //    message.set(new Rule80A(provider.Rule80A));
-    //    message.set(new CustomerOrFirm(provider.CustomerOrFirm));
-
-    //    if (provider.ClearingAccount != string.Empty)
-    //        message.set(new ClearingAccount(provider.ClearingAccount));
-
-    //    orders.Add(clOrdID, order);
-
-        FIX::Session::sendToTarget(message);
     }
 
     vector<string> availableExchanges() const {
@@ -636,11 +517,12 @@ private:
     FIX::SessionID _sessionID;
 };
 
-FixTradeProvider::FixTradeProvider(FreeQuant::TradeProvider::Callback *callback) :
-    _impl(new FixTradeProvider::Impl("", callback)) {
-}
+//FixTradeProvider::FixTradeProvider(FreeQuant::TradeProvider::Callback *callback) :
+//    _impl(new FixTradeProvider::Impl("", callback))
+//  , _impl1(new FreeQuant::Detail::FixProviderImpl("", callback))
+//{}
 
-FixTradeProvider::FixTradeProvider(std::string connection) {
+FixTradeProvider::FixTradeProvider(std::string connection, FreeQuant::TradeProvider::Callback *callback) {
     std::map<string, string> params = parseParamsFromString(connection);
     stringstream ss;
     ss << "[DEFAULT]" << endl
@@ -658,6 +540,7 @@ FixTradeProvider::FixTradeProvider(std::string connection) {
        << "SocketConnectPort=" << 7711 << endl
        << "SocketConnectHost=" << "127.0.0.1" << endl;
     _impl = new FixTradeProvider::Impl(ss, 0);
+    _impl1.reset(new FreeQuant::Detail::FixProviderImpl(ss, callback));
 }
 
 FixTradeProvider::~FixTradeProvider() {
@@ -694,7 +577,7 @@ std::vector<std::string> FixTradeProvider::availableInstruments() const {
 }
 
 void FixTradeProvider::sendOrder(FreeQuant::Order& order) {
-
+    _impl1->sendOrder(order);
 }
 
 void FixTradeProvider::cancelOrder(FreeQuant::Order& order) {

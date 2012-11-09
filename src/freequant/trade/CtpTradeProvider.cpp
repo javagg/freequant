@@ -82,7 +82,7 @@ public:
         CThostFtdcInputOrderField field = {};
         _appId.copy(field.BrokerID, _appId.size());
         _userId.copy(field.InvestorID, _userId.size());
-        o.instrument.copy(field.InstrumentID, o.instrument.size());
+//        o.symbol.copy(field.InstrumentID, o.symbol().size());
     //    o.instrumentId.copy(field.OrderRef, o.instrumentId.size());
 
     //    o.instrumentId.copy(field.UserID, o.instrumentId.size());

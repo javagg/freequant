@@ -33,10 +33,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
 endif()
 
-
 # Find external dependencies
 set(Boost_USE_STATIC_LIBS on)
-
 find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread unit_test_framework)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
@@ -44,7 +42,6 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
 #    add_subdirectory(doc)
 endif()
-
 
 find_package(Ruby 1.9)
 if(UNIX)

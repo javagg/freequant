@@ -5,8 +5,9 @@
 #include <string>
 #include <vector>
 
+#include <freequant/strategy/Order.h>
+
 namespace FreeQuant {
-class Order;
 class Instrument;
 class Bar;
 }
@@ -21,15 +22,11 @@ public:
         virtual ~Callback() {}
     };
 
-    explicit TradeProvider(FreeQuant::TradeProvider::Callback *callback = 0) {}
     virtual ~TradeProvider() {}
     virtual void connect() = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() const = 0;
     virtual std::string name() const = 0;
-
-    virtual void logon() = 0;
-    virtual void logout() = 0;
 
     virtual std::vector<std::string> availableExchanges() const = 0;
     virtual std::vector<std::string> availableInstruments() const = 0;
@@ -43,6 +40,8 @@ public:
 
     virtual void updateIntrument(std::string symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
+
+    virtual bool orderTypeSupported(FreeQuant::Order::Type type) = 0;
 };
 
 class DefaultTradeProviderCallback : public TradeProvider::Callback {

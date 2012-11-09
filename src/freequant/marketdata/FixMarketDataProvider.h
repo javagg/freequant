@@ -11,6 +11,7 @@ public:
     explicit FixMarketDataProvider(std::string connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
     virtual ~FixMarketDataProvider();
     void setCallback(FreeQuant::MarketDataProvider::Callback *callback);
+
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const;

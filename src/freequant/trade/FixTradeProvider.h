@@ -1,15 +1,22 @@
 #ifndef FQ_TRADE_FIXTRADEPROVIDER_H
 #define FQ_TRADE_FIXTRADEPROVIDER_H
 
+#include <memory>
+
 #include <freequant/trade/TradeProvider.h>
 
 namespace FreeQuant {
 
+namespace Detail {
+    class FixProviderImpl;
+}
+
 class FixTradeProvider : public TradeProvider {
 public:
-    explicit FixTradeProvider(FreeQuant::TradeProvider::Callback *callback = 0);
-    explicit FixTradeProvider(std::string connection);
+    explicit FixTradeProvider(std::string connection, FreeQuant::TradeProvider::Callback *callback = 0);
     virtual ~FixTradeProvider();
+
+    void setCallback(FreeQuant::TradeProvider::Callback *callback);
 
     void connect();
     void disconnect();
@@ -32,9 +39,11 @@ public:
     void updateIntrument(std::string symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument);
 
+    bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
 private:
     class Impl;
     Impl *_impl;
+    std::unique_ptr<FreeQuant::Detail::FixProviderImpl> _impl1;
 };
 
 

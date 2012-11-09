@@ -38,6 +38,7 @@ public:
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
 
+    bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
 private:
     class Impl;
     Impl*_impl;

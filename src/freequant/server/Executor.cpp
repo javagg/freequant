@@ -36,6 +36,7 @@
 
 #include <quickfix/Session.h>
 
+#include <freequant/strategy/Order.h>
 #include <freequant/utils/RandomMarketDataGenerator.h>
 #include <freequant/utils/Utility.h>
 
@@ -46,6 +47,10 @@ using namespace std;
 using namespace boost::phoenix;
 
 namespace FreeQuant {
+
+// fix message utility function
+FreeQuant::Order orderFrom(const FIX44::NewOrderSingle&);
+const FIX44::NewOrderSingle messageFrom(FreeQuant::Order&);
 
 Executor::Executor() {
     _mdGenerator.reset(new FreeQuant::RandomMarketDataGenerator());
@@ -89,28 +94,33 @@ void Executor::fromApp( const FIX::Message& message, const FIX::SessionID& sessi
 }
 
 void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::SessionID& sessionID) {
-    FIX::ClOrdID clOrdID;
-    message.get(clOrdID);
-    FIX::Side side;
-    message.get(side);
-    FIX::Symbol symbol;
-    message.get(symbol);
+//    FIX::ClOrdID clOrdID;
+//    message.get(clOrdID);
+//    FIX::Side side;
+//    message.get(side);
+//    FIX::Symbol symbol;
+//    message.get(symbol);
 
-    FIX44::ExecutionReport response;
-    response.set(clOrdID);
-    response.set(FIX::ExecID("fssfsf"));
-    response.set(FIX::ExecType(FIX::ExecType_REJECTED));
-    response.set(FIX::OrdStatus(FIX::OrdStatus_REJECTED));
-    response.set(symbol);
-    response.set(side);
+    FreeQuant::Order order = FreeQuant::orderFrom(message);
 
-    FIX::LeavesQty leavesQty(11);
-    FIX::CumQty cumQty(12);
-    FIX::AvgPx avgPx(100.0);
 
-    response.set(leavesQty);
-    response.set(cumQty);
-    response.set(avgPx);
+//    FIX44::ExecutionReport response;
+//    response.set(clOrdID);
+//    response.set(FIX::ExecID("fssfsf"));
+//    response.set(FIX::ExecType(FIX::ExecType_REJECTED));
+//    response.set(FIX::OrdStatus(FIX::OrdStatus_REJECTED));
+//    response.set(symbol);
+//    response.set(side);
+
+//    FIX::LeavesQty leavesQty(11);
+//    FIX::CumQty cumQty(12);
+//    FIX::AvgPx avgPx(100.0);
+
+//    response.set(leavesQty);
+//    response.set(cumQty);
+//    response.set(avgPx);
+
+
 
 //    FIX::Symbol symbol;
 //  FIX::Side side;
@@ -150,7 +160,7 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 //  if( message.isSet(account) )
 //    executionReport.setField( message.get(account) );
 
-    FIX::Session::sendToTarget(response, sessionID);
+//    FIX::Session::sendToTarget(response, sessionID);
 }
 
 void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {

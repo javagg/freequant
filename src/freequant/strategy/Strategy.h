@@ -156,14 +156,33 @@ public:
         return _barSeriesMap[symbol];
     }
 
-
     long position(std::string symbol) { return 0; }
     void clearPositions();
     void clearPosition(std::string symbol);
     void cancelOrders();
 
+    // Low-level order management functions
+    FreeQuant::Order *createMarketOrder();
+    FreeQuant::Order *createStopOrder();
+    FreeQuant::Order *createLimitOrder();
+    FreeQuant::Order *createStopLimitOrder();
+
+    // High-level order management functions;
+    void buyMarket();
+    void sellMarket();
+    void buyStop();
+    void sellStop();
+    void buyStopLimit();
+    void sellStopLimit();
+    void buyLimit();
+    void sellLimit();
+
     Account *account() { return nullptr; }
+
 private:
+    FreeQuant::Order *createOrder(FreeQuant::Order::Type type, FreeQuant::Order::Side side,
+        double price, long qty);
+
     void onStep();
     virtual void onMarketDataProviderConnected();
     void onMarketDataProviderBar(const FreeQuant::Bar&);
@@ -175,8 +194,6 @@ private:
     Orders _orders;
     Tasks _tasks;
 
-//    TimeSeriesVector _tsVector;
-//    TimeSeriesMap _tsMap;
     MarketDataProvider *_mdProvider;
     TradeProvider *m_tradeProvider;
 

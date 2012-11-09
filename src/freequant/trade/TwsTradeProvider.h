@@ -39,6 +39,9 @@ public:
 
     void updateIntrument(std::string symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument);
+
+
+    bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
 private:
     class Impl;
     Impl *_impl;
