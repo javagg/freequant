@@ -24,7 +24,7 @@ public:
 
     enum Side { Buy , Sell };
 
-    enum TimeInForce { Day, GTC, OPG, IOC, FOK, GTX, GTD, ATC, GFS };
+    enum TimeInForce { DAY, GTC, OPG, IOC, FOK, GTX, GTD, ATC, GFS };
 
     enum Status {
         PendingNew,
@@ -45,9 +45,6 @@ public:
     /*!
      *  Sent a cancel request to a broker.
      */
-    void cancel();
-    void replace();
-    void send();
 
     bool isFilled();
     bool isRejected();
@@ -66,7 +63,7 @@ public:
     double price() { return _price; }
     double qty() { return _qty; }
     double tickSize() { return _tickSize; }
-    Side side() const;
+    Side side() const { return _side; }
     Status status() { return _status; }
     /*!
      *  Gets last fill (partial fill) price for this order
@@ -102,8 +99,6 @@ public:
     TimeInForce timeInForce() { return _timeInForce; }
     FreeQuant::TradeProvider *tradeProvider() const;
     std::string brokerId;
-
-    bool typeSupported();
 private:
     Type _type;
     std::string _symbol;
@@ -114,9 +109,9 @@ private:
     double _stopPrice;
     double _limitPrice;
     double _avgPrice;
+    Side _side;
     Status _status;
     TimeInForce _timeInForce;
-    FreeQuant::TradeProvider *_tradeProvider;
 };
 
 } // namespace FreeQuant

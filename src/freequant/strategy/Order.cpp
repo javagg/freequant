@@ -48,16 +48,4 @@ Order::~Order() {
 	// TODO Auto-generated destructor stub
 }
 
-void Order::cancel() {
-
-}
-
-void Order::replace() {
-
-}
-
-void Order::send() {
-    _tradeProvider->sendOrder(*this);
-}
-
 } // namespace FreeQuant

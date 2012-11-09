@@ -11,8 +11,10 @@
 #include "Utility.h"
 
 #include <freequant/strategy/Order.h>
-#include <quickfix/fix44/NewOrderSingle.h>
+#include <freequant/marketdata/Bar.h>
 
+#include <quickfix/fix44/NewOrderSingle.h>
+#include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
 
 using namespace std;
 
@@ -53,6 +55,16 @@ FreeQuant::Order orderFrom(const FIX44::NewOrderSingle& message) {
 
 FIX44::NewOrderSingle messageFrom(const FreeQuant::Order& order) {
     FIX44::NewOrderSingle message;
+    return message;
+}
+
+FreeQuant::Bar barFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
+    FreeQuant::Bar bar;
+    return bar;
+}
+
+FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Bar&) {
+    FIX44::MarketDataSnapshotFullRefresh message;
     return message;
 }
 

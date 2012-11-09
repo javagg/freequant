@@ -171,11 +171,12 @@ FreeQuant::Order *Strategy::createStopLimitOrder() {
 
 }
 
-// High-level order management functions;
 void Strategy::buyMarket() {
     FreeQuant::Order *order = createMarketOrder();
-    order->send();
+    _tradeProvider->sendOrder(*order);
+    delete order;
 }
+
 void Strategy::sellMarket() {}
 void Strategy::buyStop() {}
 void Strategy::sellStop() {}
