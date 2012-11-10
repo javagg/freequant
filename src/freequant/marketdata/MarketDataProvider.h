@@ -10,10 +10,6 @@
 #include <freequant/marketdata/Bar.h>
 
 namespace FreeQuant {
-    class Strategy;
-}
-
-namespace FreeQuant {
 
 class MarketDataProvider {
 public:

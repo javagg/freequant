@@ -9,7 +9,6 @@ namespace FreeQuant {
 class Bar {
 public:
     enum Item { Close, Open, High, Low, Median, Typical, Weighted, Volume, OpenInterest };
-
     Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0);
     Bar(std::string symbol, FreeQuant::DateTime dateTime, double open, double high,
         double low, double close, long volume);
@@ -61,6 +60,8 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& os, const FreeQuant::Bar& bar);
+
+
 
 } // namespace FreeQuant
 

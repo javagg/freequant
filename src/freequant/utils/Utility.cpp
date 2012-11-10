@@ -12,9 +12,12 @@
 
 #include <freequant/strategy/Order.h>
 #include <freequant/marketdata/Bar.h>
+#include <freequant/marketdata/Tick.h>
+#include <freequant/marketdata/Trade.h>
 
 #include <quickfix/fix44/NewOrderSingle.h>
 #include <quickfix/fix44/MarketDataSnapshotFullRefresh.h>
+#include <quickfix/fix44/ExecutionReport.h>
 
 using namespace std;
 
@@ -65,6 +68,28 @@ FreeQuant::Bar barFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
 
 FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Bar&) {
     FIX44::MarketDataSnapshotFullRefresh message;
+    return message;
+}
+
+FreeQuant::Tick tickFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
+    FreeQuant::Tick tick;
+    return tick;
+}
+
+FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Tick&) {
+    FIX44::MarketDataSnapshotFullRefresh message;
+    return message;
+}
+
+FreeQuant::Trade tradeFrom(const FIX44::ExecutionReport& message) {
+    FreeQuant::Trade trade;
+    return trade;
+}
+
+FIX44::ExecutionReport messageFrom(const FreeQuant::Trade& trade) {
+    FIX44::ExecutionReport message;
+
+
     return message;
 }
 

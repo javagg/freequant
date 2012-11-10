@@ -39,6 +39,7 @@
 #include <freequant/strategy/Order.h>
 #include <freequant/utils/RandomMarketDataGenerator.h>
 #include <freequant/utils/Utility.h>
+#include <freequant/server/OrderBook.h>
 
 #include "Executor.h"
 
@@ -47,10 +48,6 @@ using namespace std;
 using namespace boost::phoenix;
 
 namespace FreeQuant {
-
-// fix message utility function
-FreeQuant::Order orderFrom(const FIX44::NewOrderSingle&);
-const FIX44::NewOrderSingle messageFrom(FreeQuant::Order&);
 
 Executor::Executor() {
     _mdGenerator.reset(new FreeQuant::RandomMarketDataGenerator());

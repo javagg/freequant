@@ -8,11 +8,9 @@
 #include <freequant/strategy/Order.h>
 
 namespace FreeQuant {
+
 class Instrument;
 class Bar;
-}
-
-namespace FreeQuant {
 
 class TradeProvider {
 public:
@@ -48,9 +46,6 @@ class DefaultTradeProviderCallback : public TradeProvider::Callback {
 public:
     void onConnected() {}
     void onDisconnected() {}
-    void onSubscribed() {}
-    void onUnsubscribed() {}
-    void onBar(FreeQuant::Bar& bar) {}
 };
 
 }

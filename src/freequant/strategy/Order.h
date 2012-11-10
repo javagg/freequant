@@ -36,7 +36,8 @@ public:
         Expired,
         PendingReplace,
         Replaced,
-        Rejected
+        Rejected,
+        Suspended
     };
 
     explicit Order();

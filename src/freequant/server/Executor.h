@@ -9,6 +9,7 @@
 #include <quickfix/MessageCracker.h>
 
 #include <freequant/utils/MarketDataGenerator.h>
+#include <freequant/marketdata/MarketDataProvider.h>
 #include <freequant/utils/Timer.h>
 
 namespace FIX {
@@ -18,6 +19,7 @@ namespace FIX {
 
 namespace FreeQuant {
 
+class OrderBook;
 /*!
  *
  * It is a market data feed simulator that utilizes the QuickFIX to
@@ -26,6 +28,7 @@ namespace FreeQuant {
 class Executor : public FIX::Application, public FIX::MessageCracker {
 public:
     Executor();
+    Executor(const std::string& filename);
     virtual ~Executor();
     void onCreate(const FIX::SessionID&);
     void onLogon(const FIX::SessionID&);
@@ -53,6 +56,9 @@ private:
     void generateBars();
     void sendBar(const  FIX::SessionID& sessionID, const FreeQuant::Bar& bar);
 
+    std::map<std::string, FreeQuant::OrderBook> _orderBooks;
+
+    std::unique_ptr<FreeQuant::MarketDataProvider> _mdProvider;
     boost::scoped_ptr<FreeQuant::Timer> _timerMd;
     boost::scoped_ptr<MarketDataGenerator> _mdGenerator;
     std::set<FIX::SessionID> _sessionIDs;

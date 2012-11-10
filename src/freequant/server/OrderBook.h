@@ -7,16 +7,21 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
+#include <freequant/marketdata/Trade.h>
+#include <freequant/utils/TimeSeries.h>
+
 namespace FreeQuant {
 
+
+class Quote;
 class Order;
-class Bar;
 class Offer {};
 class Bid {};
 class Fill {};
 
 class OrderBook {
 public:
+    OrderBook() {}
     OrderBook(std::string symbol) : _symbol(symbol) {}
 	virtual ~OrderBook();
 
@@ -26,15 +31,18 @@ public:
     bool match(FreeQuant::Order& bid, FreeQuant::Order& ask);
     bool findOrder(FreeQuant::Order& order);
 
-    Bar queryMarketData();
+    const FreeQuant::Quote& lastQuote() const;
     void processOrders();
 
 private:
+    bool isOrderValid(FreeQuant::Order& order);
+    int _barSeries;
     std::string _symbol;
     std::list<Offer> offers;
     std::list<Bid> bids;
     std::list<Fill> trades;
 
+    TimeSeries<Trade> _tradeSeries;
     boost::thread _thread;
     boost::mutex _mutex;
 };

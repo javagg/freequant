@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         break;
     case 3:
     default:
-        trade_provider = new FreeQuant::TwsTradeProvider;
+        trade_provider = new FreeQuant::TwsTradeProvider("host=127.0.0.1");
         break;
     }
 
