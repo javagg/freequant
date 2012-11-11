@@ -29,7 +29,7 @@ public:
     }
 
     double last(const std::string& column, long long pos = 1) {
-
+        return 0;
     }
 
 private:

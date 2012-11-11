@@ -23,7 +23,7 @@ class OrderBook {
 public:
     OrderBook() {}
     OrderBook(std::string symbol) : _symbol(symbol) {}
-	virtual ~OrderBook();
+    virtual ~OrderBook() {}
 
     std::string symbol() const;
     bool insertOrder(FreeQuant::Order& order);

@@ -111,6 +111,7 @@ void Strategy::setMarketDataProvider(std::shared_ptr<FreeQuant::MarketDataProvid
 
 FreeQuant::Task::TaskId Strategy::addTask(std::shared_ptr<FreeQuant::Task> task) {
     _tasks.push_back(task);
+    return 0;
 }
 
 void Strategy::handleBar(const FreeQuant::Bar& bar) {
@@ -156,19 +157,19 @@ void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {
 
 // Low-level order management functions
 FreeQuant::Order *Strategy::createMarketOrder() {
-
+    return nullptr;
 }
 
 FreeQuant::Order *Strategy::createStopOrder() {
-
+    return nullptr;
 }
 
 FreeQuant::Order *Strategy::createLimitOrder() {
-
+    return nullptr;
 }
 
 FreeQuant::Order *Strategy::createStopLimitOrder() {
-
+    return nullptr;
 }
 
 void Strategy::buyMarket() {

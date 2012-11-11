@@ -2,7 +2,6 @@
 #define FQ_UTILS_DATETIME_H
 
 #include <ctime>
-#include <ctime>
 #include <boost/date_time.hpp>
 
 namespace FreeQuant {

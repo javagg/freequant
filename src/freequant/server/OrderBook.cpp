@@ -6,13 +6,13 @@
 namespace FreeQuant {
 
 bool OrderBook::insertOrder(FreeQuant::Order& order) {
-    if (!isOrderValid()) return false;
+    if (!isOrderValid(order)) return false;
 
     auto side = order.side();
     if (side == FreeQuant::Order::Buy) {
         auto type = order.type();
         switch (type) {
-        case FreeQuant::Order::Market:
+        case FreeQuant::Order::Market: {
             double orderPx = order.price();
             long orderQty = order.qty();
             auto quote = lastQuote();
@@ -21,6 +21,8 @@ bool OrderBook::insertOrder(FreeQuant::Order& order) {
             long txnQty = orderQty;
 //            Trade trade;
 //            _tradeSeries.append();
+            break;
+        }
         default:
             break;
         }

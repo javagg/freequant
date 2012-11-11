@@ -30,8 +30,8 @@ public:
         return const_cast<T&>(i->second);
     }
 
-    T& max();
-    T& min();
+//    T& high();
+//    T& min();
     T& operator[](const FreeQuant::DateTime& at) const;
     T& operator[](long long pos) const;
 

@@ -14,8 +14,8 @@ namespace FreeQuant {
 
 class Order;
 class Bar;
-class Tick;
-class Trade;
+struct Tick;
+struct Trade;
 
 std::string toGuidString();
 std::string createGuid();

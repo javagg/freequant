@@ -15,7 +15,7 @@ namespace Exp {
 
 class Indicator {
 public:
-    enum Cross { Above, Below, None };
+    enum Cross { Above, Below, NoCross };
 
     virtual ~Indicator() {}
     virtual std::size_t size() = 0;
