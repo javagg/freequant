@@ -98,7 +98,7 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 //    FIX::Symbol symbol;
 //    message.get(symbol);
 
-    FreeQuant::Order order = FreeQuant::orderFrom(message);
+//    FreeQuant::Order order = FreeQuant::orderFrom(message);
 
 
 //    FIX44::ExecutionReport response;

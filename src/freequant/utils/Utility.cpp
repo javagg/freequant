@@ -51,46 +51,44 @@ map<string, string> parseParamsFromString(const string& str) {
     return params;
 }
 
-FreeQuant::Order orderFrom(const FIX44::NewOrderSingle& message) {
-    FreeQuant::Order order;
-    return order;
-}
+//FreeQuant::Order orderFrom(const FIX44::NewOrderSingle& message) {
+//    FreeQuant::Order order;
+//    return order;
+//}
 
-FIX44::NewOrderSingle messageFrom(const FreeQuant::Order& order) {
-    FIX44::NewOrderSingle message;
-    return message;
-}
+//FIX44::NewOrderSingle messageFrom(const FreeQuant::Order& order) {
+//    FIX44::NewOrderSingle message;
+//    return message;
+//}
 
-FreeQuant::Bar barFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
-    FreeQuant::Bar bar;
-    return bar;
-}
+//FreeQuant::Bar barFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
+//    FreeQuant::Bar bar;
+//    return bar;
+//}
 
-FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Bar&) {
-    FIX44::MarketDataSnapshotFullRefresh message;
-    return message;
-}
+//FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Bar&) {
+//    FIX44::MarketDataSnapshotFullRefresh message;
+//    return message;
+//}
 
-FreeQuant::Tick tickFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
-    FreeQuant::Tick tick;
-    return tick;
-}
+//FreeQuant::Tick tickFrom(const FIX44::MarketDataSnapshotFullRefresh&) {
+//    FreeQuant::Tick tick;
+//    return tick;
+//}
 
-FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Tick&) {
-    FIX44::MarketDataSnapshotFullRefresh message;
-    return message;
-}
+//FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Tick&) {
+//    FIX44::MarketDataSnapshotFullRefresh message;
+//    return message;
+//}
 
-FreeQuant::Trade tradeFrom(const FIX44::ExecutionReport& message) {
-    FreeQuant::Trade trade;
-    return trade;
-}
+//FreeQuant::Trade tradeFrom(const FIX44::ExecutionReport& message) {
+//    FreeQuant::Trade trade;
+//    return trade;
+//}
 
-FIX44::ExecutionReport messageFrom(const FreeQuant::Trade& trade) {
-    FIX44::ExecutionReport message;
-
-
-    return message;
-}
+//FIX44::ExecutionReport messageFrom(const FreeQuant::Trade& trade) {
+//    FIX44::ExecutionReport message;
+//    return message;
+//}
 
 }

@@ -58,11 +58,12 @@ option(BUILD_FIX "Build FIX." TRUE)
 
 # Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/tws)
-set(CTP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/ctp)
 
 if(WIN32)
+    set(CTP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/win/public)
     set(CTP_LIBRARY_DIRS ${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/win/lib ${PROJECT_SOURCE_DIR}/vendors/ctp/api/risk/lib)
 elseif(UNIX)
+    set(CTP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/linux64/public)
     set(CTP_LIBRARY_DIRS ${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/linux64/lib)
 endif()
 

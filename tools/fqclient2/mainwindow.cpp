@@ -11,10 +11,10 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    int tr = 3;
+    int tr = 1;
     switch(tr){
     case 1: {
-        string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
+        string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26205;userid=352240;password=888888;brokerid=2030";
         trade_provider = new FreeQuant::CtpTradeProvider(connection);
         break;
     }
@@ -26,12 +26,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         trade_provider = new FreeQuant::TwsTradeProvider("host=127.0.0.1");
         break;
     }
-    md_provider = new FreeQuant::CtpMarketDataProvider("protocal=tcp;ip=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070");
+//    md_provider = new FreeQuant::CtpMarketDataProvider("protocal=tcp;ip=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070");
 }
 
 MainWindow::~MainWindow() {
     delete trade_provider;
-    delete md_provider;
+//    delete md_provider;
     delete ui;
 }
 

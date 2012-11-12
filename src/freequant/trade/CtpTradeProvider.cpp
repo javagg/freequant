@@ -7,8 +7,7 @@
 #include <freequant/utils/Utility.h>
 
 #include "CtpTradeProvider.h"
-#include "api/trade/win/public/ThostFtdcTraderApi.h"
-
+#include "ThostFtdcTraderApi.h"
 
 using namespace std;
 
@@ -16,9 +15,10 @@ namespace FreeQuant {
 
 static long requestId = 0;
 
-class CtpTradeProvider::Impl {
+class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
-    Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) : _callback(callback), _api(0) {
+    Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
+        _connected(false), _callback(callback), _api(0) {
         auto params = FreeQuant::parseParamsFromString(connection);
         _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"]; //"tcp://asp-sim2-front1.financial-trading-platform.com:26213";
         _userId = params["userid"];
@@ -26,28 +26,32 @@ public:
         _brokerId = params["brokerid"];
     }
 
-//    Impl(TradeProvider::Params& param, FreeQuant::TradeProvider::Callback *callback) :
-//        _callback(callback), _api(0) {
-//        _brokerId = param["brokerId"];
-//        _userId = param["userId"];
-//        _password = param["password"];
-//        _front = param["protocal"] + param["host"] + param["port"];
-//    }
-
-    virtual ~Impl() {}
-
-    void connect() {}
-    void disconnect() {}
-    bool isConnected() const {
-        return false;
+    virtual ~Impl() {
+        if (isConnected()) {
+            disconnect();
+        }
     }
 
-    void logon() {
-        CThostFtdcReqUserLoginField req = {};
-        _brokerId.copy(req.BrokerID, _brokerId.size());
-        _userId.copy(req.UserID, _userId.size());
-        _password.copy(req.Password, _password.size());
-        int ret = _api->ReqUserLogin(&req, ++requestId);
+    void connect() {
+        if (_api == 0) {
+            _api = CThostFtdcTraderApi::CreateFtdcTraderApi();
+            _api->RegisterSpi(this);
+            _api->RegisterFront(const_cast<char*>(_front.c_str()));
+            _api->SubscribePrivateTopic(THOST_TERT_RESTART);
+            _api->SubscribePrivateTopic(THOST_TERT_RESTART);
+            _api->Init();
+        }
+    }
+
+    void disconnect() {
+        if (_api != 0) {
+            _api->RegisterSpi(0);
+            _api->Release();
+            _api = 0;
+        }
+    }
+    bool isConnected() const {
+        return _connected;
     }
 
     void logout() {
@@ -71,14 +75,6 @@ public:
     //    api->ReqQryInstrument()
         return vector<string>();
     }
-
-//    void subscribe(std::vector<std::string> symbols) {
-
-//    }
-
-//    void unsubscribe(std::vector<std::string> symbols) {
-
-//    }
 
     virtual void sendOrder(FreeQuant::Order& o) {
         CThostFtdcInputOrderField field = {};
@@ -163,54 +159,32 @@ public:
 
     CThostFtdcTraderApi *_api;
 
-    void OnFrontConnected() {};
-    void OnFrontDisconnected(int nReason) {}
-    void OnHeartBeatWarning(int nTimeLapse) {}
-    void OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenticateField, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
+    void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cerr << __FUNCTION__ << std::endl;
+        std::cerr << pRspInfo->ErrorMsg << std::endl;
+    }
+
+    void OnFrontConnected() {
+        std::cout << __FUNCTION__ << std::endl;
+        CThostFtdcReqUserLoginField req = {};
+        _brokerId.copy(req.BrokerID, _brokerId.size());
+        _userId.copy(req.UserID, _userId.size());
+        _password.copy(req.Password, _password.size());
+        int ret = _api->ReqUserLogin(&req, ++requestId);
+    }
+
     void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-            cout << rspUserLogin->SessionID << endl;
-//            onLogon();
+        std::cout << __FUNCTION__ << std::endl;
+        const char *tradingDay =  _api->GetTradingDay();
+        std::cout << "TradingDay: " << tradingDay << std::endl;
+        _connected = true;
     }
 
     void OnRspUserLogout(CThostFtdcUserLogoutField *userLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
             cout << userLogout->UserID << endl;
-//            onLogout();
     }
 
-    void OnRspUserPasswordUpdate(CThostFtdcUserPasswordUpdateField *pUserPasswordUpdate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspTradingAccountPasswordUpdate(CThostFtdcTradingAccountPasswordUpdateField *pTradingAccountPasswordUpdate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
 
-    }
-
-    void OnRspParkedOrderInsert(CThostFtdcParkedOrderField *pParkedOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspParkedOrderAction(CThostFtdcParkedOrderActionField *pParkedOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspOrderAction(CThostFtdcInputOrderActionField *pInputOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-
-    }
-
-    void OnRspQueryMaxOrderVolume(CThostFtdcQueryMaxOrderVolumeField *pQueryMaxOrderVolume, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-
-    }
-
-    void OnRspRemoveParkedOrder(CThostFtdcRemoveParkedOrderField *pRemoveParkedOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspRemoveParkedOrderAction(CThostFtdcRemoveParkedOrderActionField *pRemoveParkedOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryOrder(CThostFtdcOrderField *pOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryTrade(CThostFtdcTradeField *pTrade, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInvestorPosition, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-
-    }
-
-    void OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-
-    }
-
-    void OnRspQryInvestor(CThostFtdcInvestorField *pInvestor, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryTradingCode(CThostFtdcTradingCodeField *pTradingCode, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInstrumentMarginRate(CThostFtdcInstrumentMarginRateField *pInstrumentMarginRate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInstrumentCommissionRate(CThostFtdcInstrumentCommissionRateField *pInstrumentCommissionRate, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryExchange(CThostFtdcExchangeField *pExchange, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
     void OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         FreeQuant::Instrument instrument(i->InstrumentID);
         instrument.setExchange(i->ExchangeInstID);
@@ -224,64 +198,9 @@ public:
         std::cout << i->InstrumentID << "dddd" << std::endl;
     }
 
-    void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField *pDepthMarketData, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQrySettlementInfo(CThostFtdcSettlementInfoField *pSettlementInfo, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryTransferBank(CThostFtdcTransferBankField *pTransferBank, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInvestorPositionDetail(CThostFtdcInvestorPositionDetailField *pInvestorPositionDetail, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-    void OnRspQryNotice(CThostFtdcNoticeField *pNotice, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQrySettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryInvestorPositionCombineDetail(CThostFtdcInvestorPositionCombineDetailField *pInvestorPositionCombineDetail, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast);
-    void OnRspQryCFMMCTradingAccountKey(CThostFtdcCFMMCTradingAccountKeyField *pCFMMCTradingAccountKey, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryEWarrantOffset(CThostFtdcEWarrantOffsetField *pEWarrantOffset, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryTransferSerial(CThostFtdcTransferSerialField *pTransferSerial, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryAccountregister(CThostFtdcAccountregisterField *pAccountregister, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-
-    }
-
-    void OnRtnOrder(CThostFtdcOrderField *pOrder) {
-
-    }
-
-    void OnRtnTrade(CThostFtdcTradeField *pTrade) {
-
-    }
-
-    void OnErrRtnOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnErrRtnOrderAction(CThostFtdcOrderActionField *pOrderAction, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnRtnInstrumentStatus(CThostFtdcInstrumentStatusField *pInstrumentStatus) {};
-    void OnRtnTradingNotice(CThostFtdcTradingNoticeInfoField *pTradingNoticeInfo) {};
-    void OnRtnErrorConditionalOrder(CThostFtdcErrorConditionalOrderField *pErrorConditionalOrder) {};
-    void OnRspQryContractBank(CThostFtdcContractBankField *pContractBank, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryParkedOrder(CThostFtdcParkedOrderField *pParkedOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryParkedOrderAction(CThostFtdcParkedOrderActionField *pParkedOrderAction, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryTradingNotice(CThostFtdcTradingNoticeField *pTradingNotice, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryBrokerTradingParams(CThostFtdcBrokerTradingParamsField *pBrokerTradingParams, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQryBrokerTradingAlgos(CThostFtdcBrokerTradingAlgosField *pBrokerTradingAlgos, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRtnFromBankToFutureByBank(CThostFtdcRspTransferField *pRspTransfer) {};
-    void OnRtnFromFutureToBankByBank(CThostFtdcRspTransferField *pRspTransfer) {};
-    void OnRtnRepealFromBankToFutureByBank(CThostFtdcRspRepealField *pRspRepeal) {};
-    void OnRtnRepealFromFutureToBankByBank(CThostFtdcRspRepealField *pRspRepeal) {};
-    void OnRtnFromBankToFutureByFuture(CThostFtdcRspTransferField *pRspTransfer) {};
-    void OnRtnFromFutureToBankByFuture(CThostFtdcRspTransferField *pRspTransfer) {};
-    void OnRtnRepealFromBankToFutureByFutureManual(CThostFtdcRspRepealField *pRspRepeal) {};
-    void OnRtnRepealFromFutureToBankByFutureManual(CThostFtdcRspRepealField *pRspRepeal) {};
-    void OnRtnQueryBankBalanceByFuture(CThostFtdcNotifyQueryAccountField *pNotifyQueryAccount) {};
-    void OnErrRtnBankToFutureByFuture(CThostFtdcReqTransferField *pReqTransfer, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnErrRtnFutureToBankByFuture(CThostFtdcReqTransferField *pReqTransfer, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnErrRtnRepealBankToFutureByFutureManual(CThostFtdcReqRepealField *pReqRepeal, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnErrRtnRepealFutureToBankByFutureManual(CThostFtdcReqRepealField *pReqRepeal, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnErrRtnQueryBankBalanceByFuture(CThostFtdcReqQueryAccountField *pReqQueryAccount, CThostFtdcRspInfoField *pRspInfo) {};
-    void OnRtnRepealFromBankToFutureByFuture(CThostFtdcRspRepealField *pRspRepeal) {};
-    void OnRtnRepealFromFutureToBankByFuture(CThostFtdcRspRepealField *pRspRepeal) {};
-    void OnRspFromBankToFutureByFuture(CThostFtdcReqTransferField *pReqTransfer, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspFromFutureToBankByFuture(CThostFtdcReqTransferField *pReqTransfer, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRspQueryBankAccountMoneyByFuture(CThostFtdcReqQueryAccountField *pReqQueryAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {};
-    void OnRtnOpenAccountByBank(CThostFtdcOpenAccountField *pOpenAccount) {};
-    void OnRtnCancelAccountByBank(CThostFtdcCancelAccountField *pCancelAccount) {};
-    void OnRtnChangeAccountByBank(CThostFtdcChangeAccountField *pChangeAccount) {};
 
 private:
+    bool _connected;
     FreeQuant::TradeProvider::Callback *_callback;
     std::string _brokerId;
     std::string _userId;

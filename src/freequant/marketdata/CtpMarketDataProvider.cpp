@@ -12,7 +12,7 @@
 #include <freequant/utils/Utility.h>
 
 #include "CtpMarketDataProvider.h"
-#include "api/trade/win/public/ThostFtdcMdApi.h"
+#include "ThostFtdcMdApi.h"
 
 using namespace std;
 

@@ -10,7 +10,7 @@ public:
     virtual ~Exception() throw() {}
 };
 
-class ConfigException :  public Exception {
+class ConfigError :  public Exception {
 
 };
 
