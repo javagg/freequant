@@ -9,17 +9,12 @@ namespace FreeQuant {
 
 class CtpTradeProvider : public TradeProvider {
 public:
-    explicit CtpTradeProvider(FreeQuant::TradeProvider::Callback *callback = 0);
-    explicit CtpTradeProvider(const std::string& params, FreeQuant::TradeProvider::Callback *callback = 0);
-
+    explicit CtpTradeProvider(const std::string& connection, FreeQuant::TradeProvider::Callback *callback = 0);
     virtual ~CtpTradeProvider();
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected() const;
     virtual std::string name() const { return "CTP"; }
-
-    virtual void logon();
-    virtual void logout();
 
     virtual std::vector<std::string> availableExchanges() const;
     virtual std::vector<std::string> availableInstruments() const;
@@ -35,13 +30,10 @@ public:
     void updateIntrument(std::string symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument) {}
 
-    void subscribe(std::vector<std::string> symbols);
-    void unsubscribe(std::vector<std::string> symbols);
-
     bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
 private:
     class Impl;
-    Impl*_impl;
+    std::unique_ptr<Impl> _impl;
 };
 
 } // namespace FreeQuant

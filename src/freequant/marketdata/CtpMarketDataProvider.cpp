@@ -9,6 +9,7 @@
 #include <boost/format.hpp>
 
 #include <freequant/marketdata/Bar.h>
+#include <freequant/utils/Utility.h>
 
 #include "CtpMarketDataProvider.h"
 #include "api/trade/win/public/ThostFtdcMdApi.h"
@@ -21,8 +22,14 @@ static int requestId = 0;
 
 class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
 public:
-    Impl(FreeQuant::MarketDataProvider::Callback *callback = 0) :
-        _callback(callback), _api(0), _connected(false) {}
+    Impl(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0) :
+        _callback(callback), _api(0), _connected(false) {
+        auto params = FreeQuant::parseParamsFromString(connection);
+        _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"];
+        _userId = params["userid"];
+        _password = params["password"];
+        _brokerId = params["brokerid"];
+    }
 
     virtual ~Impl() {
         disconnect();
@@ -33,13 +40,7 @@ public:
     }
 
     virtual void connect(bool block = true) {
-        string connection = "protocal=tcp;ip=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
         if (_api == 0) {
-            _front = "tcp://asp-sim2-front1.financial-trading-platform.com:26213";
-            _userId = "888888";
-            _password = "888888";;
-            _brokerId = "4070";
-
             _api = CThostFtdcMdApi::CreateFtdcMdApi("");
             _api->RegisterSpi(this);
             _api->RegisterFront(const_cast<char *>(_front.c_str()));
@@ -56,7 +57,6 @@ public:
             _api = 0;
         }
     }
-
 
     virtual bool isConnected() const {
         return _connected;
@@ -245,14 +245,11 @@ public:
     }
 };
 
-CtpMarketDataProvider::CtpMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback) :
-    _impl(new CtpMarketDataProvider::Impl(callback)) {
+CtpMarketDataProvider::CtpMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback) :
+    _impl(new CtpMarketDataProvider::Impl(connection, callback)) {
 }
 
-CtpMarketDataProvider::~CtpMarketDataProvider() {
-    delete _impl;
-    _impl = 0;
-}
+CtpMarketDataProvider::~CtpMarketDataProvider() {}
 
 void CtpMarketDataProvider::setCallback(FreeQuant::MarketDataProvider::Callback *callback) {
     _impl->setCallback(callback);

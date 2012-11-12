@@ -33,9 +33,6 @@ public:
     virtual void cancelOrder(FreeQuant::Order& order) = 0;
     virtual void replaceOrder(FreeQuant::Order& order) = 0;
 
-    virtual void subscribe(std::vector<std::string> symbols) = 0;
-    virtual void unsubscribe(std::vector<std::string> symbols) = 0;
-
     virtual void updateIntrument(std::string symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
 

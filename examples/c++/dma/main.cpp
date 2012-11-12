@@ -20,9 +20,11 @@ private:
 public:
     void onInit() {
         setRunningMode(Strategy::Live);
-        _mdProvider.reset(new FreeQuant::CtpMarketDataProvider());
+        string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
+
+        _mdProvider.reset(new FreeQuant::CtpMarketDataProvider(connection));
 //        _mdProvider.reset(new FreeQuant::FixMarketDataProvider("senderid=ME;targetid=FQMarketDataServer;host=127.0.0.1;port=7711;username=simuser;password=simuser"));
-        _tradeProvider.reset(new FreeQuant::CtpTradeProvider());
+        _tradeProvider.reset(new FreeQuant::CtpTradeProvider(connection));
 
         vector<string> symbols;
         symbols.push_back("IF1212");

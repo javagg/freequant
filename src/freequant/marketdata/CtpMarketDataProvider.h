@@ -1,13 +1,15 @@
 #ifndef FQ_MARKETDATA_CTPMARKETDATAPROVIDER_H
 #define FQ_MARKETDATA_CTPMARKETDATAPROVIDER_H
 
+#include <memory>
+
 #include <freequant/marketdata/MarketDataProvider.h>
 
 namespace FreeQuant {
 
 class CtpMarketDataProvider : public MarketDataProvider {
 public:
-    explicit CtpMarketDataProvider(FreeQuant::MarketDataProvider::Callback *callback = 0);
+    explicit CtpMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
     virtual ~CtpMarketDataProvider();
     void setCallback(FreeQuant::MarketDataProvider::Callback *callback);
     void connect(bool block = true);
@@ -19,7 +21,7 @@ public:
 
 private:
     class Impl;
-    Impl *_impl;
+    std::unique_ptr<Impl> _impl;
 };
 
 } // namespace FreeQuant

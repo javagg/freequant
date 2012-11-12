@@ -18,21 +18,23 @@ static long requestId = 0;
 
 class CtpTradeProvider::Impl {
 public:
-    Impl(FreeQuant::TradeProvider::Callback *callback) : _callback(callback), _api(0) {
-
+    Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) : _callback(callback), _api(0) {
+        auto params = FreeQuant::parseParamsFromString(connection);
+        _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"]; //"tcp://asp-sim2-front1.financial-trading-platform.com:26213";
+        _userId = params["userid"];
+        _password = params["password"];
+        _brokerId = params["brokerid"];
     }
 
-    Impl(TradeProvider::Params& param, FreeQuant::TradeProvider::Callback *callback) :
-        _callback(callback), _api(0) {
-        _appId = param["brokerId"];
-        _userId = param["userId"];
-        _password = param["password"];
-        _front = param["protocal"] + param["host"] + param["port"];
-    }
+//    Impl(TradeProvider::Params& param, FreeQuant::TradeProvider::Callback *callback) :
+//        _callback(callback), _api(0) {
+//        _brokerId = param["brokerId"];
+//        _userId = param["userId"];
+//        _password = param["password"];
+//        _front = param["protocal"] + param["host"] + param["port"];
+//    }
 
-    virtual ~Impl() {
-
-    }
+    virtual ~Impl() {}
 
     void connect() {}
     void disconnect() {}
@@ -42,7 +44,7 @@ public:
 
     void logon() {
         CThostFtdcReqUserLoginField req = {};
-        _appId.copy(req.BrokerID, _appId.size());
+        _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.UserID, _userId.size());
         _password.copy(req.Password, _password.size());
         int ret = _api->ReqUserLogin(&req, ++requestId);
@@ -50,7 +52,7 @@ public:
 
     void logout() {
         CThostFtdcUserLogoutField req = {};
-        _appId.copy(req.BrokerID, _appId.size());
+        _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.UserID, _userId.size());
         int ret = _api->ReqUserLogout(&req, ++requestId);
     }
@@ -70,17 +72,17 @@ public:
         return vector<string>();
     }
 
-    void subscribe(std::vector<std::string> symbols) {
+//    void subscribe(std::vector<std::string> symbols) {
 
-    }
+//    }
 
-    void unsubscribe(std::vector<std::string> symbols) {
+//    void unsubscribe(std::vector<std::string> symbols) {
 
-    }
+//    }
 
-    virtual void sendOrder(FreeQuant::Order& o)  {
+    virtual void sendOrder(FreeQuant::Order& o) {
         CThostFtdcInputOrderField field = {};
-        _appId.copy(field.BrokerID, _appId.size());
+        _brokerId.copy(field.BrokerID, _brokerId.size());
         _userId.copy(field.InvestorID, _userId.size());
 //        o.symbol.copy(field.InstrumentID, o.symbol().size());
     //    o.instrumentId.copy(field.OrderRef, o.instrumentId.size());
@@ -112,7 +114,7 @@ public:
 
     virtual void cancelOrder(FreeQuant::Order& order) {
         CThostFtdcInputOrderActionField req = {};
-        _appId.copy(req.BrokerID, _appId.size());
+        _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.InvestorID, _userId.size());
         req.ActionFlag = THOST_FTDC_AF_Delete;
 
@@ -121,7 +123,7 @@ public:
 
     virtual void replaceOrder(FreeQuant::Order& order) {
         CThostFtdcInputOrderActionField req = {};
-        _appId.copy(req.BrokerID, _appId.size());
+        _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.InvestorID, _userId.size());
         req.ActionFlag = THOST_FTDC_AF_Modify;
 
@@ -134,7 +136,7 @@ public:
 
     void updatePosition(std::string symbol) {
         CThostFtdcQryInvestorPositionField req = {};
-        _appId.copy(req.BrokerID, _appId.size());
+        _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.InvestorID, _userId.size());
         symbol.copy(req.InstrumentID, symbol.size());
         int ret = _api->ReqQryInvestorPosition(&req, ++requestId);
@@ -281,23 +283,18 @@ public:
 
 private:
     FreeQuant::TradeProvider::Callback *_callback;
-    std::string _appId;
+    std::string _brokerId;
     std::string _userId;
     std::string _password;
     std::string _front;
 };
 
-CtpTradeProvider::CtpTradeProvider(FreeQuant::TradeProvider::Callback *callback) : _impl(new CtpTradeProvider::Impl(callback)) {
+CtpTradeProvider::CtpTradeProvider(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
+    _impl(new CtpTradeProvider::Impl(connection, callback)) {
+
 }
 
-CtpTradeProvider::CtpTradeProvider(const string& config, FreeQuant::TradeProvider::Callback *callback) :
-    _impl(new CtpTradeProvider::Impl(callback)) {
-    Params params = FreeQuant::parseParamsFromString(config);
-}
-
-CtpTradeProvider::~CtpTradeProvider() {
-    delete _impl; _impl = 0;
-}
+CtpTradeProvider::~CtpTradeProvider() {}
 
 void CtpTradeProvider::connect() {
     _impl->connect();
@@ -309,23 +306,6 @@ void CtpTradeProvider::disconnect() {
 
 bool CtpTradeProvider::isConnected() const {
     return _impl->isConnected();
-}
-
-void CtpTradeProvider::logon() {
-    _impl->logon();
-}
-
-
-void CtpTradeProvider::logout() {
-    _impl->logout();
-}
-
-void CtpTradeProvider::subscribe(std::vector<std::string> symbols) {
-
-}
-
-void CtpTradeProvider::unsubscribe(std::vector<std::string> symbols) {
-
 }
 
 vector<string> CtpTradeProvider::availableExchanges() const {

@@ -20,9 +20,13 @@ if(CMAKE_COMPILER_IS_GNUCXX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
     endif()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
-elseif(MSVC AND MSVC_VERSION VERSION_LESS "1700")
+endif(CMAKE_COMPILER_IS_GNUCXX)
+
+if(MSVC AND MSVC_VERSION LESS 1700)
     message(FATAL_ERROR "You should use VC 11 or above!")
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     execute_process(COMMAND ${CMAKE_CXX_COMPILER} --version OUTPUT_VARIABLE CMAKE_CXX_COMPILER_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REGEX MATCH "[0-9]+\\.[0-9]+" CMAKE_CXX_COMPILER_VERSION "${CMAKE_CXX_COMPILER_VERSION}")
     if(${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER "3.0")
@@ -35,12 +39,7 @@ endif()
 
 # Find external dependencies
 set(Boost_USE_STATIC_LIBS on)
-if(MSVC)
-    find_package(Boost REQUIRED)
-elseif()
-    find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread unit_test_framework)
-endif()
-
+find_package(Boost REQUIRED COMPONENTS date_time system filesystem thread unit_test_framework)
 find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
@@ -93,6 +92,7 @@ add_subdirectory(src)
 add_subdirectory(examples)
 add_subdirectory(server)
 add_subdirectory(tools)
+add_subdirectory(providers)
 
 include_directories(${PROJECT_BINARY_DIR})
 
