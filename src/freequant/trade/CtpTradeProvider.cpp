@@ -27,9 +27,7 @@ public:
     }
 
     virtual ~Impl() {
-        if (isConnected()) {
-            disconnect();
-        }
+        disconnect();
     }
 
     void connect(std::string connection, bool block = false) {
