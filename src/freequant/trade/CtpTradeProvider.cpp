@@ -32,7 +32,26 @@ public:
         }
     }
 
+    void connect(std::string connection, bool block = false) {
+        if (isConnected()) return;
+
+        auto params = FreeQuant::parseParamsFromString(connection);
+        _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"]; //"tcp://asp-sim2-front1.financial-trading-platform.com:26213";
+        _userId = params["userid"];
+        _password = params["password"];
+        _brokerId = params["brokerid"];
+
+        _api = CThostFtdcTraderApi::CreateFtdcTraderApi();
+        _api->RegisterSpi(this);
+        _api->RegisterFront(const_cast<char*>(_front.c_str()));
+        _api->SubscribePrivateTopic(THOST_TERT_RESTART);
+        _api->SubscribePrivateTopic(THOST_TERT_RESTART);
+        _api->Init();
+    }
+
     void connect() {
+        if (isConnected()) return;
+
         if (_api == 0) {
             _api = CThostFtdcTraderApi::CreateFtdcTraderApi();
             _api->RegisterSpi(this);
@@ -50,6 +69,7 @@ public:
             _api = 0;
         }
     }
+
     bool isConnected() const {
         return _connected;
     }
@@ -159,6 +179,12 @@ public:
 
     CThostFtdcTraderApi *_api;
 
+    void OnFrontDisconnected(int reason) {
+        _connected = false;
+        std::cout << "disconnected: " << reason << std::endl;
+    }
+
+    void OnHeartBeatWarning(int timeLapse) { std::cout << "heartbeat: " << timeLapse << std::endl; }
     void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         std::cerr << __FUNCTION__ << std::endl;
         std::cerr << pRspInfo->ErrorMsg << std::endl;
@@ -219,6 +245,10 @@ void CtpTradeProvider::connect() {
     _impl->connect();
 }
 
+void CtpTradeProvider::connect(const std::string& connection, bool block) {
+    _impl->connect(connection, block);
+}
+
 void CtpTradeProvider::disconnect() {
     _impl->disconnect();
 }
@@ -229,7 +259,6 @@ bool CtpTradeProvider::isConnected() const {
 
 vector<string> CtpTradeProvider::availableExchanges() const {
     return _impl->availableExchanges();
-
 }
 
 vector<string> CtpTradeProvider::availableInstruments() const {

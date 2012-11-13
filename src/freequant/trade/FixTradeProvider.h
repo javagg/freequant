@@ -19,6 +19,7 @@ public:
     void setCallback(FreeQuant::TradeProvider::Callback *callback);
 
     void connect();
+    void connect(const std::string& connection, bool block = false);
     void disconnect();
     bool isConnected() const;
     std::string name() const { return "FIX"; }

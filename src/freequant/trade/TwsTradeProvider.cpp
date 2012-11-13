@@ -10,6 +10,10 @@ TwsTradeProvider::TwsTradeProvider(const std::string& connection, FreeQuant::Tra
 
 TwsTradeProvider::~TwsTradeProvider() {}
 
+void TwsTradeProvider::connect(const std::string& connection, bool block) {
+
+}
+
 void TwsTradeProvider::connect() {
     _impl->connect();
 }

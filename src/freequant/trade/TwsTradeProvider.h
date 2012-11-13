@@ -18,6 +18,7 @@ public:
     TwsTradeProvider(FreeQuant::TradeProvider::Callback *callback = 0);
     virtual ~TwsTradeProvider();
     void connect();
+    void connect(const std::string& connection, bool block = false);
     void disconnect();
     bool isConnected() const;
     std::string name() const { return "TWS"; }

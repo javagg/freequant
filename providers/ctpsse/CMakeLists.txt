@@ -7,3 +7,5 @@ endif()
 file(GLOB SOURCES *.cpp)
 add_library(freequant-ctpsse STATIC ${SOURCES})
 target_link_libraries(freequant-ctpsse ${PROJECT_NAME})
+
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)

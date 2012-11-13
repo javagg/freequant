@@ -22,6 +22,7 @@ public:
 
     virtual ~TradeProvider() {}
     virtual void connect() = 0;
+    virtual void connect(const std::string& connection, bool block = false) = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() const = 0;
     virtual std::string name() const = 0;

@@ -548,6 +548,10 @@ FixTradeProvider::~FixTradeProvider() {
     _impl = 0;
 }
 
+void FixTradeProvider::connect(const std::string& connection, bool block) {
+
+}
+
 void FixTradeProvider::connect() {
     _impl->connect();
 }

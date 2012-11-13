@@ -97,13 +97,8 @@ public:
         cerr << "--->>>>>> call ReqUserLogin " << ((ret==0) ? "success" : "failed") << endl;
     }
 
-    void OnFrontDisconnected(int nReason) {
-
-    }
-
-    void OnHeartBeatWarning(int timeLapse) {
-        cerr << "OnHeartBeatWarning..." << timeLapse << endl;
-    }
+    void OnFrontDisconnected(int reason) {  std::cout << "disconnected: " << reason << std::endl; }
+    void OnHeartBeatWarning(int timeLapse) { std::cout << "heartbeat: " << timeLapse << std::endl; }
 
     void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin, CThostFtdcRspInfoField *rspInfo, int requestID, bool last) {
         cerr << "--->>> " << __FUNCTION__ << endl;

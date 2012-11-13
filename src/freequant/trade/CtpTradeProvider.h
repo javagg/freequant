@@ -12,6 +12,7 @@ public:
     explicit CtpTradeProvider(const std::string& connection, FreeQuant::TradeProvider::Callback *callback = 0);
     virtual ~CtpTradeProvider();
     virtual void connect();
+    virtual void connect(const std::string& connection, bool block = false);
     virtual void disconnect();
     virtual bool isConnected() const;
     virtual std::string name() const { return "CTP"; }
