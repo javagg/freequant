@@ -1,4 +1,4 @@
-#include "BaseStrategy.h"
+#include "Strategy.h"
 
 namespace FreeQuant {
 
@@ -28,6 +28,7 @@ void BaseStrategy::start() {
     _io_service_thread.reset(new boost::thread(boost::bind(&boost::asio::io_service::run, &_io_service)));
 
     setRunning(true);
+    _tick = 0;
     onStart();
 
     switch (runningMode()) {
@@ -57,16 +58,7 @@ void BaseStrategy::stop() {
 }
 
 void BaseStrategy::doStop() {
-    std::cout << "called doStop" << std::endl;
-//    if (_simulation_thread) {
-//        if (_simulation_thread->get_id() != boost::this_thread::get_id()) {
-//            if (_simulation_thread->joinable())
-//                _simulation_thread->join();
-//        }
-//    }
     if (!_io_service.stopped()) _io_service.stop();
-    if (_io_service_thread && _io_service_thread->joinable())
-        _io_service_thread->join();
     onStop();
 }
 
@@ -83,21 +75,16 @@ void BaseStrategy::setRunning(bool value) {
 
 void BaseStrategy::runSimulation() {
     while (true) {
-        if (!running()) {
-         std::cout << "break finish.." << std::endl;
-         doStop();
-         break;
-        }
+        if (!running()) break;
+
         if (runningTick() >= runningLength()) {
             setRunning(false);
-            std::cout << "normal finish.." << std::endl;
             doStop();
             break;
         }
         onStep();
         ++_tick;
     }
-
 }
 
 } // namespace FreeQuant

@@ -30,6 +30,14 @@ public:
         disconnect();
     }
 
+    bool errorOccurred(CThostFtdcRspInfoField *rspInfo) {
+        bool occurred = rspInfo && rspInfo->ErrorID != 0;
+        if (occurred) {
+            cerr << "--->>> ErrorID=" << rspInfo->ErrorID << ", ErrorMsg=" << rspInfo->ErrorMsg << endl;
+        }
+        return (rspInfo && rspInfo->ErrorID != 0);
+    }
+
     void connect(std::string connection, bool block = false) {
         if (isConnected()) return;
 
@@ -197,15 +205,23 @@ public:
         int ret = _api->ReqUserLogin(&req, ++requestId);
     }
 
-    void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+    void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin, CThostFtdcRspInfoField *rspInfo, int nRequestID, bool last) {
         std::cout << __FUNCTION__ << std::endl;
-        const char *tradingDay =  _api->GetTradingDay();
-        std::cout << "TradingDay: " << tradingDay << std::endl;
-        _connected = true;
+             if (!errorOccurred(rspInfo) && last) {
+                 const char *tradingDay =  _api->GetTradingDay();
+                 std::cout << "TradingDay: " << tradingDay << std::endl;
+                 _connected = true;
+             }
+
+
+        CThostFtdcQryTradingAccountField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.InvestorID, _userId.size());
+        _api->ReqQryTradingAccount(&field, ++requestId);
     }
 
     void OnRspUserLogout(CThostFtdcUserLogoutField *userLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-            cout << userLogout->UserID << endl;
+        cout << userLogout->UserID << endl;
     }
 
 
@@ -220,6 +236,14 @@ public:
         instrument.setType(FreeQuant::Instrument::Stock);
         instrument.setCurrency("RMB");
         std::cout << i->InstrumentID << "dddd" << std::endl;
+    }
+
+    void OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+
+        std::cout << "Balance: " << pTradingAccount->Balance << std::endl
+                  << "AccountID: "   << pTradingAccount->AccountID << std::endl
+                  << "Deposit: "   << pTradingAccount->Deposit << std::endl
+                  << "CashIn: "   << pTradingAccount->CashIn << std::endl;
     }
 
 

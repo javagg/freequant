@@ -73,8 +73,13 @@ void MainWindow::onClear() {
 }
 
 void MainWindow::onConnect() {
+
+    std::string connection = "protocal=tcp;host=180.168.212.79;port=31205;userid=40022870;password=141537;brokerid=4000";
+
+//    trade_provider->connect(connection);
+        trade_provider->connect();
 //    md_provider->connect();
-    trade_provider->connect();
+//    trade_provider->connect();
 //    client.connect("",7496, 0);
 //    CommonDialog dialog(this, CommonDialog::ConnectionDialog);
 //    if (dialog.exec() == QDialog::Accepted) {

@@ -39,6 +39,12 @@ int main() {
     while (strategy.running()) {
         boost::this_thread::sleep_for(boost::chrono::seconds(1));
     }
+
+    strategy.start();
+    while (strategy.running()) {
+        boost::this_thread::sleep_for(boost::chrono::seconds(1));
+    }
+
     strategy.destroy();
     return 0;
 }
