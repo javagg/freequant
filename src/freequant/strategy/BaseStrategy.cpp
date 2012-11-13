@@ -7,8 +7,7 @@ BaseStrategy::BaseStrategy() :
     _signal_set(_io_service, SIGINT, SIGTERM) {
 }
 
-BaseStrategy::~BaseStrategy() {
-}
+BaseStrategy::~BaseStrategy() {}
 
 bool BaseStrategy::running() {
     boost::lock_guard<boost::mutex> lock(_mutex);
@@ -52,14 +51,13 @@ void BaseStrategy::stop() {
     case Paper:
     case Live:
     default:
-
         break;
     }
-        doStop();
+    doStop();
 }
 
 void BaseStrategy::doStop() {
-
+    std::cout << "called doStop" << std::endl;
 //    if (_simulation_thread) {
 //        if (_simulation_thread->get_id() != boost::this_thread::get_id()) {
 //            if (_simulation_thread->joinable())
@@ -69,7 +67,6 @@ void BaseStrategy::doStop() {
     if (!_io_service.stopped()) _io_service.stop();
     if (_io_service_thread && _io_service_thread->joinable())
         _io_service_thread->join();
-    std::cout << "doStop..." << std::endl;
     onStop();
 }
 
