@@ -74,10 +74,11 @@ void MainWindow::onClear() {
 
 void MainWindow::onConnect() {
 
-    std::string connection = "protocal=tcp;host=180.168.212.79;port=31205;userid=40022870;password=141537;brokerid=4000";
+//    std::string connection = "protocal=tcp;host=180.168.212.79;port=31205;userid=40022870;password=141537;brokerid=4000";
+    string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26205;userid=352240;password=888888;brokerid=2030";
 
-//    trade_provider->connect(connection);
-        trade_provider->connect();
+    trade_provider->connect(connection);
+//        trade_provider->connect();
 //    md_provider->connect();
 //    trade_provider->connect();
 //    client.connect("",7496, 0);
