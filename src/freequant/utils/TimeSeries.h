@@ -4,6 +4,14 @@
 #include <set>
 #include <freequant/utils/DateTime.h>
 
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
 namespace FreeQuant {
 
 template <typename T>
@@ -17,21 +25,21 @@ public:
     FreeQuant::DateTime cross(TimeSeries&);
 
     T& first(long long pos = 1) const {
-        double r = pos % size();
+        long long r = pos % size();
         auto i = _data.begin();
         for (; r != 0; r--) i++;
         return const_cast<T&>(i->second);
     }
 
     T& last(long long pos = 1) {
-        double r = pos % size();
+        long long r = pos % size();
         auto i = _data.end();
         for (; r != 0; r--) i--;
         return const_cast<T&>(i->second);
     }
 
-//    T& high();
-//    T& min();
+    T& max() { return _max; }
+    T& min() { return _min; }
     T& operator[](const FreeQuant::DateTime& at) const;
     T& operator[](long long pos) const;
 

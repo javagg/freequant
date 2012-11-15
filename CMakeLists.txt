@@ -23,7 +23,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 if(MSVC AND MSVC_VERSION LESS 1700)
-    message(FATAL_ERROR "You should use VC 11 or above!")
+#    message(FATAL_ERROR "You should use VC 11 or above!")
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

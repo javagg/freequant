@@ -47,7 +47,7 @@ public:
         _password = params["password"];
         _brokerId = params["brokerid"];
 
-        _api = CThostFtdcTraderApi::CreateFtdcTraderApi();
+        _api = CThostFtdcTraderApi::CreateFtdcTraderApi("");
         _api->RegisterSpi(this);
         _api->RegisterFront(const_cast<char*>(_front.c_str()));
         _api->SubscribePrivateTopic(THOST_TERT_RESTART);
