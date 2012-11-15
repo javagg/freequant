@@ -15,6 +15,10 @@ namespace FreeQuant {
 
 static long requestId = 0;
 
+static CThostFtdcInputOrderField fromOrder(const Order& order) {
+
+}
+
 class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
     Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
@@ -102,39 +106,57 @@ public:
         return vector<string>();
     }
 
-    virtual void sendOrder(FreeQuant::Order& o) {
+    void sendOrder(const FreeQuant::Order& o) {
         CThostFtdcInputOrderField field = {};
         _brokerId.copy(field.BrokerID, _brokerId.size());
         _userId.copy(field.InvestorID, _userId.size());
-//        o.symbol.copy(field.InstrumentID, o.symbol().size());
-    //    o.instrumentId.copy(field.OrderRef, o.instrumentId.size());
+        o.symbol().copy(field.InstrumentID, o.symbol().size());
 
-    //    o.instrumentId.copy(field.UserID, o.instrumentId.size());
+        if (o.side() == Order::Buy)
+            field.Direction = THOST_FTDC_D_Buy;
+        else
+            field.Direction = THOST_FTDC_D_Sell;
 
-    //    o.instrumentId.copy(field.OrderPriceType, o.size());
-    //    o.instrumentId.copy(field.Direction, o.instrumentId.size());
-    //    o.instrumentId.copy(field.CombOffsetFlag, o.instrumentId.size());
-        field.LimitPrice = o.limitPrice();
+        switch (o.type()) {
+        case Order::Limit:
+            field.LimitPrice = o.limitPrice();
+            break;
+        case Order::StopLimit:
+        case Order::StopLoss:
+            field.StopPrice = o.stopPrice();
+            break;
+        default:
+            break;
+        }
         field.VolumeTotalOriginal = o.qty();
-        field.TimeCondition = THOST_FTDC_TC_IOC;
 
+        switch (o.timeInForce()) {
+        case Order::DAY:
+            field.TimeCondition = THOST_FTDC_TC_IOC;
+            break;
+        default:
+            break;
+        }
+
+//        o.dateTime();
+//        field.GTDDate
         std::string GTDDate = "20121111";
 
         GTDDate.copy(field.GTDDate, GTDDate.size());
-        field.VolumeCondition = THOST_FTDC_VC_AV;
+
         field.MinVolume = o.tickSize();
+
         field.ContingentCondition = THOST_FTDC_CC_Immediately;
-        field.StopPrice = o.stopPrice();
         field.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;
         field.IsAutoSuspend = true;
-    //    field.BusinessUnit = '2';
+
         field.RequestID = requestId++;
         field.UserForceClose = true;
 
         _api->ReqOrderInsert(&field, requestId++);
     }
 
-    virtual void cancelOrder(FreeQuant::Order& order) {
+    void cancelOrder(const FreeQuant::Order& order) {
         CThostFtdcInputOrderActionField req = {};
         _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.InvestorID, _userId.size());
@@ -143,7 +165,7 @@ public:
          int ret = _api->ReqOrderAction(&req, ++requestId);
     }
 
-    virtual void replaceOrder(FreeQuant::Order& order) {
+    void replaceOrder(const FreeQuant::Order& order) {
         CThostFtdcInputOrderActionField req = {};
         _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.InvestorID, _userId.size());
@@ -170,16 +192,7 @@ public:
 
     void updateIntrument(std::string symbol, bool block = false) {
         CThostFtdcQryInstrumentField field = {};
-        string instrumentId = "";
-        string exchangeId = "";
-        string exchangeInstId = "";
-        string productId = "";
-
-        instrumentId.copy(field.InstrumentID, instrumentId.size());
-        exchangeId.copy(field.ExchangeID, exchangeId.size());
-        exchangeInstId.copy(field.ExchangeInstID, exchangeInstId.size());
-        productId.copy(field.ProductID, productId.size());
-
+        symbol.copy(field.InstrumentID, symbol.size());
         _api->ReqQryInstrument(&field, requestId++);
     }
 
@@ -213,7 +226,6 @@ public:
                  _connected = true;
              }
 
-
         CThostFtdcQryTradingAccountField field = {};
         _brokerId.copy(field.BrokerID, _brokerId.size());
         _userId.copy(field.InvestorID, _userId.size());
@@ -224,19 +236,74 @@ public:
         cout << userLogout->UserID << endl;
     }
 
-
     void OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-        FreeQuant::Instrument instrument(i->InstrumentID);
-        instrument.setExchange(i->ExchangeInstID);
-        instrument.setName(i->InstrumentName);
-//        instrument.setExpireDate(FreeQuant::DateTime(i->ExpireDate));
-        instrument.setMultipler(i->VolumeMultiple);
-        instrument.setTickSize(i->PriceTick);
-        instrument.setMargin(i->LongMarginRatio);
-        instrument.setType(FreeQuant::Instrument::Stock);
-        instrument.setCurrency("RMB");
-        std::cout << i->InstrumentID << "dddd" << std::endl;
+        if (!errorOccurred(pRspInfo) && bIsLast) {
+             std::cout << "InstrumentID: " << i->InstrumentID  << std::endl
+                    << "ExchangeID: " << i->ExchangeID  << std::endl
+                    << "ExchangeInstID: " << i->ExchangeInstID  << std::endl
+                    << "OpenDate: " << i->OpenDate  << std::endl
+                    << "ExpireDate: " << i->ExpireDate  << std::endl
+                    << "InstLifePhase: " << i->InstLifePhase  << std::endl
+                    << "InstrumentName: " << i->InstrumentName  << std::endl
+                    << "ProductID: " << i->ProductID  << std::endl
+                    << "LongMarginRatio: " << i->LongMarginRatio  << std::endl
+                   << "ShortMarginRatio: " << i->ShortMarginRatio  << std::endl
+                   << "VolumeMultiple: " << i->VolumeMultiple  << std::endl
+                   << "MaxLimitOrderVolume: " << i->MaxLimitOrderVolume  << std::endl
+                   << "ProductClass: " << i->ProductClass  << std::endl
+                  << "PositionType: " << i->PositionType  << std::endl
+                   << "PriceTick: " << i->PriceTick  << std::endl
+                       ;
+             CThostFtdcQryInstrumentMarginRateField field = {};
+             _brokerId.copy(field.BrokerID, _brokerId.size());
+             _userId.copy(field.InvestorID, _userId.size());
+             strcpy(field.InstrumentID, i->InstrumentID);
+
+              std::cout<< "ReqQryInstrumentMarginRate......." << std::endl;
+             _api->ReqQryInstrumentMarginRate(&field, ++requestId);
+              std::cout<< "after ReqQryInstrumentMarginRate......." << std::endl;
+
+        }
+        ////        FreeQuant::Instrument instrument(i->InstrumentID);
+//        instrument.setExchange(i->ExchangeInstID);
+//        instrument.setName(i->InstrumentName);
+////        instrument.setExpireDate(FreeQuant::DateTime(i->ExpireDate));
+//        instrument.setMultipler(i->VolumeMultiple);
+//        instrument.setTickSize(i->PriceTick);
+//        instrument.setMargin(i->LongMarginRatio);
+//        instrument.setType(FreeQuant::Instrument::Stock);
+//        instrument.setCurrency("RMB");
+   }
+
+    void OnRspQryInstrumentMarginRate(CThostFtdcInstrumentMarginRateField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+        if (!errorOccurred(pRspInfo) && bIsLast) {
+             std::cout << "InstrumentID: " << i->InstrumentID  << std::endl
+                    << "LongMarginRatioByMoney: " << i->LongMarginRatioByMoney  << std::endl
+                     << "LongMarginRatioByVolume: " << i->LongMarginRatioByVolume  << std::endl
+                    << "InvestorID: " << i->InvestorID  << std::endl
+                 ;
+
+             CThostFtdcQryInstrumentCommissionRateField field = {};
+             _brokerId.copy(field.BrokerID, _brokerId.size());
+             _userId.copy(field.InvestorID, _userId.size());
+             strcpy(field.InstrumentID, i->InstrumentID);
+
+            _api->ReqQryInstrumentCommissionRate(&field, ++requestId);
+         }
     }
+
+    void OnRspQryInstrumentCommissionRate(CThostFtdcInstrumentCommissionRateField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+        if (!errorOccurred(pRspInfo) && bIsLast) {
+             std::cout << "InstrumentID: " << i->InstrumentID  << std::endl
+                       << "OpenRatioByMoney: " << i->OpenRatioByMoney  << std::endl
+                        << "OpenRatioByVolume: " << i->OpenRatioByVolume  << std::endl
+                       << "InvestorID: " << i->InvestorID  << std::endl
+                          ;
+         }
+    }
+
 
     void OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
 
@@ -292,23 +359,23 @@ void CtpTradeProvider::updateAccounts() {
 
  }
 
-void CtpTradeProvider::updatePosition(string symbol) {
+void CtpTradeProvider::updatePosition(const std::string& symbol) {
      _impl->updatePosition(symbol);
 }
 
-void CtpTradeProvider::sendOrder(FreeQuant::Order& o) {
+void CtpTradeProvider::sendOrder(const FreeQuant::Order& o) {
     _impl->sendOrder(o);
 }
 
-void CtpTradeProvider::cancelOrder(FreeQuant::Order& o) {
+void CtpTradeProvider::cancelOrder(const FreeQuant::Order& o) {
     _impl->cancelOrder(o);
 }
 
-void CtpTradeProvider::replaceOrder(FreeQuant::Order& o) {
+void CtpTradeProvider::replaceOrder(const FreeQuant::Order& o) {
     _impl->replaceOrder(o);
 }
 
-void CtpTradeProvider::updateIntrument(std::string symbol, bool block) {
+void CtpTradeProvider::updateIntrument(const std::string& symbol, bool block) {
     _impl->updateIntrument(symbol, block);
 }
 

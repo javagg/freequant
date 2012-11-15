@@ -30,14 +30,14 @@ public:
     std::vector<std::string> availableExchanges() const;
     std::vector<std::string> availableInstruments() const;
 
-    void sendOrder(FreeQuant::Order& order);
-    void cancelOrder(FreeQuant::Order& order);
-    void replaceOrder(FreeQuant::Order& order);
+    void sendOrder(const FreeQuant::Order& order);
+    void cancelOrder(const FreeQuant::Order& order);
+    void replaceOrder(const FreeQuant::Order& order);
 
-    void subscribe(std::vector<std::string> symbols);
-    void unsubscribe(std::vector<std::string> symbols);
+//    void subscribe(std::vector<std::string> symbols);
+//    void unsubscribe(std::vector<std::string> symbols);
 
-    void updateIntrument(std::string symbol, bool block = false);
+    void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument);
 
     bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }

@@ -26,25 +26,21 @@ bool TwsTradeProvider::isConnected() const {
     return _impl->isConnected();
 }
 
-void TwsTradeProvider::subscribe(std::vector<std::string> symbols) {
-    _impl->subscribe(symbols);
-}
-
 std::vector<std::string> TwsTradeProvider::availableAccounts() const {
     return _impl->availableAccounts();
 
 }
 
-void TwsTradeProvider::sendOrder(FreeQuant::Order& order) {
+void TwsTradeProvider::sendOrder(const FreeQuant::Order& order) {
 
 }
-void TwsTradeProvider::cancelOrder(FreeQuant::Order& order) {
+void TwsTradeProvider::cancelOrder(const FreeQuant::Order& order) {
 
 }
-void TwsTradeProvider::replaceOrder(FreeQuant::Order& order) {
+void TwsTradeProvider::replaceOrder(const FreeQuant::Order& order) {
 }
 
-void TwsTradeProvider::updateIntrument(std::string symbol, bool block) {
+void TwsTradeProvider::updateIntrument(const std::string& symbol, bool block) {
     _impl->updateIntrument(symbol, block);
 }
 

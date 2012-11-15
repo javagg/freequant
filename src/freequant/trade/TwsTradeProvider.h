@@ -33,17 +33,11 @@ public:
 
     void updateAccounts();
 
-    void logon() {}
-    void logout() {}
+    void sendOrder(const FreeQuant::Order& order);
+    void cancelOrder(const FreeQuant::Order& order);
+    void replaceOrder(const FreeQuant::Order& order);
 
-    void subscribe(std::vector<std::string> symbols);
-    void unsubscribe(std::vector<std::string> symbols) {}
-
-    void sendOrder(FreeQuant::Order& order);
-    void cancelOrder(FreeQuant::Order& order);
-    void replaceOrder(FreeQuant::Order& order);
-
-    void updateIntrument(std::string symbol, bool block = false);
+    void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument);
 
 

@@ -30,11 +30,11 @@ public:
     virtual std::vector<std::string> availableExchanges() const = 0;
     virtual std::vector<std::string> availableInstruments() const = 0;
 
-    virtual void sendOrder(FreeQuant::Order& order) = 0;
-    virtual void cancelOrder(FreeQuant::Order& order) = 0;
-    virtual void replaceOrder(FreeQuant::Order& order) = 0;
+    virtual void sendOrder(const FreeQuant::Order& order) = 0;
+    virtual void cancelOrder(const FreeQuant::Order& order) = 0;
+    virtual void replaceOrder(const FreeQuant::Order& order) = 0;
 
-    virtual void updateIntrument(std::string symbol, bool block = false) = 0;
+    virtual void updateIntrument(const std::string& symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
 
     virtual bool orderTypeSupported(FreeQuant::Order::Type type) = 0;

@@ -20,15 +20,15 @@ public:
     virtual std::vector<std::string> availableExchanges() const;
     virtual std::vector<std::string> availableInstruments() const;
 
-    void sendOrder(FreeQuant::Order& order);
-    void cancelOrder(FreeQuant::Order& order);
-    void replaceOrder(FreeQuant::Order& order);
+    void sendOrder(const FreeQuant::Order& order);
+    void cancelOrder(const FreeQuant::Order& order);
+    void replaceOrder(const FreeQuant::Order& order);
 
     void updateAccounts();
-    void updatePosition(std::string symbol);
+    void updatePosition(const std::string& symbol);
     void openOrders() const;
 
-    void updateIntrument(std::string symbol, bool block = false);
+    void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument) {}
 
     bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }

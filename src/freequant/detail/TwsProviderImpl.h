@@ -111,7 +111,7 @@ public:
 
     }
 
-    void updateIntrument(std::string symbol, bool block) {
+    void updateIntrument(const std::string& symbol, bool block) {
         Contract contract;
         contract.symbol = symbol;
 //        _socket->reqContractDetails(reqId++, contract);

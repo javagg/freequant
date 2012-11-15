@@ -580,27 +580,19 @@ std::vector<std::string> FixTradeProvider::availableInstruments() const {
     return std::vector<std::string>();
 }
 
-void FixTradeProvider::sendOrder(FreeQuant::Order& order) {
+void FixTradeProvider::sendOrder(const FreeQuant::Order& order) {
     _impl1->sendOrder(order);
 }
 
-void FixTradeProvider::cancelOrder(FreeQuant::Order& order) {
+void FixTradeProvider::cancelOrder(const FreeQuant::Order& order) {
 
 }
 
-void FixTradeProvider::replaceOrder(FreeQuant::Order& order) {
+void FixTradeProvider::replaceOrder(const FreeQuant::Order& order) {
 
 }
 
-void FixTradeProvider::subscribe(std::vector<std::string> symbols) {
-
-}
-
-void FixTradeProvider::unsubscribe(std::vector<std::string> symbols) {
-
-}
-
-void FixTradeProvider::updateIntrument(std::string symbol, bool block) {
+void FixTradeProvider::updateIntrument(const std::string& symbol, bool block) {
 
 }
 

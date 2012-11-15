@@ -4,10 +4,6 @@ set(QT_USE_QTUITOOLS TRUE)
 
 add_definitions(-DIB_USE_STD_STRING -D_AFXDLL)
 
-#FILE(GLOB MarkTracker_SOURCES *.cpp)
-#FILE(GLOB MarkTracker_HEADERS *.hpp)
-#FILE(GLOB MarkTracker_UI *.ui)
-
 set(SOURCES main.cpp mainwindow.cpp commondialog.cpp)
 set(HEADERS mainwindow.h commondialog.h)
 set(UIS mainwindow.ui commondialog.ui)
@@ -22,6 +18,8 @@ target_link_libraries(fqclient2 ${PROJECT_NAME} ${QT_LIBRARIES} ${WS2_32})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.fix ${CMAKE_CURRENT_BINARY_DIR}/config.fix COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/FIX44.xml ${CMAKE_CURRENT_BINARY_DIR}/FIX44.xml COPYONLY)
-file(COPY ${CTP_DLLS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+if(WIN32)
+    file(COPY ${CTP_DLLS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
 

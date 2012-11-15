@@ -60,44 +60,44 @@ public:
     OrderId orderId() const;
     Type type() const { return _type; }
     void setType(Type type) throw (FreeQuant::OrderTypeNotSupport&);
-    std::string symbol() { return _symbol; }
-    double price() { return _price; }
-    double qty() { return _qty; }
-    double tickSize() { return _tickSize; }
+    std::string symbol() const { return _symbol; }
+    double price() const { return _price; }
+    double qty() const { return _qty; }
+    double tickSize() const { return _tickSize; }
     Side side() const { return _side; }
-    Status status() { return _status; }
+    Status status() const { return _status; }
     /*!
      *  Gets last fill (partial fill) price for this order
      * \brief lastPrice
      */
-    double lastPrice() { return 0; }
+    double lastPrice() const { return 0; }
     /*!
      *  Gets last fill (partial fill) quantity for this order
      * \brief lastPrice
      */
-    long lastQty() { return 0; }
+    long lastQty() const { return 0; }
     /*!
      *  Gets average fill price for this order
      * \brief avgPrice
      * \return
      */
 
-    long remainingQty() { return 0; }
-    double avgPrice() { return _avgPrice; }
+    long remainingQty() const { return 0; }
+    double avgPrice() const { return _avgPrice; }
 
     /*!
      *  Gets cumulative filled quantity for this order
      * \brief cumQty
      * \return
      */
-    double cumQty() { return 0; }
+    double cumQty() const { return 0; }
 
-    const FreeQuant::DateTime& dateTime() {}
-    const FreeQuant::DateTime& expireTime() {}
-    double stopPrice() { return _stopPrice; }
-    double limitPrice() { return _limitPrice; }
-    std::string currency() { return _currency; }
-    TimeInForce timeInForce() { return _timeInForce; }
+    const FreeQuant::DateTime& dateTime() const {}
+    const FreeQuant::DateTime& expireTime() const {}
+    double stopPrice() const { return _stopPrice; }
+    double limitPrice() const { return _limitPrice; }
+    std::string currency() const { return _currency; }
+    TimeInForce timeInForce() const { return _timeInForce; }
     FreeQuant::TradeProvider *tradeProvider() const;
     std::string brokerId;
 private:
