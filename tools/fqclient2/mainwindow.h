@@ -32,6 +32,9 @@ public slots:
 //    void onExtord();
 //    void onReqCurrentTime();
     void onPlaceOrder();
+    void onCancelOrder();
+    void onReplaceOrder();
+    void onOpenOrders();
 //    void onReqOpenOrders();
 //    void onReqAllOpenOrders();
 //    void onReqAutoOpenOrders();

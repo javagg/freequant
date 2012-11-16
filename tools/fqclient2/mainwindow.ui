@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>751</width>
-    <height>740</height>
+    <width>676</width>
+    <height>736</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -194,7 +194,7 @@
         </widget>
        </item>
        <item row="7" column="0">
-        <widget class="QPushButton" name="pushButton_86">
+        <widget class="QPushButton" name="cancelOrderButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -207,7 +207,7 @@
           </font>
          </property>
          <property name="text">
-          <string>What If...</string>
+          <string>Cancel Order</string>
          </property>
         </widget>
        </item>
@@ -410,7 +410,7 @@
         </widget>
        </item>
        <item row="11" column="1">
-        <widget class="QPushButton" name="pushButton_77">
+        <widget class="QPushButton" name="openOrdersButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -733,6 +733,13 @@
          </property>
         </widget>
        </item>
+       <item row="7" column="1">
+        <widget class="QPushButton" name="replaceOrderButton">
+         <property name="text">
+          <string>Replace Order</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -871,6 +878,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>openOrdersButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onOpenOrders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>654</x>
+     <y>440</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cancelOrderButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onCancelOrder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>429</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>337</x>
+     <y>367</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>replaceOrderButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onPlaceOrder()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>578</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>337</x>
+     <y>367</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -880,5 +935,8 @@
   <slot>onPlaceOrder()</slot>
   <slot>onClear()</slot>
   <slot>onCancelMktData()</slot>
+  <slot>onOpenOrders()</slot>
+  <slot>onCancelOrder()</slot>
+  <slot>onReplaceOrder()</slot>
  </slots>
 </ui>

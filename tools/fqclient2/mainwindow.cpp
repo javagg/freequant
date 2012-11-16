@@ -38,6 +38,20 @@ MainWindow::~MainWindow() {
 //    m_client->reqCurrentTime();
 //}
 
+void MainWindow::onOpenOrders() {
+    trade_provider->openOrders();
+}
+
+void MainWindow::onCancelOrder() {
+    FreeQuant::Order order;
+    trade_provider->cancelOrder(order);
+}
+
+void MainWindow::onReplaceOrder() {
+    FreeQuant::Order order;
+    trade_provider->replaceOrder(order);
+}
+
 void MainWindow::onPlaceOrder() {
 //    CommonDialog dialog(this, CommonDialog::OrderDialog);
 //    if (dialog.exec() == QDialog::Accepted) {

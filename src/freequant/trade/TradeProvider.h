@@ -34,6 +34,8 @@ public:
     virtual void cancelOrder(const FreeQuant::Order& order) = 0;
     virtual void replaceOrder(const FreeQuant::Order& order) = 0;
 
+    virtual void openOrders() const {}
+
     virtual void updateIntrument(const std::string& symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
 

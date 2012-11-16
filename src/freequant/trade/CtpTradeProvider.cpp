@@ -116,9 +116,9 @@ public:
         _brokerId.copy(field.BrokerID, _brokerId.size());
         _userId.copy(field.InvestorID, _userId.size());
         o.symbol().copy(field.InstrumentID, o.symbol().size());
-        strcpy(field.OrderRef, orderRef);
-        int nextOrderRef = atoi(orderRef);
-        sprintf(orderRef, "%d", ++nextOrderRef);
+        strcpy(field.OrderRef, nextOrderRef());
+//        int nextOrderRef = atoi(orderRef);
+//        sprintf(orderRef, "%d", ++nextOrderRef);
 
         if (o.side() == Order::Buy)
             field.Direction = THOST_FTDC_D_Buy;
@@ -199,8 +199,14 @@ public:
         int ret = _api->ReqQryInvestorPosition(&req, ++requestId);
     }
 
-    void openOrders() const {
+    void openOrders() {
+        CThostFtdcQryOrderField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.InvestorID, _userId.size());
+        string symbol = "IF1212";
+        symbol.copy(field.InstrumentID, symbol.size());
 
+        _api->ReqQryOrder(&field, ++requestId);
     }
 
     void updateIntrument(std::string symbol, bool block = false) {
@@ -236,8 +242,8 @@ public:
         if (!errorOccurred(rspInfo) && last) {
             _frontId = rspUserLogin->FrontID;
             _sessionId = rspUserLogin->FrontID;
-            int nextOrderRef = atoi(rspUserLogin->MaxOrderRef);
-            std::sprintf(_orderRef, "%d", ++nextOrderRef);
+
+            nextOrderRef(rspUserLogin->MaxOrderRef);
             const char *tradingDay = _api->GetTradingDay();
             std::cout << "TradingDay: " << tradingDay << std::endl;
             _connected = true;
@@ -251,12 +257,6 @@ public:
 
     void OnRspUserLogout(CThostFtdcUserLogoutField *userLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         cout << userLogout->UserID << endl;
-    }
-
-    void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-         if (!errorOccurred(pRspInfo) && bIsLast) {
-
-         }
     }
 
     void OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -336,9 +336,33 @@ public:
                   << "CashIn: "   << pTradingAccount->CashIn << std::endl;
     }
 
-    void OnRtnOrder(CThostFtdcOrderField *pOrder) {
-      CThostFtdcOrderField order = *pOrder;
+    void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+        if (!errorOccurred(pRspInfo) && bIsLast) {
 
+        }
+    }
+
+    void OnRspQryOrder(CThostFtdcOrderField *pOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        if (!errorOccurred(pRspInfo) && bIsLast) {
+            CThostFtdcOrderField order = *pOrder;
+            cout << "BrokerOrderSeq:"<<order.BrokerOrderSeq<<endl
+                 << "OrderSysID:"<<order.OrderSysID<<endl
+                 << "OrderStatus:"<<order.OrderStatus<<endl
+                << "OrderSubmitStatus:"<<order.OrderSubmitStatus<<endl
+                ;
+        }
+    }
+
+    void OnRtnOrder(CThostFtdcOrderField *pOrder) {
+        std::cout << __FUNCTION__ << std::endl;
+        CThostFtdcOrderField order = *pOrder;
+
+        cout << "BrokerOrderSeq:"<<order.BrokerOrderSeq<<endl
+             << "OrderSysID:"<<order.OrderSysID<<endl
+             << "OrderStatus:"<<order.OrderStatus<<endl
+            << "OrderSubmitStatus:"<<order.OrderSubmitStatus<<endl
+            ;
 //      bool founded=false;    unsigned int i=0;
 //      for(i=0; i<orderList.size(); i++){
 //        if(orderList[i]->BrokerOrderSeq == order->BrokerOrderSeq) {
@@ -347,7 +371,6 @@ public:
 //      }
 //      if(founded) orderList[i]= order;
 //      else  orderList.push_back(order);
-      cerr<<" ر | ύ...:"<<order.BrokerOrderSeq<<endl;
 
     }
 
@@ -361,10 +384,18 @@ public:
 //      }
 //      if(founded) tradeList[i] = trade;
 //      else  tradeList.push_back(trade);
-      cerr<<" ر | ѳɽ...ɽ:"<<trade.TradeID<<endl;
+      cerr<<"OnRtnTrade...:"<<trade.TradeID<<endl;
     }
 
 private:
+    TThostFtdcOrderRefType& nextOrderRef(TThostFtdcOrderRefType firstOrderRef = 0) {
+        if (firstOrderRef)
+            std::memcpy(_orderRef, firstOrderRef, sizeof(_orderRef));
+        int nextOrderRef = atoi(_orderRef);
+        std::sprintf(_orderRef, "%d", ++nextOrderRef);
+        return _orderRef;
+    }
+
     bool _connected;
     FreeQuant::TradeProvider::Callback *_callback;
     std::string _brokerId;
@@ -430,6 +461,11 @@ void CtpTradeProvider::cancelOrder(const FreeQuant::Order& o) {
 void CtpTradeProvider::replaceOrder(const FreeQuant::Order& o) {
     _impl->replaceOrder(o);
 }
+
+void CtpTradeProvider::openOrders() const {
+    _impl->openOrders();
+}
+
 
 void CtpTradeProvider::updateIntrument(const std::string& symbol, bool block) {
     _impl->updateIntrument(symbol, block);
