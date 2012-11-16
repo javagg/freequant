@@ -18,9 +18,11 @@ namespace FreeQuant {
 
 static TThostFtdcOrderRefType orderRef = {};
 static long requestId = 0;
+static const char *flowPath = "fqctptrader";
 
 class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
+    static const int reqTimeout = 5;
     Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
         _connected(false), _callback(callback), _api(0) {
         auto params = FreeQuant::parseParamsFromString(connection);
@@ -28,6 +30,12 @@ public:
         _userId = params["userid"];
         _password = params["password"];
         _brokerId = params["brokerid"];
+
+        _api = CThostFtdcTraderApi::CreateFtdcTraderApi(flowPath);
+        _api->RegisterSpi(this);
+        _api->RegisterFront(const_cast<char*>(_front.c_str()));
+        _api->SubscribePrivateTopic(THOST_TERT_RESTART);
+        _api->SubscribePrivateTopic(THOST_TERT_RESTART);
     }
 
     virtual ~Impl() {
@@ -44,45 +52,54 @@ public:
 
     void connect(std::string connection, bool block = false) {
         if (isConnected()) return;
-
         auto params = FreeQuant::parseParamsFromString(connection);
         _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"]; //"tcp://asp-sim2-front1.financial-trading-platform.com:26213";
         _userId = params["userid"];
         _password = params["password"];
         _brokerId = params["brokerid"];
 
+        resetApi();
         _api = CThostFtdcTraderApi::CreateFtdcTraderApi("");
         _api->RegisterSpi(this);
         _api->RegisterFront(const_cast<char*>(_front.c_str()));
-        _api->SubscribePrivateTopic(THOST_TERT_RESTART);
-        _api->SubscribePrivateTopic(THOST_TERT_RESTART);
+        _api->SubscribePrivateTopic(THOST_TERT_QUICK);
+        _api->SubscribePrivateTopic(THOST_TERT_QUICK);
         _api->Init();
-    }
 
-    void connect() {
-        if (isConnected()) return;
-
-        if (_api == 0) {
-            _api = CThostFtdcTraderApi::CreateFtdcTraderApi();
-            _api->RegisterSpi(this);
-            _api->RegisterFront(const_cast<char*>(_front.c_str()));
-            _api->SubscribePrivateTopic(THOST_TERT_RESTART);
-            _api->SubscribePrivateTopic(THOST_TERT_RESTART);
-            _api->Init();
+        if (block) {
+            boost::unique_lock<boost::mutex> lock(_mutex);
+            _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
+            CThostFtdcSettlementInfoConfirmField field = {};
+            _brokerId.copy(field.BrokerID, _brokerId.size());
+            _userId.copy(field.InvestorID, _userId.size());
+            _api->ReqSettlementInfoConfirm(&field, ++requestId);
+            _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
         }
     }
 
-    void disconnect() {
-        CThostFtdcUserLogoutField field = {};
-        _brokerId.copy(field.BrokerID, _brokerId.size());
-        _userId.copy(field.UserID, _userId.size());
-        _api->ReqUserLogout(&field, ++requestId);
-
-        if (_api != 0) {
+    void resetApi() {
+        if (_api) {
             _api->RegisterSpi(0);
             _api->Release();
             _api = 0;
         }
+    }
+
+    void connect() {
+//        if (isConnected()) return;
+//        _api->Init();
+    }
+
+    void disconnect() {
+        if (!isConnected()) return;
+
+        CThostFtdcUserLogoutField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.UserID, _userId.size());
+        _api->ReqUserLogout(&field, ++requestId);
+        boost::unique_lock<boost::mutex> lock(_mutex);
+        _condition.wait(lock);
+        resetApi();
     }
 
     bool isConnected() const {
@@ -225,7 +242,7 @@ public:
     void OnHeartBeatWarning(int timeLapse) { std::cout << "heartbeat: " << timeLapse << std::endl; }
     void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         std::cerr << __FUNCTION__ << std::endl;
-        std::cerr << pRspInfo->ErrorMsg << std::endl;
+        std::cerr << "ErrorCode=" << pRspInfo->ErrorID << "ErrorMsg=" << pRspInfo->ErrorMsg << std::endl;
     }
 
     void OnFrontConnected() {
@@ -247,6 +264,9 @@ public:
             const char *tradingDay = _api->GetTradingDay();
             std::cout << "TradingDay: " << tradingDay << std::endl;
             _connected = true;
+
+            boost::unique_lock<boost::mutex> lock(_mutex);
+            _condition.notify_all();
         }
 
         CThostFtdcQryTradingAccountField field = {};
@@ -255,8 +275,18 @@ public:
         _api->ReqQryTradingAccount(&field, ++requestId);
     }
 
+    void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *confirm,
+        CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        boost::unique_lock<boost::mutex> lock(_mutex);
+        _condition.notify_all();
+    }
+
     void OnRspUserLogout(CThostFtdcUserLogoutField *userLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         cout << userLogout->UserID << endl;
+         if (!errorOccurred(pRspInfo) && bIsLast) {
+            boost::unique_lock<boost::mutex> lock(_mutex);
+            _condition.notify_one();
+         }
     }
 
     void OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -397,6 +427,8 @@ private:
     }
 
     bool _connected;
+    bool _settlementConfirmed;
+
     FreeQuant::TradeProvider::Callback *_callback;
     std::string _brokerId;
     std::string _userId;
