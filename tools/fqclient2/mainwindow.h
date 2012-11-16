@@ -31,7 +31,7 @@ public slots:
     void onCancelMktData();
 //    void onExtord();
 //    void onReqCurrentTime();
-//    void onPlaceOrder();
+    void onPlaceOrder();
 //    void onReqOpenOrders();
 //    void onReqAllOpenOrders();
 //    void onReqAutoOpenOrders();

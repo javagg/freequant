@@ -41,6 +41,7 @@ public:
     };
 
     explicit Order();
+    explicit Order(const std::string& symbol, Type type, Side side, double price, long qty);
 	virtual ~Order();
 
     /*!
@@ -57,15 +58,16 @@ public:
     bool isPendingNew();
     bool isPendingReplace();
 
-    OrderId orderId() const;
+    const OrderId& orderId() const { return _id; }
     Type type() const { return _type; }
     void setType(Type type) throw (FreeQuant::OrderTypeNotSupport&);
-    std::string symbol() const { return _symbol; }
+    const std::string& symbol() const { return _symbol; }
     double price() const { return _price; }
     double qty() const { return _qty; }
     double tickSize() const { return _tickSize; }
     Side side() const { return _side; }
     Status status() const { return _status; }
+
     /*!
      *  Gets last fill (partial fill) price for this order
      * \brief lastPrice
@@ -100,7 +102,9 @@ public:
     TimeInForce timeInForce() const { return _timeInForce; }
     FreeQuant::TradeProvider *tradeProvider() const;
     std::string brokerId;
+
 private:
+    OrderId _id;
     Type _type;
     std::string _symbol;
     std::string _currency;

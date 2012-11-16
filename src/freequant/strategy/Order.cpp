@@ -39,13 +39,12 @@ public:
     void updateIntrument(FreeQuant::Instrument& instrument) {}
 };
 
-Order::Order() {
-	// TODO Auto-generated constructor stub
+Order::Order() {}
 
-}
+Order::~Order() {}
 
-Order::~Order() {
-	// TODO Auto-generated destructor stub
+Order::Order(const std::string& symbol, Type type, Side side, double price, long qty) :
+    _symbol(symbol), _type(type), _side(side), _price(price), _qty(qty) {
 }
 
 } // namespace FreeQuant

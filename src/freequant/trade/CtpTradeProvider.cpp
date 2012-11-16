@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <iostream>
 
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/condition_variable.hpp>
+
 #include <freequant/strategy/Order.h>
 #include <freequant/strategy/Position.h>
 #include <freequant/strategy/Instrument.h>
@@ -13,11 +16,8 @@ using namespace std;
 
 namespace FreeQuant {
 
+static TThostFtdcOrderRefType orderRef = {};
 static long requestId = 0;
-
-static CThostFtdcInputOrderField fromOrder(const Order& order) {
-
-}
 
 class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
@@ -73,6 +73,11 @@ public:
     }
 
     void disconnect() {
+        CThostFtdcUserLogoutField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.UserID, _userId.size());
+        _api->ReqUserLogout(&field, ++requestId);
+
         if (_api != 0) {
             _api->RegisterSpi(0);
             _api->Release();
@@ -111,16 +116,27 @@ public:
         _brokerId.copy(field.BrokerID, _brokerId.size());
         _userId.copy(field.InvestorID, _userId.size());
         o.symbol().copy(field.InstrumentID, o.symbol().size());
+        strcpy(field.OrderRef, orderRef);
+        int nextOrderRef = atoi(orderRef);
+        sprintf(orderRef, "%d", ++nextOrderRef);
 
         if (o.side() == Order::Buy)
             field.Direction = THOST_FTDC_D_Buy;
         else
             field.Direction = THOST_FTDC_D_Sell;
 
+        field.CombHedgeFlag[0] = THOST_FTDC_HF_Speculation;
+        field.CombOffsetFlag[0] = THOST_FTDC_OF_Open;
         switch (o.type()) {
-        case Order::Limit:
+        case Order::Market: {
+            field.OrderPriceType = THOST_FTDC_OPT_LastPrice;
+            field.LimitPrice = o.price();
+        }
+        case Order::Limit: {
+            field.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
             field.LimitPrice = o.limitPrice();
             break;
+        }
         case Order::StopLimit:
         case Order::StopLoss:
             field.StopPrice = o.stopPrice();
@@ -128,32 +144,26 @@ public:
         default:
             break;
         }
+
+        field.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
+        field.LimitPrice = o.price();
         field.VolumeTotalOriginal = o.qty();
 
-        switch (o.timeInForce()) {
-        case Order::DAY:
-            field.TimeCondition = THOST_FTDC_TC_IOC;
-            break;
-        default:
-            break;
-        }
-
-//        o.dateTime();
-//        field.GTDDate
-        std::string GTDDate = "20121111";
-
-        GTDDate.copy(field.GTDDate, GTDDate.size());
-
-        field.MinVolume = o.tickSize();
-
+//        switch (o.timeInForce()) {
+//        case Order::DAY:
+//            field.TimeCondition = THOST_FTDC_TC_GFD;
+//            break;
+//        default:
+//            break;
+//        }
+        field.TimeCondition = THOST_FTDC_TC_GFD;
+        field.VolumeCondition = THOST_FTDC_VC_AV;
+        field.MinVolume = 1;
         field.ContingentCondition = THOST_FTDC_CC_Immediately;
         field.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;
         field.IsAutoSuspend = true;
-
-        field.RequestID = requestId++;
         field.UserForceClose = true;
-
-        _api->ReqOrderInsert(&field, requestId++);
+        int ret = _api->ReqOrderInsert(&field, requestId++);
     }
 
     void cancelOrder(const FreeQuant::Order& order) {
@@ -162,7 +172,10 @@ public:
         _userId.copy(req.InvestorID, _userId.size());
         req.ActionFlag = THOST_FTDC_AF_Delete;
 
-         int ret = _api->ReqOrderAction(&req, ++requestId);
+        order.orderId().copy(req.OrderSysID, order.orderId().size());
+        req.ActionFlag = THOST_FTDC_AF_Delete;
+        order.symbol().copy(req.InstrumentID, order.symbol().size());
+        int ret = _api->ReqOrderAction(&req, ++requestId);
     }
 
     void replaceOrder(const FreeQuant::Order& order) {
@@ -220,11 +233,15 @@ public:
 
     void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin, CThostFtdcRspInfoField *rspInfo, int nRequestID, bool last) {
         std::cout << __FUNCTION__ << std::endl;
-             if (!errorOccurred(rspInfo) && last) {
-                 const char *tradingDay =  _api->GetTradingDay();
-                 std::cout << "TradingDay: " << tradingDay << std::endl;
-                 _connected = true;
-             }
+        if (!errorOccurred(rspInfo) && last) {
+            _frontId = rspUserLogin->FrontID;
+            _sessionId = rspUserLogin->FrontID;
+            int nextOrderRef = atoi(rspUserLogin->MaxOrderRef);
+            std::sprintf(_orderRef, "%d", ++nextOrderRef);
+            const char *tradingDay = _api->GetTradingDay();
+            std::cout << "TradingDay: " << tradingDay << std::endl;
+            _connected = true;
+        }
 
         CThostFtdcQryTradingAccountField field = {};
         _brokerId.copy(field.BrokerID, _brokerId.size());
@@ -234,6 +251,12 @@ public:
 
     void OnRspUserLogout(CThostFtdcUserLogoutField *userLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         cout << userLogout->UserID << endl;
+    }
+
+    void OnRspOrderInsert(CThostFtdcInputOrderField *pInputOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+         if (!errorOccurred(pRspInfo) && bIsLast) {
+
+         }
     }
 
     void OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -313,6 +336,33 @@ public:
                   << "CashIn: "   << pTradingAccount->CashIn << std::endl;
     }
 
+    void OnRtnOrder(CThostFtdcOrderField *pOrder) {
+      CThostFtdcOrderField order = *pOrder;
+
+//      bool founded=false;    unsigned int i=0;
+//      for(i=0; i<orderList.size(); i++){
+//        if(orderList[i]->BrokerOrderSeq == order->BrokerOrderSeq) {
+//          founded=true;    break;
+//        }
+//      }
+//      if(founded) orderList[i]= order;
+//      else  orderList.push_back(order);
+      cerr<<" ر | ύ...:"<<order.BrokerOrderSeq<<endl;
+
+    }
+
+    void OnRtnTrade(CThostFtdcTradeField *pTrade) {
+      CThostFtdcTradeField trade = *pTrade;
+//      bool founded=false;     unsigned int i=0;
+//      for(i=0; i<tradeList.size(); i++){
+//        if(tradeList[i]->TradeID == trade->TradeID) {
+//          founded=true;   break;
+//        }
+//      }
+//      if(founded) tradeList[i] = trade;
+//      else  tradeList.push_back(trade);
+      cerr<<" ر | ѳɽ...ɽ:"<<trade.TradeID<<endl;
+    }
 
 private:
     bool _connected;
@@ -321,6 +371,12 @@ private:
     std::string _userId;
     std::string _password;
     std::string _front;
+    TThostFtdcFrontIDType _frontId;
+    TThostFtdcSessionIDType	_sessionId;
+    TThostFtdcOrderRefType _orderRef;
+
+    boost::mutex _mutex;
+    boost::condition_variable _condition;
 };
 
 CtpTradeProvider::CtpTradeProvider(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
