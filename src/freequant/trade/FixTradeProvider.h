@@ -34,9 +34,9 @@ public:
     void cancelOrder(const FreeQuant::Order& order);
     void replaceOrder(const FreeQuant::Order& order);
 
-//    void subscribe(std::vector<std::string> symbols);
-//    void unsubscribe(std::vector<std::string> symbols);
-
+    void fetchOrders(const std::string& symbol, const DateTime& start, const DateTime& end) {}
+    void fetchTrades(const std::string& symbol, const DateTime& start, const DateTime& end) {}
+    void updatePosition(const std::string& symbol) {}
     void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument);
 

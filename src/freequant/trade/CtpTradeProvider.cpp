@@ -22,7 +22,7 @@ static const char *flowPath = "fqctptrader";
 
 class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
-    static const int reqTimeout = 5;
+    static const int reqTimeout;
     Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
         _connected(false), _callback(callback), _api(0) {
         auto params = FreeQuant::parseParamsFromString(connection);
@@ -67,13 +67,33 @@ public:
         _api->Init();
 
         if (block) {
-            boost::unique_lock<boost::mutex> lock(_mutex);
-            _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
-            CThostFtdcSettlementInfoConfirmField field = {};
-            _brokerId.copy(field.BrokerID, _brokerId.size());
-            _userId.copy(field.InvestorID, _userId.size());
-            _api->ReqSettlementInfoConfirm(&field, ++requestId);
-            _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
+            {
+                boost::unique_lock<boost::mutex> lock(_mutex);
+                while (!isConnected()) {
+                    if (_condition.wait_for(lock, boost::chrono::seconds(reqTimeout))
+                        == boost::cv_status::timeout) {
+                        cout << "connection timeout" << endl;
+                        return;
+                    }
+                    CThostFtdcSettlementInfoConfirmField field = {};
+                    _brokerId.copy(field.BrokerID, _brokerId.size());
+                    _userId.copy(field.InvestorID, _userId.size());
+
+                    cout << "ReqSettlementInfoConfirm...";
+                    _api->ReqSettlementInfoConfirm(&field, ++requestId);
+
+                    _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
+                }
+            }
+
+            {
+                boost::unique_lock<boost::mutex> lock(_mutex);
+                CThostFtdcQryTradingAccountField field = {};
+                _brokerId.copy(field.BrokerID, _brokerId.size());
+                _userId.copy(field.InvestorID, _userId.size());
+                _api->ReqQryTradingAccount(&field, ++requestId);
+                _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
+            }
         }
     }
 
@@ -114,18 +134,34 @@ public:
     }
 
     std::vector<std::string> availableExchanges() const {
-        string exchangeId = "dsf";
+        string exchanges[] = { "CFFEX", "SHFE", "CZCE", "DCE" };
+        vector<string> ex(exchanges, exchanges+4);
+        for (auto i = ex.begin(); i != ex.end(); ++i) {
+            queryExchange(*i);
+        }
+        return ex;
+    }
+
+    std::vector<std::string> availableInstruments() const {
+        CThostFtdcQryInstrumentField field = {};
+//        _brokerId.copy(req.BrokerID, _brokerId.size());
+//        _userId.copy(req.UserID, _userId.size());
+
+//        CThostFtdcQryInstrumentField field = {};
+//        symbol.copy(field.InstrumentID, symbol.size());
+        _api->ReqQryInstrument(&field, requestId++);
+
+//        _api->ReqQryInstrument(CThostFtdcQryInstrumentField *pQryInstrument, requestId);
+        return vector<string>();
+    }
+
+    void queryExchange(const std::string& exchangeId) const {
         CThostFtdcQryExchangeField field = {};
         exchangeId.copy(field.ExchangeID, exchangeId.size());
         _api->ReqQryExchange(&field, ++requestId);
 
-        return vector<string>();
-    }
-
-    std::vector<std::string> availableInstruments() const {
-        CThostFtdcQryInstrumentField field;
-    //    api->ReqQryInstrument()
-        return vector<string>();
+        boost::unique_lock<boost::mutex> lock(_mutex);
+        _condition.wait_for(lock, boost::chrono::seconds(reqTimeout));
     }
 
     void sendOrder(const FreeQuant::Order& o) {
@@ -178,21 +214,51 @@ public:
         field.MinVolume = 1;
         field.ContingentCondition = THOST_FTDC_CC_Immediately;
         field.ForceCloseReason = THOST_FTDC_FCC_NotForceClose;
-        field.IsAutoSuspend = true;
+        field.IsAutoSuspend = 0;
         field.UserForceClose = true;
         int ret = _api->ReqOrderInsert(&field, requestId++);
     }
 
     void cancelOrder(const FreeQuant::Order& order) {
-        CThostFtdcInputOrderActionField req = {};
-        _brokerId.copy(req.BrokerID, _brokerId.size());
-        _userId.copy(req.InvestorID, _userId.size());
-        req.ActionFlag = THOST_FTDC_AF_Delete;
+        CThostFtdcInputOrderActionField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.InvestorID, _userId.size());
 
-        order.orderId().copy(req.OrderSysID, order.orderId().size());
-        req.ActionFlag = THOST_FTDC_AF_Delete;
-        order.symbol().copy(req.InstrumentID, order.symbol().size());
-        int ret = _api->ReqOrderAction(&req, ++requestId);
+//        _frontId.copy(field.FrontID, _frontId.size());
+        field.FrontID = _frontId;
+        field.SessionID = _sessionId;
+//        _sessionId.copy(field.SessionID, _sessionId.size());
+         strcpy(field.OrderRef, "4");
+        ///
+//        TThostFtdcOrderActionRefType	OrderActionRef;
+        ///
+//        TThostFtdcOrderRefType	OrderRef;
+        ///
+//        TThostFtdcRequestIDType	RequestID;
+        ///ǰñ
+//        TThostFtdcFrontIDType	FrontID;
+        ///Ự
+//        TThostFtdcSessionIDType	SessionID;
+        ///
+//        TThostFtdcExchangeIDType	ExchangeID;
+        ///
+//        TThostFtdcOrderSysIDType	OrderSysID;
+        ///־
+//        TThostFtdcActionFlagType	ActionFlag;
+        ///۸
+//        TThostFtdcPriceType	LimitPrice;
+        ///仯
+//        TThostFtdcVolumeType	VolumeChange;
+        ///û
+//        TThostFtdcUserIDType	UserID;
+        ///Լ
+
+        strcpy(field.OrderSysID, "86029");
+//        order.orderId().copy(field.OrderSysID, order.orderId().size());
+        field.ActionFlag = THOST_FTDC_AF_Delete;
+        strcpy(field.InstrumentID, "IF1212");
+//        order.symbol().copy(field.InstrumentID, order.symbol().size());
+        int ret = _api->ReqOrderAction(&field, ++requestId);
     }
 
     void replaceOrder(const FreeQuant::Order& order) {
@@ -208,7 +274,7 @@ public:
 
     }
 
-    void updatePosition(std::string symbol) {
+    void updatePosition(const std::string& symbol) {
         CThostFtdcQryInvestorPositionField req = {};
         _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.InvestorID, _userId.size());
@@ -224,6 +290,23 @@ public:
         symbol.copy(field.InstrumentID, symbol.size());
 
         _api->ReqQryOrder(&field, ++requestId);
+    }
+
+    void fetchOrders(const std::string& symbol, const FreeQuant::DateTime& start, const FreeQuant::DateTime& end) {
+        CThostFtdcQryOrderField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.InvestorID, _userId.size());
+        symbol.copy(field.InstrumentID, symbol.size());
+
+        _api->ReqQryOrder(&field, ++requestId);
+    }
+
+    void fetchTrades(const std::string& symbol, const FreeQuant::DateTime& start, const FreeQuant::DateTime& end) {
+        CThostFtdcQryTradeField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.InvestorID, _userId.size());
+        symbol.copy(field.InstrumentID, symbol.size());
+        _api->ReqQryTrade(&field, ++requestId);
     }
 
     void updateIntrument(std::string symbol, bool block = false) {
@@ -266,17 +349,13 @@ public:
             _connected = true;
 
             boost::unique_lock<boost::mutex> lock(_mutex);
-            _condition.notify_all();
+            _condition.notify_one();
         }
-
-        CThostFtdcQryTradingAccountField field = {};
-        _brokerId.copy(field.BrokerID, _brokerId.size());
-        _userId.copy(field.InvestorID, _userId.size());
-        _api->ReqQryTradingAccount(&field, ++requestId);
     }
 
     void OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *confirm,
         CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        cout << "done" << endl;
         boost::unique_lock<boost::mutex> lock(_mutex);
         _condition.notify_all();
     }
@@ -287,6 +366,48 @@ public:
             boost::unique_lock<boost::mutex> lock(_mutex);
             _condition.notify_one();
          }
+    }
+
+    void OnRspQryExchange(CThostFtdcExchangeField *exchange, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+        if (!errorOccurred(pRspInfo)) {
+            std::cout << "ExchangeID: " << exchange->ExchangeID  << std::endl
+                     << "ExchangeName: " << exchange->ExchangeName  << std::endl
+                      << "ExchangeProperty: " << exchange->ExchangeProperty << std::endl
+                         ;
+            if (bIsLast) {
+                cout << "done................................." << endl;
+                boost::unique_lock<boost::mutex> lock(_mutex);
+                _condition.notify_one();
+            }
+        }
+    }
+
+    void OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInvestorPosition, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+        if (!errorOccurred(pRspInfo)) {
+            cout << " ................................." << endl;
+            CThostFtdcInvestorPositionField p = *pInvestorPosition;
+            std::cout << "InstrumentID: " << p.InstrumentID  << std::endl
+                 << "PosiDirection: " << p.PosiDirection << endl
+                   << "Position: " << p.Position << endl
+          << "PositionProfit: " << p.PositionProfit << endl
+            << "Commission: " << p.Commission << endl
+
+                << "PreMargin: " << p.PreMargin << endl
+                << "UseMargin: " << p.UseMargin << endl
+                << "FrozenMargin: " << p.FrozenMargin << endl
+                << "FrozenCash: " << p.FrozenCash << endl
+                << "FrozenCommission: " << p.FrozenCommission << endl
+                << "CashIn: " << p.CashIn << endl
+                << "Commission: " << p.Commission << endl
+                << "PositionDate: " << p.PositionDate << endl
+                << "PositionCost: " << p.PositionCost << endl
+            ;
+              if (bIsLast) {
+                  cout << "done................................." << endl;
+              }
+          }
     }
 
     void OnRspQryInstrument(CThostFtdcInstrumentField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -357,7 +478,6 @@ public:
          }
     }
 
-
     void OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
 
         std::cout << "Balance: " << pTradingAccount->Balance << std::endl
@@ -373,14 +493,65 @@ public:
         }
     }
 
+    void OnRspOrderAction(CThostFtdcInputOrderActionField *action, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+         if (!errorOccurred(pRspInfo)) {
+
+            if (bIsLast) {
+                cout << "cancel order sent!" << endl;
+            }
+         }
+    }
+
+    void OnRspQryTrade(CThostFtdcTradeField *pTrade, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        if (!errorOccurred(pRspInfo)) {
+            CThostFtdcTradeField trade = *pTrade;
+            cout << "....................................." << endl
+                 << "TradeID:"<< trade.TradeID << endl
+                   << "OrderRef:"<< trade.OrderRef << endl
+                << "InstrumentID:"<< trade.InstrumentID << endl
+                << "Direction:"<< trade.Direction << endl
+                 << "OffsetFlag:"<< trade.OffsetFlag << endl
+                 << "OffsetFlag:"<< trade.Price << endl
+                 << "Volume:"<< trade.Volume << endl
+                 << "TradeTime:"<< trade.TradeTime << endl
+                 << "TradeType:"<< trade.TradeType << endl
+                  ;
+            if (bIsLast) {
+                cout << "done................................." << endl;
+            }
+        }
+
+    }
+
     void OnRspQryOrder(CThostFtdcOrderField *pOrder, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
-        if (!errorOccurred(pRspInfo) && bIsLast) {
+        if (!errorOccurred(pRspInfo)) {
             CThostFtdcOrderField order = *pOrder;
-            cout << "BrokerOrderSeq:"<<order.BrokerOrderSeq<<endl
-                 << "OrderSysID:"<<order.OrderSysID<<endl
-                 << "OrderStatus:"<<order.OrderStatus<<endl
-                << "OrderSubmitStatus:"<<order.OrderSubmitStatus<<endl
-                ;
+            cout << "....................................." << endl
+                 << "OrderRef:"<< order.OrderRef << endl
+                   << "OrderSysID:"<< order.OrderSysID << endl
+                << "InstrumentID:"<< order.InstrumentID << endl
+                << "Direction:"<< order.Direction << endl
+                << "OrderPriceType:"<< order.OrderPriceType << endl
+                 << "LimitPrice:"<< order.LimitPrice << endl
+                << "VolumeTotalOriginal:"<< order.VolumeTotalOriginal << endl
+               << "VolumeCondition:"<< order.VolumeCondition << endl
+                << "StopPrice:"<< order.StopPrice << endl
+           << "RequestID:"<< order.RequestID << endl
+             << "OrderSubmitStatus:"<< order.OrderSubmitStatus << endl
+                 << "OrderStatus:"<< order.OrderStatus << endl
+             << "OrderType:"<< order.OrderType << endl
+
+             << "VolumeTraded:"<< order.VolumeTraded << endl
+              << "VolumeTotal:"<< order.VolumeTotal << endl
+              << "InsertTime:"<< order.InsertTime << endl
+          << "CancelTime:"<< order.CancelTime << endl
+            << "UpdateTime:"<< order.UpdateTime << endl
+        << "SequenceNo:"<< order.SequenceNo << endl
+            ;
+            if (bIsLast) {
+                cout << "done................................." << endl;
+            }
         }
     }
 
@@ -392,19 +563,16 @@ public:
              << "OrderSysID:"<<order.OrderSysID<<endl
              << "OrderStatus:"<<order.OrderStatus<<endl
             << "OrderSubmitStatus:"<<order.OrderSubmitStatus<<endl
+            << "InsertTime:"<<order.InsertTime<<endl
+           << "ActiveTime:"<<order.ActiveTime<<endl
+           << "SuspendTime:"<<order.SuspendTime<<endl
+           << "UpdateTime:"<<order.UpdateTime<<endl
+           << "CancelTime:"<<order.CancelTime<<endl
             ;
-//      bool founded=false;    unsigned int i=0;
-//      for(i=0; i<orderList.size(); i++){
-//        if(orderList[i]->BrokerOrderSeq == order->BrokerOrderSeq) {
-//          founded=true;    break;
-//        }
-//      }
-//      if(founded) orderList[i]= order;
-//      else  orderList.push_back(order);
-
     }
 
     void OnRtnTrade(CThostFtdcTradeField *pTrade) {
+        std::cout << __FUNCTION__ << std::endl;
       CThostFtdcTradeField trade = *pTrade;
 //      bool founded=false;     unsigned int i=0;
 //      for(i=0; i<tradeList.size(); i++){
@@ -438,9 +606,11 @@ private:
     TThostFtdcSessionIDType	_sessionId;
     TThostFtdcOrderRefType _orderRef;
 
-    boost::mutex _mutex;
-    boost::condition_variable _condition;
+    mutable boost::mutex _mutex;
+    mutable boost::condition_variable _condition;
 };
+
+const int CtpTradeProvider::Impl::reqTimeout = 5;
 
 CtpTradeProvider::CtpTradeProvider(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
     _impl(new CtpTradeProvider::Impl(connection, callback)) {
@@ -502,5 +672,14 @@ void CtpTradeProvider::openOrders() const {
 void CtpTradeProvider::updateIntrument(const std::string& symbol, bool block) {
     _impl->updateIntrument(symbol, block);
 }
+
+void CtpTradeProvider::fetchOrders(const std::string& symbol, const DateTime& start, const DateTime& end) {
+    _impl->fetchOrders(symbol, start, end);
+}
+
+void CtpTradeProvider::fetchTrades(const std::string& symbol, const DateTime& start, const DateTime& end) {
+    _impl->fetchTrades(symbol, start, end);
+}
+
 
 } // namespace FreeQuant

@@ -28,6 +28,9 @@ public:
     void updatePosition(const std::string& symbol);
     void openOrders() const;
 
+    void fetchOrders(const std::string& symbol, const DateTime& start, const DateTime& end);
+    void fetchTrades(const std::string& symbol, const DateTime& start, const DateTime& end);
+
     void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument) {}
 

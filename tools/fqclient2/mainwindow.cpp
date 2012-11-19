@@ -16,30 +16,45 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     switch(tr){
     case 1: {
         string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26205;userid=352240;password=888888;brokerid=2030";
-        trade_provider = new FreeQuant::CtpTradeProvider(connection);
+        trade_provider.reset(new FreeQuant::CtpTradeProvider(connection));
         break;
     }
     case 2:
-        trade_provider = new FreeQuant::FixTradeProvider("config.fix");
+        trade_provider.reset(new FreeQuant::FixTradeProvider("config.fix"));
         break;
     case 3:
     default:
-        trade_provider = new FreeQuant::TwsTradeProvider("host=127.0.0.1");
+        trade_provider.reset(new FreeQuant::TwsTradeProvider("host=127.0.0.1"));
         break;
     }
 }
 
-MainWindow::~MainWindow() {
-    delete trade_provider;
-    delete ui;
-}
-
-//void MainWindow::onReqCurrentTime() {
-//    m_client->reqCurrentTime();
-//}
+MainWindow::~MainWindow() {}
 
 void MainWindow::onOpenOrders() {
     trade_provider->openOrders();
+}
+
+void MainWindow::onFetchOrders() {
+    FreeQuant::DateTime dt;
+    trade_provider->fetchOrders("IF1212", dt, dt);
+}
+
+void MainWindow::onFetchTrades() {
+    FreeQuant::DateTime dt;
+    trade_provider->fetchTrades("IF1212", dt, dt);
+}
+
+void MainWindow::onFetchPositions() {
+    trade_provider->updatePosition("IF1212");
+}
+
+void MainWindow::onQueryExchanges() {
+    trade_provider->availableExchanges();
+}
+
+void MainWindow::onQueryInstruments() {
+    trade_provider->availableInstruments();
 }
 
 void MainWindow::onCancelOrder() {
@@ -82,14 +97,14 @@ void MainWindow::onPlaceOrder() {
 //}
 
 void MainWindow::onClear() {
-    ui->responseTextEdit->clear();
-    ui->dataTextEdit->clear();
-    ui->errorsTextEdit->clear();
+//    ui->responseTextEdit->clear();
+//    ui->dataTextEdit->clear();
+//    ui->errorsTextEdit->clear();
 }
 
 void MainWindow::onConnect() {
-    string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26205;userid=352240;password=888888;brokerid=2030";
-//    std::string connection = "protocal=tcp;host=180.168.212.79;port=31205;userid=40022870;password=141537;brokerid=8000";
+//    string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26205;userid=352240;password=888888;brokerid=2030";
+    std::string connection = "protocal=tcp;host=180.168.212.79;port=31205;userid=40022870;password=141537;brokerid=8000";
 
     trade_provider->connect(connection, true);
 //    md_provider->connect();

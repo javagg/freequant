@@ -18,6 +18,7 @@ target_link_libraries(fqclient2 ${PROJECT_NAME} ${QT_LIBRARIES} ${WS2_32})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.fix ${CMAKE_CURRENT_BINARY_DIR}/config.fix COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/FIX44.xml ${CMAKE_CURRENT_BINARY_DIR}/FIX44.xml COPYONLY)
+
 if(WIN32)
     file(COPY ${CTP_DLLS} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif()

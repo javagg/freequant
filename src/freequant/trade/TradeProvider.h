@@ -35,7 +35,9 @@ public:
     virtual void replaceOrder(const FreeQuant::Order& order) = 0;
 
     virtual void openOrders() const {}
-
+    virtual void fetchOrders(const std::string& symbol, const DateTime& start, const DateTime& end) = 0;
+    virtual void fetchTrades(const std::string& symbol, const DateTime& start, const DateTime& end) = 0;
+    virtual void updatePosition(const std::string& symbol) = 0;
     virtual void updateIntrument(const std::string& symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
 

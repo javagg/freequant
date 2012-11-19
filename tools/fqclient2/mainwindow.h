@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <memory>
 #include <string>
 #include <QDebug>
 #include <QMainWindow>
@@ -8,8 +9,8 @@
 #include <QString>
 
 #include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/trade/FixTradeProvider.h>
-
+#include <freequant/trade/CtpTradeProvider.h>
+#include <freequant/marketdata/CtpMarketDataProvider.h>
 #include "commondialog.h"
 
 namespace Ui {
@@ -35,6 +36,11 @@ public slots:
     void onCancelOrder();
     void onReplaceOrder();
     void onOpenOrders();
+    void onFetchOrders();
+    void onFetchTrades();
+    void onFetchPositions();
+    void onQueryExchanges();
+    void onQueryInstruments();
 //    void onReqOpenOrders();
 //    void onReqAllOpenOrders();
 //    void onReqAutoOpenOrders();
@@ -44,18 +50,20 @@ public slots:
 //    void onFinancialAdvisor();
 //    void onReqAccts();
 private:
-    Ui::MainWindow *ui;
+    std::unique_ptr<Ui::MainWindow> ui;
 
-    FreeQuant::MarketDataProvider *md_provider;
-    FreeQuant::TradeProvider *trade_provider;
-    bool faError;
+    std::unique_ptr<FreeQuant::MarketDataProvider> md_provider;
+    std::shared_ptr<FreeQuant::TradeProvider> trade_provider;
+    std::shared_ptr<FreeQuant::CtpTradeProvider> _ctpTradeProvider;
+    std::shared_ptr<FreeQuant::CtpMarketDataProvider> _ctpMarketDataProvider;
+//    bool faError;
 
-    bool m_financialAdvisor;
-    std::string m_managedAccounts;
+//    bool m_financialAdvisor;
+//    std::string m_managedAccounts;
 
-    std::string faGroupsXML;
-    std::string faProfilesXML;
-    std::string faAliasesXML;
+//    std::string faGroupsXML;
+//    std::string faProfilesXML;
+//    std::string faAliasesXML;
 };
 
 #endif // MAINWINDOW_H
