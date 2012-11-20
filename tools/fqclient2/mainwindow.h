@@ -41,6 +41,7 @@ public slots:
     void onFetchPositions();
     void onQueryExchanges();
     void onQueryInstruments();
+    void onQueryInvestor();
 //    void onReqOpenOrders();
 //    void onReqAllOpenOrders();
 //    void onReqAutoOpenOrders();
@@ -52,7 +53,7 @@ public slots:
 private:
     std::unique_ptr<Ui::MainWindow> ui;
 
-    std::unique_ptr<FreeQuant::MarketDataProvider> md_provider;
+    std::unique_ptr<FreeQuant::MarketDataProvider> _md_provider;
     std::shared_ptr<FreeQuant::TradeProvider> trade_provider;
     std::shared_ptr<FreeQuant::CtpTradeProvider> _ctpTradeProvider;
     std::shared_ptr<FreeQuant::CtpMarketDataProvider> _ctpMarketDataProvider;

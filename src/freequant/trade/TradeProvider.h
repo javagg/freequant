@@ -41,6 +41,8 @@ public:
     virtual void updateIntrument(const std::string& symbol, bool block = false) = 0;
     virtual void updateIntrument(FreeQuant::Instrument& instrument) = 0;
 
+    virtual void updateAccount(bool block = false) = 0;
+
     virtual bool orderTypeSupported(FreeQuant::Order::Type type) = 0;
 };
 

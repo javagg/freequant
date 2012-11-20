@@ -43,6 +43,7 @@ public:
     void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument);
 
+    void updateAccount(bool block = false) {}
 
     bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
 private:

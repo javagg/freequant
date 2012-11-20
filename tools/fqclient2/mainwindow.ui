@@ -305,7 +305,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QPushButton" name="pushButton_84">
+        <widget class="QPushButton" name="queryInvestorButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -318,7 +318,7 @@
           </font>
          </property>
          <property name="text">
-          <string>ReqMktDepth</string>
+          <string>queryInvestor</string>
          </property>
         </widget>
        </item>
@@ -759,6 +759,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>queryInvestorButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>onQueryInvestor()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>476</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>375</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onConnect()</slot>
@@ -776,5 +792,6 @@
   <slot>onFetchPositions()</slot>
   <slot>onQueryExchanges()</slot>
   <slot>onQueryInstruments()</slot>
+  <slot>onQueryInvestor()</slot>
  </slots>
 </ui>

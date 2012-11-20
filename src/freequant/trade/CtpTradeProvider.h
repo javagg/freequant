@@ -24,6 +24,7 @@ public:
     void cancelOrder(const FreeQuant::Order& order);
     void replaceOrder(const FreeQuant::Order& order);
 
+    void updateAccount(bool block = false);
     void updateAccounts();
     void updatePosition(const std::string& symbol);
     void openOrders() const;

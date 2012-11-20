@@ -4,10 +4,13 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
 
+#include <freequant/marketdata/Bar.h>
+#include <freequant/marketdata/Trade.h>
 #include <freequant/strategy/Order.h>
 #include <freequant/strategy/Position.h>
 #include <freequant/strategy/Instrument.h>
 #include <freequant/utils/Utility.h>
+#include <freequant/Exception.h>
 
 #include "CtpTradeProvider.h"
 #include "ThostFtdcTraderApi.h"
@@ -22,6 +25,9 @@ static const char *flowPath = "fqctptrader";
 
 class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
+    typedef std::vector<Trade> Trades;
+    typedef std::vector<Order> Orders;
+
     static const int reqTimeout;
     Impl(const std::string& connection, FreeQuant::TradeProvider::Callback *callback) :
         _connected(false), _callback(callback), _api(0) {
@@ -52,6 +58,7 @@ public:
 
     void connect(std::string connection, bool block = false) {
         if (isConnected()) return;
+
         auto params = FreeQuant::parseParamsFromString(connection);
         _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"]; //"tcp://asp-sim2-front1.financial-trading-platform.com:26213";
         _userId = params["userid"];
@@ -59,7 +66,7 @@ public:
         _brokerId = params["brokerid"];
 
         resetApi();
-        _api = CThostFtdcTraderApi::CreateFtdcTraderApi("");
+        _api = CThostFtdcTraderApi::CreateFtdcTraderApi("Trade");
         _api->RegisterSpi(this);
         _api->RegisterFront(const_cast<char*>(_front.c_str()));
         _api->SubscribePrivateTopic(THOST_TERT_QUICK);
@@ -72,8 +79,9 @@ public:
                 while (!isConnected()) {
                     if (_condition.wait_for(lock, boost::chrono::seconds(reqTimeout))
                         == boost::cv_status::timeout) {
-                        cout << "connection timeout" << endl;
-                        return;
+                        throw Timeout("CtpTradeProvider Connection Timeout");
+
+//                        return;
                     }
                     CThostFtdcSettlementInfoConfirmField field = {};
                     _brokerId.copy(field.BrokerID, _brokerId.size());
@@ -150,8 +158,6 @@ public:
 //        CThostFtdcQryInstrumentField field = {};
 //        symbol.copy(field.InstrumentID, symbol.size());
         _api->ReqQryInstrument(&field, requestId++);
-
-//        _api->ReqQryInstrument(CThostFtdcQryInstrumentField *pQryInstrument, requestId);
         return vector<string>();
     }
 
@@ -271,7 +277,10 @@ public:
     }
 
     void updateAccounts() {
-
+        CThostFtdcQryInvestorField field = {};
+        _brokerId.copy(field.BrokerID, _brokerId.size());
+        _userId.copy(field.InvestorID, _userId.size());
+        _api->ReqQryInvestor(&field, ++requestId);
     }
 
     void updatePosition(const std::string& symbol) {
@@ -358,6 +367,18 @@ public:
         cout << "done" << endl;
         boost::unique_lock<boost::mutex> lock(_mutex);
         _condition.notify_all();
+    }
+
+    void OnRspQryInvestor(CThostFtdcInvestorField *i, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
+        std::cout << __FUNCTION__ << std::endl;
+        if (!errorOccurred(pRspInfo)) {
+             cout << "IdentifiedCardNo: " << i->IdentifiedCardNo  << endl
+               << "OpenDate: " << i->OpenDate  << endl
+                   ;
+            if (bIsLast) {
+
+            }
+        }
     }
 
     void OnRspUserLogout(CThostFtdcUserLogoutField *userLogout, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -606,6 +627,9 @@ private:
     TThostFtdcSessionIDType	_sessionId;
     TThostFtdcOrderRefType _orderRef;
 
+    Orders orders;
+
+    Trades trades;
     mutable boost::mutex _mutex;
     mutable boost::condition_variable _condition;
 };
@@ -643,6 +667,10 @@ vector<string> CtpTradeProvider::availableInstruments() const {
     return _impl->availableInstruments();
 }
 
+void CtpTradeProvider::updateAccount(bool block) {
+    _impl->updateAccounts();
+}
+
 void CtpTradeProvider::updateAccounts() {
     _impl->updateAccounts();
 
@@ -667,7 +695,6 @@ void CtpTradeProvider::replaceOrder(const FreeQuant::Order& o) {
 void CtpTradeProvider::openOrders() const {
     _impl->openOrders();
 }
-
 
 void CtpTradeProvider::updateIntrument(const std::string& symbol, bool block) {
     _impl->updateIntrument(symbol, block);

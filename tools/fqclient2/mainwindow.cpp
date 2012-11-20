@@ -7,6 +7,7 @@
 #include <freequant/trade/CtpTradeProvider.h>
 #include <freequant/trade/TwsTradeProvider.h>
 #include <freequant/strategy/Order.h>
+#include <freequant/marketdata/Trade.h>
 
 using namespace std;
 
@@ -27,6 +28,13 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         trade_provider.reset(new FreeQuant::TwsTradeProvider("host=127.0.0.1"));
         break;
     }
+
+//    std::string connection = "protocal=tcp;host=27.115.78.154;port=31213;userid=40022870;password=141537;brokerid=8000";
+//    _md_provider.reset(new FreeQuant::CtpMarketDataProvider(connection));
+//    _md_provider->connect(true);
+//    vector<string> symbols;
+//    symbols.push_back("IF1212");
+//    _md_provider->subscribe(symbols);
 }
 
 MainWindow::~MainWindow() {}
@@ -55,6 +63,10 @@ void MainWindow::onQueryExchanges() {
 
 void MainWindow::onQueryInstruments() {
     trade_provider->availableInstruments();
+}
+
+void MainWindow::onQueryInvestor() {
+    trade_provider->updateAccount();
 }
 
 void MainWindow::onCancelOrder() {

@@ -15,7 +15,7 @@ namespace FreeQuant {
 class Order;
 class Bar;
 struct Tick;
-struct Trade;
+//struct Trade;
 
 std::string toGuidString();
 std::string createGuid();
@@ -28,8 +28,8 @@ FreeQuant::Bar barFrom(const FIX44::MarketDataSnapshotFullRefresh&);
 FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Bar&);
 FreeQuant::Tick tickFrom(const FIX44::MarketDataSnapshotFullRefresh&);
 FIX44::MarketDataSnapshotFullRefresh messageFrom(const FreeQuant::Tick&);
-FreeQuant::Trade tradeFrom(const FIX44::ExecutionReport&);
-FIX44::ExecutionReport messageFrom(const FreeQuant::Trade&);
+//FreeQuant::Trade tradeFrom(const FIX44::ExecutionReport&);
+//FIX44::ExecutionReport messageFrom(const FreeQuant::Trade&);
 
 }
 
