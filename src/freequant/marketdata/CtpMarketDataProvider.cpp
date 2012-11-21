@@ -2,7 +2,10 @@
 #include <iostream>
 #include <vector>
 
+#include <boost/signals2.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/thread/barrier.hpp>
+
 #include <boost/thread/condition_variable.hpp>
 #include <boost/date_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -10,6 +13,8 @@
 
 #include <freequant/marketdata/Bar.h>
 #include <freequant/utils/Utility.h>
+#include <freequant/detail/Atomic.hpp>
+#include <freequant/detail/Barrier.h>
 
 #include "CtpMarketDataProvider.h"
 #include "ThostFtdcMdApi.h"
@@ -19,6 +24,9 @@ using namespace std;
 namespace FreeQuant {
 
 static int requestId = 0;
+
+using Detail::Atomic;
+using Detail::Barrier;
 
 class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
 public:
@@ -39,19 +47,19 @@ public:
         _callback = callback;
     }
 
-    virtual void connect(bool block = true) {
+    void connect(bool block = true) {
         if (_api == 0) {
             _api = CThostFtdcMdApi::CreateFtdcMdApi("");
             _api->RegisterSpi(this);
             _api->RegisterFront(const_cast<char *>(_front.c_str()));
-            _api->Init();
-        }
 
-        boost::unique_lock<boost::mutex> l(_mutex);
-        _condition.wait(l);
+            _connect_barrier.setActive(block);
+            _api->Init();
+            _connect_barrier.wait();
+        }
     }
 
-    virtual void disconnect(bool block = true) {
+    void disconnect(bool block = true) {
         if (_api != 0) {
             _api->RegisterSpi(0);
             _api->Release();
@@ -59,17 +67,17 @@ public:
         }
     }
 
-    virtual bool isConnected() const {
+    bool isConnected() const {
         return _connected;
     }
 
-    virtual void subscribe(std::vector<std::string> symbols) {
+    void subscribe(std::vector<std::string> symbols) {
         vector<const char *> items(symbols.size());
         transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
         _api->SubscribeMarketData(const_cast<char**>(&items[0]), items.size());
     }
 
-    virtual void unsubscribe(std::vector<std::string> symbols) {
+    void unsubscribe(std::vector<std::string> symbols) {
         vector<const char *> items(symbols.size());
         transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
         _api->UnSubscribeMarketData(const_cast<char**>(&items[0]), items.size());
@@ -85,7 +93,13 @@ public:
     std::string _brokerId;
 
     CThostFtdcMdApi *_api;
+
+    Atomic<bool> __connected;
+    boost::mutex _connected_mutex;
     bool _connected;
+
+    Barrier _connect_barrier;
+//    boost::barrier _connect_barrier;
 
     void OnFrontConnected() {
         cerr << "--->>> " << __FUNCTION__ <<  endl;
@@ -106,10 +120,11 @@ public:
         if (!errorOccurred(rspInfo) && last) {
             cerr << "--->>> TradingDay " << _api->GetTradingDay() << endl;
             _connected = true;
+            __connected.set(true);
+
             if (_callback) _callback->onConnected();
 
-            boost::unique_lock<boost::mutex> lock(_mutex);
-            _condition.notify_one();
+            _connect_barrier.wait();
          }
     }
 

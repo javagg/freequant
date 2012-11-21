@@ -36,4 +36,12 @@
 #  define FQ_EXPORT __declspec(dllimport)
 #endif
 
+#if defined(FQ_COMPILER_MSVC)
+#  define FQ_ATTRIBUTE_NORETURN __declspec(noreturn)
+#elif defined(FQ_COMPILER_GCC)
+#  define FQ_ATTRIBUTE_NORETURN __attribute__((__noreturn__))
+#else
+#  define FQ_ATTRIBUTE_NORETURN
+#endif
+
 #endif // FQ_PLATFORM_H

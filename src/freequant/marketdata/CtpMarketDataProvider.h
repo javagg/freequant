@@ -8,6 +8,8 @@
 namespace FreeQuant {
 
 class CtpMarketDataProvider : public MarketDataProvider {
+    typedef MarketDataProvider Base;
+//    typedef MarketDataProvider::Callback Callback;
 public:
     explicit CtpMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
     virtual ~CtpMarketDataProvider();
