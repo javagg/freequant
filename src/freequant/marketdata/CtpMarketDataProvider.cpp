@@ -3,10 +3,9 @@
 #include <vector>
 
 #include <boost/signals2.hpp>
-#include <boost/thread/mutex.hpp>
+
 #include <boost/thread/barrier.hpp>
 
-#include <boost/thread/condition_variable.hpp>
 #include <boost/date_time.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/format.hpp>
@@ -14,7 +13,7 @@
 #include <freequant/marketdata/Bar.h>
 #include <freequant/utils/Utility.h>
 #include <freequant/detail/Atomic.hpp>
-#include <freequant/detail/Barrier.h>
+#include <freequant/detail/Notifier.h>
 
 #include "CtpMarketDataProvider.h"
 #include "ThostFtdcMdApi.h"
@@ -26,10 +25,13 @@ namespace FreeQuant {
 static int requestId = 0;
 
 using Detail::Atomic;
-using Detail::Barrier;
+using Detail::Notifier;
 
 class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
 public:
+    typedef CThostFtdcMdSpi Spi;
+    typedef CThostFtdcMdApi Api;
+
     Impl(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0) :
         _callback(callback), _api(0), _connected(false) {
         auto params = FreeQuant::parseParamsFromString(connection);
@@ -53,9 +55,8 @@ public:
             _api->RegisterSpi(this);
             _api->RegisterFront(const_cast<char *>(_front.c_str()));
 
-            _connect_barrier.setActive(block);
-            _api->Init();
-            _connect_barrier.wait();
+            std::function<void()> func = [&]() { _api->Init(); };
+            _notifier.call(func);
         }
     }
 
@@ -74,7 +75,11 @@ public:
     void subscribe(std::vector<std::string> symbols) {
         vector<const char *> items(symbols.size());
         transform(symbols.begin(), symbols.end(), items.begin(), mem_fun_ref(&string::c_str));
-        _api->SubscribeMarketData(const_cast<char**>(&items[0]), items.size());
+
+        std::function<void()> func = [&]() {
+            _api->SubscribeMarketData(const_cast<char**>(&items[0]), items.size());
+        };
+        _notifier.call(func);
     }
 
     void unsubscribe(std::vector<std::string> symbols) {
@@ -85,21 +90,18 @@ public:
 
     FreeQuant::MarketDataProvider::Callback *_callback;
 
-    boost::mutex _mutex;
-    boost::condition_variable _condition;
     std::string _front;
     std::string _userId;
     std::string _password;
     std::string _brokerId;
 
-    CThostFtdcMdApi *_api;
+    Api *_api;
 
     Atomic<bool> __connected;
     boost::mutex _connected_mutex;
     bool _connected;
 
-    Barrier _connect_barrier;
-//    boost::barrier _connect_barrier;
+    Notifier _notifier;
 
     void OnFrontConnected() {
         cerr << "--->>> " << __FUNCTION__ <<  endl;
@@ -108,6 +110,7 @@ public:
         _brokerId.copy(req.BrokerID, _brokerId.size());
         _userId.copy(req.UserID, _userId.size());
         _password.copy(req.Password, _password.size());
+
         int ret = _api->ReqUserLogin(&req, ++requestId);
         cerr << "--->>>>>> call ReqUserLogin " << ((ret==0) ? "success" : "failed") << endl;
     }
@@ -116,7 +119,9 @@ public:
     void OnHeartBeatWarning(int timeLapse) { std::cout << "heartbeat: " << timeLapse << std::endl; }
 
     void OnRspUserLogin(CThostFtdcRspUserLoginField *rspUserLogin, CThostFtdcRspInfoField *rspInfo, int requestID, bool last) {
+
         cerr << "--->>> " << __FUNCTION__ << endl;
+        cerr << "--->>> " << "request id: " << requestID << endl;
         if (!errorOccurred(rspInfo) && last) {
             cerr << "--->>> TradingDay " << _api->GetTradingDay() << endl;
             _connected = true;
@@ -124,7 +129,7 @@ public:
 
             if (_callback) _callback->onConnected();
 
-            _connect_barrier.wait();
+            _notifier.complete();
          }
     }
 
@@ -134,11 +139,21 @@ public:
 
     void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         cout << __FUNCTION__ << endl;
+        if (bIsLast) {
+            _notifier.complete(nRequestID);
+        }
     }
 
     void OnRspSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
             cerr << __FUNCTION__ << endl;
             cerr << "subscribe " <<  specificInstrument->InstrumentID << endl;
+            if (!errorOccurred(pRspInfo)) {
+                if (bIsLast) {
+//                   _subscribe_barrier.wait();
+                    _notifier.complete();
+                }
+            }
+
     }
 
     void OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {

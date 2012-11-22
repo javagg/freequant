@@ -14,7 +14,7 @@ public:
     void connect(bool block = true) = 0;
     void disconnect(bool block = true);
     bool isConnected() const = 0;
-    std::string name() const = 0;
+    const std::string& name() const = 0;
     void subscribe(const Symbols& symbols);
     void unsubscribe(const Symbols& symbols);
 private:

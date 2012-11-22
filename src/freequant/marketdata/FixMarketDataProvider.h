@@ -15,7 +15,7 @@ public:
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const;
-    std::string name() const { return "FIX"; }
+    const std::string& name() const { return "FIX"; }
     void subscribe(const Symbols& symbols);
     void unsubscribe(const Symbols& symbols);
 

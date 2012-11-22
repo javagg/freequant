@@ -19,7 +19,7 @@ public:
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const { return _connected; }
-    std::string name() const { return "Bogus"; }
+    const std::string& name() const { return "Bogus"; }
     void subscribe(const Symbols&);
     void unsubscribe(const Symbols&);
     void generateBars();

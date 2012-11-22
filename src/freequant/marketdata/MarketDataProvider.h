@@ -30,7 +30,7 @@ public:
     virtual void connect(bool block = true) = 0;
     virtual void disconnect(bool block = true) = 0;
     virtual bool isConnected() const = 0;
-    virtual std::string name() const = 0;
+    virtual const std::string& name() const = 0;
     virtual void subscribe(const Symbols& symbols) = 0;
     virtual void unsubscribe(const Symbols& symbols) = 0;
 };

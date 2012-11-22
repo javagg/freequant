@@ -14,7 +14,7 @@ public:
     virtual void connect();
     virtual void disconnect();
     virtual bool isConnected() const { return true; }
-    virtual std::string name() const { return "yahoo"; }
+    virtual const std::string& name() const { return "yahoo"; }
 
     virtual void subscribe(std::vector<std::string> symbols) {}
     virtual void unsubscribe(std::vector<std::string> symbols) {}

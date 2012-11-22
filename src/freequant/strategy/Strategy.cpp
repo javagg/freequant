@@ -26,7 +26,7 @@ public:
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const { return _connected; }
-    std::string name() const { return "Bogus"; }
+    const std::string& name() const { return "Bogus"; }
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
     void generateBars();
@@ -77,7 +77,10 @@ void Strategy::init() {
 }
 
 void Strategy::start() {
-    if (_mdProvider) _mdProvider->connect();
+    if (_mdProvider)  {
+        _mdProvider->connect();
+        _mdProvider->subscribe(vector<string>(_symbols.begin(), _symbols.end()));
+    }
     BaseStrategy::start();
 }
 
@@ -136,7 +139,6 @@ void Strategy::addSymbols(const Symbols& symbols) {
 
 void Strategy::onMarketDataProviderConnected() {
     std::cout << "onMarketDataProviderConnected: "  << std::endl;
-    _mdProvider->subscribe(vector<string>(_symbols.begin(), _symbols.end()));
 }
 
 void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {

@@ -46,7 +46,7 @@ bool CtpSseMarketDataProvider::isConnected() const {
     return false;
 }
 
-std::string CtpSseMarketDataProvider::name() const {
+const std::string& CtpSseMarketDataProvider::name() const {
     return "CTPSSE";
 }
 
