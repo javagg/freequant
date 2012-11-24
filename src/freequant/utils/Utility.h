@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <boost/filesystem.hpp>
 
 namespace FIX44 {
 class NewOrderSingle;

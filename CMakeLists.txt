@@ -53,6 +53,8 @@ elseif(APPLE)
     option(BUILD_CTP "Build CTP." FALSE)
 endif()
 
+option(FQ_ENABLE_SHARED OFF)
+
 option(BUILD_TWS "Build TWS." TRUE)
 option(BUILD_FIX "Build FIX." TRUE)
 

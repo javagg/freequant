@@ -2,10 +2,17 @@ file(GLOB_RECURSE HEADERS *.h)
 file(GLOB_RECURSE SOURCES *.cpp)
 file(GLOB_RECURSE TWS_SRC ${PROJECT_SOURCE_DIR}/vendors/tws/*.cpp)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES} ${TWS_SRC})
+if(FQ_ENABLE_SHARED)
+    add_library(${PROJECT_NAME} SHARED ${SOURCES} ${TWS_SRC})
+else()
+    add_library(${PROJECT_NAME} STATIC ${SOURCES} ${TWS_SRC})
+endif()
+
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${CURL_LIBRARIES} ${QUICKFIX_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${CTP_LIBRARIES})
 add_definitions(-D_AFXDLL -DIB_USE_STD_STRING)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "1.0" SOVERSION "1")
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
