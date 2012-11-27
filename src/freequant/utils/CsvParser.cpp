@@ -1,6 +1,8 @@
 #include <boost/filesystem.hpp>
 
+#include <freequant/Exception.h>
 #include "CsvParser.h"
+
 #include <csv_parser/csv_parser.hpp>
 
 namespace FreeQuant {
@@ -11,13 +13,21 @@ CsvParser::CsvParser(char delimiter, char terminator, char enclosing) : _parser(
     _parser->set_line_term_char(terminator);
 }
 
-bool CsvParser::load(const std::string filename) {
+void CsvParser::load(const std::string& filename) {
     boost::filesystem::path path(filename);
     if (!boost::filesystem::exists(path) || boost::filesystem::is_directory(path)) {
-        return false;
+        throw InvalidPath(filename);
     }
     _parser->init(filename.c_str());
-    return true;
+
+    _cols.clear();
+    if (hasMore()) {
+        columns = row();
+        int i = 0;
+        for_each(columns.begin(), columns.end(), [&](const std::string& str) {
+            _cols.insert(make_pair(str, i++));
+        });
+    }
 }
 
 void CsvParser::rewind() {

@@ -8,7 +8,8 @@
 
 #include <memory>
 
-#include <freequant/FreeQuantPlatform.h>
+
+#include <freequant/Config.h>
 #include <freequant/marketdata/Bar.h>
 #include <freequant/marketdata/Tick.h>
 #include <freequant/marketdata/Quote.h>
@@ -37,7 +38,7 @@ class Instrument;
  *
  *  Detailed description starts here.
  */
-class Strategy : public BaseStrategy {
+class FQ_EXPORT Strategy : public BaseStrategy {
 public:
     typedef std::shared_ptr<FreeQuant::Exp::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;

@@ -56,7 +56,7 @@ public:
             _api->RegisterFront(const_cast<char *>(_front.c_str()));
 
             std::function<void()> func = [&]() { _api->Init(); };
-            _notifier.call(func);
+            _notifier.call1(func);
         }
     }
 
@@ -79,7 +79,8 @@ public:
         std::function<void()> func = [&]() {
             _api->SubscribeMarketData(const_cast<char**>(&items[0]), items.size());
         };
-        _notifier.call(func);
+        _notifier.call1(func);
+        std::cout << "ok!" << std::endl;
     }
 
     void unsubscribe(std::vector<std::string> symbols) {
@@ -129,7 +130,7 @@ public:
 
             if (_callback) _callback->onConnected();
 
-            _notifier.complete();
+            _notifier.complete1();
          }
     }
 
@@ -140,7 +141,7 @@ public:
     void OnRspError(CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
         cout << __FUNCTION__ << endl;
         if (bIsLast) {
-            _notifier.complete(nRequestID);
+            _notifier.complete1(nRequestID);
         }
     }
 
@@ -150,7 +151,7 @@ public:
             if (!errorOccurred(pRspInfo)) {
                 if (bIsLast) {
 //                   _subscribe_barrier.wait();
-                    _notifier.complete();
+                    _notifier.complete1();
                 }
             }
 

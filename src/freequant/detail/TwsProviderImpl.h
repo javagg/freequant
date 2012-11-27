@@ -91,6 +91,16 @@ public:
         _socket->reqMktData(0, contract, genericTicks, false);
     }
 
+    void subscribe(const std::string& symbol) {
+//        Contract contract;
+//        contract.symbol = symbol;
+//        contract.secType = "STK";
+//        contract.exchange = "SMART";
+//        contract.currency = "USD";
+//        const IBString genericTicks ="428";
+//        _socket->reqMktData(0, contract, genericTicks, false);
+    }
+
     void unsubscribe(std::vector<std::string> symbols) {
 
     }

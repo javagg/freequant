@@ -21,8 +21,8 @@ public:
     void onInit() {
         setRunningMode(Strategy::Live);
 //        string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=888888;password=888888;brokerid=4070";
-//        std::string connection = "protocal=tcp;host=180.168.212.79;port=31213;userid=40022870;password=141537;brokerid=4000";
-        std::string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=352240;password=888888;brokerid=2030";
+        std::string connection = "protocal=tcp;host=180.168.212.79;port=31213;userid=40022870;password=141537;brokerid=4000";
+//        std::string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=352240;password=888888;brokerid=2030";
 
 
         _mdProvider.reset(new FreeQuant::CtpMarketDataProvider(connection));

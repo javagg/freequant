@@ -44,7 +44,7 @@
 #  define FQ_ATTRIBUTE_NORETURN
 #endif
 
-#if define(FQ_HAS_MOVE)
+#if defined(FQ_HAS_MOVE)
 #endif
 
 #endif // FQ_CONFIG_H

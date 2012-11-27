@@ -32,6 +32,10 @@ public:
     explicit Timeout(const std::string& message) : Exception(message) {}
 };
 
+class InvalidPath : public Exception {
+public:
+    explicit InvalidPath(const std::string& message) : Exception(message) {}
+};
 
 class ConnectionTimeout : public std::runtime_error {
 public:

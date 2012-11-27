@@ -2,6 +2,7 @@
 #define FQ_UTILS_HTTPCLIENT_H
 
 #include <string>
+#include <pthread.h>
 
 namespace FreeQuant {
 

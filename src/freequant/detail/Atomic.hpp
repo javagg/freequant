@@ -8,12 +8,15 @@
 
 namespace FreeQuant { namespace Detail {
 
-template<typename T>
+template <class Tag>
+struct UnsupportedTag;
+
+template <typename T>
 class Atomic {
 
 };
 
-template<>
+template <>
 class Atomic<bool> {
 private:
     bool _value;

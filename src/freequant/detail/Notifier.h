@@ -10,45 +10,47 @@ namespace FreeQuant { namespace Detail {
 class Notifier {
 public:
     enum { ignorable = -1 };
-    explicit Notifier() : _requestId(ignorable) {}
+    explicit Notifier() {}
 
     template<typename Functor>
-    void call(std::function<Functor>& func, int requestId = ignorable, bool block = true) {
+    void call1(std::function<Functor>& func, int requestId = ignorable, bool block = true) {
         boost::unique_lock<boost::mutex> lock(_mutex);
-        _requestId = requestId;
-        _completed = false;
-        _block = block;
-
+        std::shared_ptr<data> d(new data);
+        d->requestId = requestId;
+        d->completed = false;
+        d->block = block;
+        _requests.insert(std::make_pair(requestId, d));
         func();
-
-        if (_block) {
-            std::shared_ptr<boost::mutex> mutex(new boost::mutex());
-            std::shared_ptr<boost::condition_variable> condition(new boost::condition_variable());
-            auto pair = std::make_pair(_requestId, std::make_pair(mutex, condition));
-            requests.insert(pair);
-            while (!_completed) condition->wait(lock);
+        if (d->block) {
+            d->cond.reset(new boost::condition_variable());
+            while (!d->completed) d->cond->wait(lock);
         }
     }
 
-    void complete(int requestId = ignorable) {
+    void complete1(int requestId = ignorable) {
         boost::unique_lock<boost::mutex> lock(_mutex);
-        _completed = true;
-        if ((_block) && (_requestId == requestId)) {
-            auto i = requests.find(_requestId);
-            if (i != requests.end()) {
-                auto cond = (i->second).second;
+        auto i = _requests.find(requestId);
+        if (i != _requests.end()) {
+            auto d = i->second;
+            d->completed = true;
+            if (d->block) {
+                auto cond = d->cond;
                 cond->notify_all();
-                requests.erase(i);
             }
+            _requests.erase(i);
         }
     }
 
 private:
-    int _requestId;
-    bool _completed;
-    bool _block;
+    struct data {
+       int requestId;
+       bool completed;
+       bool block;
+       std::shared_ptr<boost::condition_variable> cond;
+    };
+
     boost::mutex _mutex;
-    std::map<int, std::pair<std::shared_ptr<boost::mutex>, std::shared_ptr<boost::condition_variable> > > requests;
+    std::map<int, std::shared_ptr<data> > _requests;
 };
 
 }}
