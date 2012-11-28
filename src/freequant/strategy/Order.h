@@ -60,7 +60,7 @@ public:
 
     const OrderId& orderId() const { return _id; }
     Type type() const { return _type; }
-    void setType(Type type) throw (FreeQuant::OrderTypeNotSupport&);
+    void setType(Type type);
     const std::string& symbol() const { return _symbol; }
     double price() const { return _price; }
     double qty() const { return _qty; }

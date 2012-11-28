@@ -52,15 +52,15 @@ public:
 
             switch (period) {
             case Second:
-                s = static_cast<int>(std::floor(s/k+1));
+                s = static_cast<int>(std::floor(static_cast<double>(s/k+1)));
                 barSizeInSeconds = k*60;
                 break;
             case Miniute:
-                mm = static_cast<int>(std::floor(mm/k+1));
+                mm = static_cast<int>(std::floor(static_cast<double>(mm/k+1)));
                 barSizeInSeconds = k*60*60;
                 break;
             case Hour:
-                h = static_cast<int>(std::floor(h/k+1));
+                h = static_cast<int>(std::floor(static_cast<double>(h/k+1)));
                 barSizeInSeconds = k*60*60*24;
                 break;
             case Day: case Week: case Month:

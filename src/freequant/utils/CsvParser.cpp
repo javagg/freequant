@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 
 #include <freequant/Exception.h>
@@ -52,9 +53,10 @@ void CsvParser::rewind() {
 }
 
 std::size_t CsvParser::rowCount() {
-    size_t count = 0;
+    long long count = 0;
     if (fin.is_open()) {
         struct TestEol {
+            TestEol() : last(0) {}
             bool operator()(char c) {
                 last = c;
                 return last == '\n';
@@ -95,11 +97,11 @@ CsvParser::Row CsvParser::row() {
         using namespace boost::algorithm;
         split(fields, line, boost::is_any_of(","), boost::token_compress_on);
         for_each(fields.begin(), fields.end(), [](string& str) {
-            if (starts_with(str, "\"") && ends_with(str, "\"")) {
-                 replace_first(str, "\"", "");
-                 replace_last(str, "\"", "");
+            if (boost::algorithm::starts_with(str, "\"") && boost::algorithm::ends_with(str, "\"")) {
+                 boost::algorithm::replace_first(str, "\"", "");
+                 boost::algorithm::replace_last(str, "\"", "");
             }
-            trim(str);
+//            boost::algorithm::trim(str);
         });
     }
     return fields;
