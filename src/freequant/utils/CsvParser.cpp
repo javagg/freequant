@@ -1,16 +1,22 @@
+#include <algorithm>
+
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
 #include <freequant/Exception.h>
 #include "CsvParser.h"
 
-#include <csv_parser/csv_parser.hpp>
+using namespace std;
 
 namespace FreeQuant {
 
-CsvParser::CsvParser(char delimiter, char terminator, char enclosing) : _parser(new csv_parser) {
-    _parser->set_enclosed_char(enclosing, ENCLOSURE_OPTIONAL);
-    _parser->set_field_term_char(delimiter);
-    _parser->set_line_term_char(terminator);
+CsvParser::CsvParser(bool hasHeader, char delim, char enclosing) :
+    _delim(delim), _skippedRows(0),
+    _hasHeader(hasHeader) {
+}
+
+CsvParser::~CsvParser() {
+    if (fin.is_open()) fin.close();
 }
 
 void CsvParser::load(const std::string& filename) {
@@ -18,8 +24,14 @@ void CsvParser::load(const std::string& filename) {
     if (!boost::filesystem::exists(path) || boost::filesystem::is_directory(path)) {
         throw InvalidPath(filename);
     }
-    _parser->init(filename.c_str());
 
+    if (fin.is_open()) fin.close();
+
+    fin.open(filename.c_str());
+    if (!fin.is_open()) {
+        // TODO
+        throw InvalidPath(filename);
+    }
     _cols.clear();
     if (hasMore()) {
         columns = row();
@@ -31,23 +43,66 @@ void CsvParser::load(const std::string& filename) {
 }
 
 void CsvParser::rewind() {
-    _parser->reset_record_count();
+    fin.seekg(0);
+    int nrow = _skippedRows;
+    if (_hasHeader) {
+        ++nrow;
+    }
+    skip(nrow);
 }
 
 std::size_t CsvParser::rowCount() {
-    return _parser->get_record_count();
+    size_t count = 0;
+    if (fin.is_open()) {
+        struct TestEol {
+            bool operator()(char c) {
+                last = c;
+                return last == '\n';
+            }
+            char last;
+        };
+        TestEol test;
+        auto pos = fin.tellg();
+        fin.seekg(0);
+        count = count_if(istreambuf_iterator<char>(fin), istreambuf_iterator<char>(), test);
+        if (test.last != '\n') {
+            ++count;
+        }
+        fin.seekg(pos);
+    }
+    return count;
 }
 
 void CsvParser::setSkipRows(int rows) {
-    _parser->set_skip_lines(rows);
+    _skippedRows = rows;
 }
 
-bool CsvParser::hasMore() const {
-    return _parser->has_more_rows();
+bool CsvParser::hasMore() {
+    return fin.peek() != EOF;
 }
 
-std::vector<std::string> CsvParser::row() {
-    return _parser->get_row();
+void CsvParser::skip(int nrow) {
+    for (int i = 0; i < nrow; ++i)
+        row();
+}
+
+CsvParser::Row CsvParser::row() {
+    string line;
+    getline(fin, line);
+
+    vector<string> fields;
+    if (line.size() > 0) {
+        using namespace boost::algorithm;
+        split(fields, line, boost::is_any_of(","), boost::token_compress_on);
+        for_each(fields.begin(), fields.end(), [](string& str) {
+            if (starts_with(str, "\"") && ends_with(str, "\"")) {
+                 replace_first(str, "\"", "");
+                 replace_last(str, "\"", "");
+            }
+            trim(str);
+        });
+    }
+    return fields;
 }
 
 } // namespace FreeQuant

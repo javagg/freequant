@@ -9,6 +9,9 @@ namespace FreeQuant {
 class DateTime {
 public:
     DateTime() : _datetime(boost::posix_time::min_date_time) {}
+    DateTime(int year, int month, int day, int hour, int minute, int second, long long msec = 0) {
+
+    }
     DateTime(const DateTime& other) : _datetime(other._datetime) {}
     DateTime(const std::time_t& t) : _datetime(boost::posix_time::from_time_t(t)) {}
 

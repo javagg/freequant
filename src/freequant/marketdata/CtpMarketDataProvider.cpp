@@ -11,6 +11,7 @@
 #include <boost/format.hpp>
 
 #include <freequant/marketdata/Bar.h>
+#include <freequant/marketdata/Tick.h>
 #include <freequant/utils/Utility.h>
 #include <freequant/detail/Atomic.hpp>
 #include <freequant/detail/Notifier.h>
@@ -27,13 +28,71 @@ static int requestId = 0;
 using Detail::Atomic;
 using Detail::Notifier;
 
+class TickCompressor {
+public:
+    enum BarPeriod { Second, Miniute, Hour, Day, Week, Month };
+    typedef std::function<void(const Bar&)> OnBar;
+
+    DateTime lastTime;
+    DateTime nextBarTime;
+    long barSizeInSeconds;
+
+    TickCompressor(const OnBar& onBar, BarPeriod period = Miniute, int k = 1) : onBar(onBar), period(period), k(k) {}
+    void compress(const Tick& tick) {
+        static bool first = true;
+        if (first) {
+            first = false;
+            DateTime dt = tick.datetime;
+            int y = dt.year();
+            int m = dt.minute();
+            int d = dt.day();
+            int h = dt.hour();
+            int mm = dt.minute();
+            int s = dt.second();
+
+            switch (period) {
+            case Second:
+                s = static_cast<int>(std::floor(s/k+1));
+                barSizeInSeconds = k*60;
+                break;
+            case Miniute:
+                mm = static_cast<int>(std::floor(mm/k+1));
+                barSizeInSeconds = k*60*60;
+                break;
+            case Hour:
+                h = static_cast<int>(std::floor(h/k+1));
+                barSizeInSeconds = k*60*60*24;
+                break;
+            case Day: case Week: case Month:
+            default:
+                break;
+            }
+
+            lastTime = DateTime(y,m,d,h,mm,s);
+        }
+
+        if (tick.datetime >= lastTime) {
+            lastTime.addSeconds(barSizeInSeconds);
+            Bar bar(tick.symbol, lastTime, 0,0,0,0,0);
+            onBar(bar);
+        }
+    }
+
+    OnBar onBar;
+private:
+    BarPeriod period;
+    int k;
+};
+
+
 class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
 public:
     typedef CThostFtdcMdSpi Spi;
     typedef CThostFtdcMdApi Api;
 
     Impl(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0) :
-        _callback(callback), _api(0), _connected(false) {
+        _callback(callback), _api(0), _connected(false),
+        compressor(std::bind(&Impl::onBar, this, std::placeholders::_1)) {
         auto params = FreeQuant::parseParamsFromString(connection);
         _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"];
         _userId = params["userid"];
@@ -80,7 +139,6 @@ public:
             _api->SubscribeMarketData(const_cast<char**>(&items[0]), items.size());
         };
         _notifier.call1(func);
-        std::cout << "ok!" << std::endl;
     }
 
     void unsubscribe(std::vector<std::string> symbols) {
@@ -89,6 +147,7 @@ public:
         _api->UnSubscribeMarketData(const_cast<char**>(&items[0]), items.size());
     }
 
+    TickCompressor compressor;
     FreeQuant::MarketDataProvider::Callback *_callback;
 
     std::string _front;
@@ -154,7 +213,6 @@ public:
                     _notifier.complete1();
                 }
             }
-
     }
 
     void OnRspUnSubMarketData(CThostFtdcSpecificInstrumentField *specificInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast) {
@@ -172,6 +230,9 @@ public:
         Bar bar(depthMarketData->OpenPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice,
             depthMarketData->ClosePrice, depthMarketData->Volume);
         if (_callback) _callback->onBar(bar);
+
+        Tick tick;
+        compressor.compress(tick);
 
 //         Bar bar(depthMarketData->LastPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice, depthMarketData->LastPrice);
 //         _onBar(bar);
@@ -269,6 +330,10 @@ public:
             cerr << "--->>> ErrorID=" << rspInfo->ErrorID << ", ErrorMsg=" << rspInfo->ErrorMsg << endl;
         }
         return (rspInfo && rspInfo->ErrorID != 0);
+    }
+private:
+    void onBar(const Bar& bar) {
+        if (_callback) _callback->onBar(bar);
     }
 };
 

@@ -36,6 +36,10 @@ long long DateTime::msec() const {
     return 0;
 }
 
+DateTime& DateTime::addSeconds(int seconds) {
+    return *this;
+}
+
 std::ostream& operator<<(std::ostream& out, const DateTime& dt) {
     return out << dt._datetime;
 }

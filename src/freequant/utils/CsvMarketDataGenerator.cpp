@@ -29,9 +29,7 @@ void CsvMarketDataGenerator::addSymbols(const Symbols& symbols) {
         parser->setSkipRows(1);
         boost::filesystem::path p(_data_dir);
         p /= *i + ".txt";
-        string ff = p.c_str();
-        parser->load(ff);
-        std::cout << ff << std::endl;
+        parser->load(p.string());
         parsers[*i] = parser;
     }
 }
@@ -54,7 +52,6 @@ std::vector<FreeQuant::Bar> CsvMarketDataGenerator::generate() {
             auto row = parser->row();
             if (!row.empty()) {
                 DateTime dt(row[0]);
-                std::cout << row[1] << std::endl;
                 double open = lexical_cast<double>(row[1]);
                 double high = lexical_cast<double>(row[2]);
                 double low = lexical_cast<double>(row[3]);

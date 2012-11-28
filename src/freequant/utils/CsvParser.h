@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <fstream>
+
 #include <boost/shared_ptr.hpp>
 
 class csv_parser;
@@ -15,16 +17,21 @@ class CsvParser {
 public:
     typedef std::vector<std::string> Row;
 
-    CsvParser(char delimiter = ',', char terminator = '\n', char enclosing = '\"');
+    CsvParser(bool header = true, char delim = ',', char enclosing = '\"');
+    ~CsvParser();
     void load(const std::string& filename);
     void setSkipRows(int rows);
     void rewind();
     std::size_t rowCount();
-    bool hasMore() const;
+    bool hasMore();
     Row row();
 
 private:
-    std::shared_ptr<csv_parser> _parser;
+    void skip(int nrow);
+    char _delim;
+    int _skippedRows;
+    bool _hasHeader;
+    std::ifstream fin;
     std::vector<std::string> columns;
     std::map<std::string, int> _cols;
 };
