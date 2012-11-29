@@ -52,10 +52,6 @@ long DateTime::msec() const {
     return static_cast<long>(td.total_milliseconds() - td.total_seconds()*1000);
 }
 
-std::ostream& operator<<(std::ostream& out, const DateTime& dt) {
-    return out << dt._datetime;
-}
-
 DateTime DateTime::now() {
     DateTime dt;
     dt._datetime = boost::posix_time::microsec_clock::local_time();
@@ -63,42 +59,40 @@ DateTime DateTime::now() {
 }
 
 DateTime& DateTime::addYears(int years) {
-    boost::gregorian::date& d = _datetime.date() + boost::gregorian::years(years);
+    boost::gregorian::date d = _datetime.date() + boost::gregorian::years(years);
     _datetime = boost::posix_time::ptime(d, _datetime.time_of_day());
     return *this;
 }
 
 DateTime& DateTime::addMonths(int months) {
-    boost::gregorian::date& d = _datetime.date() + boost::gregorian::months(months);
+    boost::gregorian::date d = _datetime.date() + boost::gregorian::months(months);
     _datetime = boost::posix_time::ptime(d, _datetime.time_of_day());
     return *this;
 }
 
 DateTime& DateTime::addDays(int days) {
-    boost::gregorian::date& d = _datetime.date() + boost::gregorian::days(days);
+    boost::gregorian::date d = _datetime.date() + boost::gregorian::days(days);
     _datetime = boost::posix_time::ptime(d, _datetime.time_of_day());
     return *this;
 }
 
 DateTime& DateTime::addHours(int hours) {
-    boost::posix_time::time_duration &t = _datetime.time_of_day() + boost::posix_time::hours(hours);
-    _datetime = boost::posix_time::ptime(_datetime.date(), t);
+    _datetime += boost::posix_time::hours(hours);
     return *this;
 }
 
 DateTime& DateTime::addMinutes(int minutes) {
-    boost::posix_time::time_duration &t = _datetime.time_of_day() + boost::posix_time::minutes(minutes);
-    _datetime = boost::posix_time::ptime(_datetime.date(), t);
+    _datetime += boost::posix_time::minutes(minutes);
     return *this;
 }
 
 DateTime& DateTime::addSeconds(int seconds) {
-    boost::posix_time::time_duration &t = _datetime.time_of_day() + boost::posix_time::seconds(seconds);
-    _datetime = boost::posix_time::ptime(_datetime.date(), t);
+    _datetime += boost::posix_time::seconds(seconds);
     return *this;
 }
 
 DateTime& DateTime::addMSecs(long msecs) {
+    _datetime += boost::posix_time::milliseconds(msecs);
     return *this;
 }
 

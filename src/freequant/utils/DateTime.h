@@ -46,14 +46,10 @@ public:
     bool operator>(const DateTime& other) const { return _datetime > other._datetime; }
     bool operator>=(const DateTime& other) const { return _datetime >= other._datetime; }
 
-    friend std::ostream& operator<<(std::ostream& out, const DateTime& dateTime);
-    friend std::istream& operator>>(std::istream& in, DateTime& dateTime);
+    friend inline std::ostream& operator<<(std::ostream& out, const DateTime& dt) { return out << dt._datetime; }
 private:
     boost::posix_time::ptime _datetime;
 };
-
-std::ostream& operator<<(std::ostream& out, const DateTime& dateTime);
-std::istream& operator>>(std::istream& in, DateTime& dateTime);
 
 } // namespace FreeQuant
 

@@ -19,6 +19,7 @@
 #include <freequant/strategy/Order.h>
 #include <freequant/experiment/Indicator.h>
 #include <freequant/experiment/TimeSeries.h>
+#include <freequant/marketdata/TickCompressor.h>
 
 namespace FreeQuant {
 
@@ -93,12 +94,12 @@ public:
     virtual void onProviderDisconnected(const std::string& provider) {}
     virtual void onProviderError(const std::string& provider) {}
 
-    virtual void onBarOpen(const FreeQuant::Bar&) {}
-    virtual void onBar(const FreeQuant::Bar&) {}
-    virtual void onTick(const FreeQuant::Tick&) {}
-    virtual void onQuote(const FreeQuant::Quote&) {}
-    virtual void onTrade(const FreeQuant::Trade&) {}
-    virtual void onTask(const FreeQuant::DateTime&) {}
+    virtual void onBarOpen(const Bar&) {}
+    virtual void onBar(const Bar&) {}
+    virtual void onTick(const Tick&) {}
+    virtual void onQuote(const Quote&) {}
+    virtual void onTrade(const Trade&) {}
+    virtual void onTask(const DateTime&) {}
     virtual void onOrderCreated(const Order&) {}
     virtual void onOrderFilled(const Order&) {}
     virtual void onOrderPartiallyFilled(const Order&) {}
@@ -122,12 +123,12 @@ public:
      */
     virtual void onPositionValueChanged(const Position& position) {}
 
-    void addIndicator(FreeQuant::Indicator *indicator);
+    void addIndicator(Indicator *indicator);
     void addIndicator(IndicatorPtr indicator);
     void addInstrument(const Instrument& instrument) {}
 
-    FreeQuant::Task::TaskId addTask(std::shared_ptr<FreeQuant::Task> task);
-    void removeTask(FreeQuant::Task::TaskId taskId);
+    Task::TaskId addTask(std::shared_ptr<Task> task);
+    void removeTask(Task::TaskId taskId);
 
     void addSymbols(const Symbols& symbols);
     void removeSymbols(const Symbols& symbols);
@@ -136,14 +137,14 @@ public:
     void chooseTradeProvider(std::string name) {}
     void chooseMarketProvider(std::string name) {}
 
-    void setTradeProvider(FreeQuant::TradeProvider *provider);
-    void setTradeProvider(std::shared_ptr<FreeQuant::TradeProvider> provider);
-    void setMarketDataProvider(FreeQuant::MarketDataProvider *provider);
-    void setMarketDataProvider(std::shared_ptr<FreeQuant::MarketDataProvider> provider);
+    void setTradeProvider(TradeProvider *provider);
+    void setTradeProvider(std::shared_ptr<TradeProvider> provider);
+    void setMarketDataProvider(MarketDataProvider *provider);
+    void setMarketDataProvider(std::shared_ptr<MarketDataProvider> provider);
 
     const Instruments& instruments() const { return _instruments; }
     const Orders& orders() const { return _orders; }
-    const Orders& orders(FreeQuant::Order::Status status) const { return _orders; }
+    const Orders& orders(Order::Status status) const { return _orders; }
     const Orders& orders(std::string symbol) const { return _orders; }
 
     bool hasPosition() const { return false; }
@@ -163,10 +164,10 @@ public:
     void cancelOrders();
 
     // Low-level order management functions
-    FreeQuant::Order *createMarketOrder();
-    FreeQuant::Order *createStopOrder();
-    FreeQuant::Order *createLimitOrder();
-    FreeQuant::Order *createStopLimitOrder();
+    Order *createMarketOrder();
+    Order *createStopOrder();
+    Order *createLimitOrder();
+    Order *createStopLimitOrder();
 
     // High-level order management functions;
     void buyMarket();
@@ -181,15 +182,14 @@ public:
     Account *account() { return nullptr; }
 
 private:
-    FreeQuant::Order *createOrder(FreeQuant::Order::Type type, FreeQuant::Order::Side side,
-        double price, long qty);
-
+    Order *createOrder(Order::Type type, Order::Side side, double price, long qty);
     void onStep();
     virtual void onMarketDataProviderConnected();
-    void onMarketDataProviderBar(const FreeQuant::Bar&);
-    void handleBar(const FreeQuant::Bar&);
-    std::vector<FreeQuant::Indicator *> m_indictors;
+    void onMarketDataProviderTick(const Tick&);
+    void accumulateTicks(const std::vector<Tick>&);
+    std::vector<Indicator *> m_indictors;
 
+    TickCompressor<Tick, Bar> compressor;
     Indicators _indicators;
     Instruments _instruments;
     Orders _orders;

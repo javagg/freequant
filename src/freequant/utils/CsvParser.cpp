@@ -53,7 +53,6 @@ void CsvParser::rewind() {
 }
 
 std::size_t CsvParser::rowCount() {
-    long long count = 0;
     if (fin.is_open()) {
         struct TestEol {
             TestEol() : last(0) {}
@@ -66,13 +65,14 @@ std::size_t CsvParser::rowCount() {
         TestEol test;
         auto pos = fin.tellg();
         fin.seekg(0);
-        count = count_if(istreambuf_iterator<char>(fin), istreambuf_iterator<char>(), test);
+        auto count = count_if(istreambuf_iterator<char>(fin), istreambuf_iterator<char>(), test);
         if (test.last != '\n') {
             ++count;
         }
         fin.seekg(pos);
+        return static_cast<std::size_t>(count);
     }
-    return count;
+    return static_cast<std::size_t>(0);
 }
 
 void CsvParser::setSkipRows(int rows) {

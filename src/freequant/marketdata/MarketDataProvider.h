@@ -8,6 +8,7 @@
 #include <boost/signals2.hpp>
 #include <freequant/Provider.h>
 #include <freequant/marketdata/Bar.h>
+#include <freequant/marketdata/Tick.h>
 
 namespace FreeQuant {
 
@@ -22,7 +23,8 @@ public:
         virtual void onDisconnected() = 0;
         virtual void onSubscribed() = 0;
         virtual void onUnsubscribed() = 0;
-        virtual void onBar(const FreeQuant::Bar& bar) = 0;
+        virtual void onBar(const FreeQuant::Bar&) = 0;
+        virtual void onTick(const FreeQuant::Tick&) = 0;
     };
 
     virtual ~MarketDataProvider() {}
@@ -31,8 +33,8 @@ public:
     virtual void disconnect(bool block = true) = 0;
     virtual bool isConnected() const = 0;
     virtual const std::string& name() const = 0;
-    virtual void subscribe(const Symbols& symbols) = 0;
-    virtual void unsubscribe(const Symbols& symbols) = 0;
+    virtual void subscribe(const Symbols&) = 0;
+    virtual void unsubscribe(const Symbols&) = 0;
 };
 
 class DefaultMarketDataProviderCallback : public MarketDataProvider::Callback {
@@ -41,7 +43,8 @@ public:
     void onDisconnected() {}
     void onSubscribed() {}
     void onUnsubscribed() {}
-    void onBar(const FreeQuant::Bar& bar) {}
+    void onBar(const FreeQuant::Bar&) {}
+    void onTick(const FreeQuant::Tick&) {}
 };
 
 } // namespace FreeQuant

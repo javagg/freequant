@@ -42,10 +42,10 @@ class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
 public:
     Strategy *_strategy;
     MdProviderCallback(Strategy *strategy) : _strategy(strategy) {}
-    void onBar(const FreeQuant::Bar& bar) {
-        _strategy->onMarketDataProviderBar(bar);
-    }
 
+    void onTick(const FreeQuant::Tick& tick) {
+        _strategy->onMarketDataProviderTick(tick);
+    }
     void onConnected() {
         _strategy->onMarketDataProviderConnected();
     }
@@ -58,7 +58,8 @@ class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {
 Strategy::Strategy() : BaseStrategy(),
     _mdProvider(0), m_tradeProvider(0),
     _mdCallback(new Strategy::MdProviderCallback(this)),
-    _tradeCallback(new Strategy::TradeProviderCallback()) {
+    _tradeCallback(new Strategy::TradeProviderCallback()),
+    compressor(std::bind(&Strategy::accumulateTicks, this, std::placeholders::_1)) {
 }
 
 Strategy::~Strategy() {
@@ -117,14 +118,6 @@ FreeQuant::Task::TaskId Strategy::addTask(std::shared_ptr<FreeQuant::Task> task)
     return 0;
 }
 
-void Strategy::handleBar(const FreeQuant::Bar& bar) {
-//    std::for_each(
-//        m_indictors.begin(),
-//        m_indictors.end(),
-//        boost::bind(&Indicator::onBar, _1, bar)
-//    );
-}
-
 void Strategy::addIndicator(Indicator *indicator) {
     m_indictors.push_back(indicator);
 }
@@ -141,20 +134,15 @@ void Strategy::onMarketDataProviderConnected() {
     std::cout << "onMarketDataProviderConnected: "  << std::endl;
 }
 
-void Strategy::onMarketDataProviderBar(const FreeQuant::Bar& bar) {
-    BarSeries& bars = _barSeriesMap[bar.symbol()];
-    bars.append(bar.dateTime(), bar);
-
-    for (auto i = _indicators.begin(); i != _indicators.end(); ++i) {
-        (*i)->onCalculate(bar);
-    }
-//    TimeSeriesPtr closeTs = _tsMap["close"];
-//    closeTs->append(std::make_pair(bar.dateTime(), bar.close()));
-
-//    for (auto i = _indicators.begin(); i != _indicators.end(); ++i) {
-//        (*i)->append(bar.close());
-//    }
+void Strategy::accumulateTicks(const std::vector<Tick>& ticks) {
+    copy(ticks.begin(), ticks.end(), ostream_iterator<Tick>(cout, "\n"));
+    Bar bar;
     onBar(bar);
+}
+
+void Strategy::onMarketDataProviderTick(const FreeQuant::Tick& tick) {
+    onTick(tick);
+    compressor.compress(tick);
 }
 
 // Low-level order management functions

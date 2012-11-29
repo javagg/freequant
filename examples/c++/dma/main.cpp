@@ -23,7 +23,6 @@ public:
 //        string connection = "protocal=tcp;host=180.168.212.79;port=31213;userid=40022870;password=141537;brokerid=4000";
         string connection = "protocal=tcp;host=asp-sim2-front1.financial-trading-platform.com;port=26213;userid=352240;password=888888;brokerid=2030";
 
-
         _mdProvider.reset(new FreeQuant::CtpMarketDataProvider(connection));
 //        _mdProvider.reset(new FreeQuant::FixMarketDataProvider("senderid=ME;targetid=FQMarketDataServer;host=127.0.0.1;port=7711;username=simuser;password=simuser"));
         _tradeProvider.reset(new FreeQuant::CtpTradeProvider(connection));
@@ -53,6 +52,10 @@ public:
 
     void onBar(const FreeQuant::Bar& bar) {
         cout << "bar: "<< bar << endl;
+    }
+
+    void onTick(const FreeQuant::Tick& tick) {
+        cout << "tick: "<< tick << endl;
     }
 
     void onDestroy() {

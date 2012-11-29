@@ -9,6 +9,8 @@
 namespace FreeQuant {
 
 struct Tick {
+    Tick() : datetime(FreeQuant::DateTime::now()) {}
+
     FreeQuant::DateTime datetime;
     std::string symbol;
     std::string exchange;
@@ -27,6 +29,7 @@ struct Tick {
     double last;
     // Volume for the current Last price
     long volume;
+    friend std::ostream& operator<<(std::ostream&, const FreeQuant::Tick&);
 };
 
 std::ostream& operator<<(std::ostream&, const FreeQuant::Tick&);

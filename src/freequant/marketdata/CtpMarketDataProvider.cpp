@@ -2,15 +2,8 @@
 #include <iostream>
 #include <vector>
 
-#include <boost/signals2.hpp>
-
-#include <boost/thread/barrier.hpp>
-
-#include <boost/date_time.hpp>
-#include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/format.hpp>
 
-#include <freequant/marketdata/Bar.h>
 #include <freequant/marketdata/Tick.h>
 #include <freequant/utils/Utility.h>
 #include <freequant/detail/Atomic.hpp>
@@ -28,71 +21,14 @@ static int requestId = 0;
 using Detail::Atomic;
 using Detail::Notifier;
 
-class TickCompressor {
-public:
-    enum BarPeriod { Second, Miniute, Hour, Day, Week, Month };
-    typedef std::function<void(const Bar&)> OnBar;
-
-    DateTime lastTime;
-    DateTime nextBarTime;
-    long barSizeInSeconds;
-
-    TickCompressor(const OnBar& onBar, BarPeriod period = Miniute, int k = 1) : onBar(onBar), period(period), k(k) {}
-    void compress(const Tick& tick) {
-        static bool first = true;
-        if (first) {
-            first = false;
-            DateTime dt = tick.datetime;
-            int y = dt.year();
-            int m = dt.minute();
-            int d = dt.day();
-            int h = dt.hour();
-            int mm = dt.minute();
-            int s = dt.second();
-
-            switch (period) {
-            case Second:
-                s = static_cast<int>(std::floor(static_cast<double>(s/k+1)));
-                barSizeInSeconds = k*60;
-                break;
-            case Miniute:
-                mm = static_cast<int>(std::floor(static_cast<double>(mm/k+1)));
-                barSizeInSeconds = k*60*60;
-                break;
-            case Hour:
-                h = static_cast<int>(std::floor(static_cast<double>(h/k+1)));
-                barSizeInSeconds = k*60*60*24;
-                break;
-            case Day: case Week: case Month:
-            default:
-                break;
-            }
-
-            lastTime = DateTime(y,m,d,h,mm,s);
-        }
-
-        if (tick.datetime >= lastTime) {
-            lastTime.addSeconds(barSizeInSeconds);
-            Bar bar(tick.symbol, lastTime, 0,0,0,0,0);
-            onBar(bar);
-        }
-    }
-
-    OnBar onBar;
-private:
-    BarPeriod period;
-    int k;
-};
-
-
 class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
 public:
     typedef CThostFtdcMdSpi Spi;
     typedef CThostFtdcMdApi Api;
 
     Impl(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0) :
-        _callback(callback), _api(0), _connected(false),
-        compressor(std::bind(&Impl::onBar, this, std::placeholders::_1)) {
+        _callback(callback), _api(0), _connected(false)
+    {
         auto params = FreeQuant::parseParamsFromString(connection);
         _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"];
         _userId = params["userid"];
@@ -147,7 +83,6 @@ public:
         _api->UnSubscribeMarketData(const_cast<char**>(&items[0]), items.size());
     }
 
-    TickCompressor compressor;
     FreeQuant::MarketDataProvider::Callback *_callback;
 
     std::string _front;
@@ -209,7 +144,6 @@ public:
             cerr << "subscribe " <<  specificInstrument->InstrumentID << endl;
             if (!errorOccurred(pRspInfo)) {
                 if (bIsLast) {
-//                   _subscribe_barrier.wait();
                     _notifier.complete1();
                 }
             }
@@ -220,108 +154,16 @@ public:
         cerr << "unsubscribe " << specificInstrument->InstrumentID << endl;
     }
 
-    void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *depthMarketData) {
-        cerr << __FUNCTION__ << endl;
-        boost::gregorian::date d = boost::gregorian::from_undelimited_string(depthMarketData->TradingDay);
-        string sdate = to_iso_extended_string(d);
-        string str = boost::str(boost::format("%s %s.%s") % sdate %
-            depthMarketData->UpdateTime % depthMarketData->UpdateMillisec);
-        boost::posix_time::ptime dt = boost::posix_time::time_from_string(str);
-        Bar bar(depthMarketData->OpenPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice,
-            depthMarketData->ClosePrice, depthMarketData->Volume);
-        if (_callback) _callback->onBar(bar);
-
+    void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField *data) {
+        string str = boost::str(boost::format("%s %s.%s") % data->TradingDay %
+            data->UpdateTime % data->UpdateMillisec);
         Tick tick;
-        compressor.compress(tick);
+        tick.datetime = DateTime(str, "%Y%m%d %H:%M:%S%F");
+        tick.symbol = data->InstrumentID;
+        tick.open = data->OpenPrice;
+        tick.ask = data->AskPrice1;
 
-//         Bar bar(depthMarketData->LastPrice, depthMarketData->HighestPrice, depthMarketData->LowestPrice, depthMarketData->LastPrice);
-//         _onBar(bar);
-
-//        TThostFtdcDateType	TradingDay;
-
-//        TThostFtdcInstrumentIDType	InstrumentID;
-
-//        TThostFtdcExchangeIDType	ExchangeID;
-
-//        TThostFtdcExchangeInstIDType	ExchangeInstID;
-
-//        TThostFtdcPriceType	LastPrice;
-
-//        TThostFtdcPriceType	PreSettlementPrice;
-
-//        TThostFtdcPriceType	PreClosePrice;
-
-//        TThostFtdcLargeVolumeType	PreOpenInterest;
-
-//        TThostFtdcPriceType	OpenPrice;
-
-//        TThostFtdcPriceType	HighestPrice;
-
-//        TThostFtdcPriceType	LowestPrice;
-
-//        TThostFtdcVolumeType	Volume;
-
-//        TThostFtdcMoneyType	Turnover;
-
-//        TThostFtdcLargeVolumeType	OpenInterest;
-
-//        TThostFtdcPriceType	ClosePrice;
-
-//        TThostFtdcPriceType	SettlementPrice;
-
-//        TThostFtdcPriceType	UpperLimitPrice;
-
-//        TThostFtdcPriceType	LowerLimitPrice;
-
-//        TThostFtdcRatioType	PreDelta;
-
-//        TThostFtdcRatioType	CurrDelta;
-
-//        TThostFtdcTimeType	UpdateTime;
-
-//        TThostFtdcMillisecType	UpdateMillisec;
-
-//        TThostFtdcPriceType	BidPrice1;
-
-//        TThostFtdcVolumeType	BidVolume1;
-
-//        TThostFtdcPriceType	AskPrice1;
-
-//        TThostFtdcVolumeType	AskVolume1;
-
-//        TThostFtdcPriceType	BidPrice2;
-
-//        TThostFtdcVolumeType	BidVolume2;
-
-//        TThostFtdcPriceType	AskPrice2;
-
-//        TThostFtdcVolumeType	AskVolume2;
-
-//        TThostFtdcPriceType	BidPrice3;
-
-//        TThostFtdcVolumeType	BidVolume3;
-
-//        TThostFtdcPriceType	AskPrice3;
-
-//        TThostFtdcVolumeType	AskVolume3;
-
-//        TThostFtdcPriceType	BidPrice4;
-
-//        TThostFtdcVolumeType	BidVolume4;
-
-//        TThostFtdcPriceType	AskPrice4;
-
-//        TThostFtdcVolumeType	AskVolume4;
-
-//        TThostFtdcPriceType	BidPrice5;
-
-//        TThostFtdcVolumeType	BidVolume5;
-
-//        TThostFtdcPriceType	AskPrice5;
-
-//        TThostFtdcVolumeType	AskVolume5;
-
-//        TThostFtdcPriceType	AveragePrice;
+        if (_callback) _callback->onTick(tick);
     }
 
     bool errorOccurred(CThostFtdcRspInfoField *rspInfo) {
@@ -330,10 +172,6 @@ public:
             cerr << "--->>> ErrorID=" << rspInfo->ErrorID << ", ErrorMsg=" << rspInfo->ErrorMsg << endl;
         }
         return (rspInfo && rspInfo->ErrorID != 0);
-    }
-private:
-    void onBar(const Bar& bar) {
-        if (_callback) _callback->onBar(bar);
     }
 };
 
