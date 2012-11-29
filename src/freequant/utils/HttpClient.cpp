@@ -1,34 +1,26 @@
 #include <curl/curl.h>
 #include "HttpClient.h"
 
-
 using namespace std;
 
 namespace FreeQuant {
 
 static int writer(char *data, size_t size, size_t nmemb, string *writerData) {
-  if (writerData == NULL)
+  if (writerData == nullptr)
     return 0;
 
   writerData->append(data, size*nmemb);
   return size*nmemb;
 }
 
-HttpClient::HttpClient() : _curl(curl_easy_init()) {
-}
-
-HttpClient::~HttpClient() {
-    curl_easy_cleanup(_curl);
-}
-
-string HttpClient::get(const string& url) {
-    std::string buffer;
-    CURLcode res;
-    res = curl_easy_setopt(_curl, CURLOPT_URL, url.c_str());
-    res = curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, writer);
-    res = curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &buffer);
-    res = curl_easy_perform(_curl);
-
+const string& HttpClient::get(const string& url) {
+    buffer.clear();
+    CURL *curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+    CURLcode res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
     return buffer;
 }
 
