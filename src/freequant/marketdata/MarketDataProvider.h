@@ -23,8 +23,8 @@ public:
         virtual void onDisconnected() = 0;
         virtual void onSubscribed() = 0;
         virtual void onUnsubscribed() = 0;
-        virtual void onBar(const FreeQuant::Bar&) = 0;
-        virtual void onTick(const FreeQuant::Tick&) = 0;
+        virtual void onBar(const Bar&) = 0;
+        virtual void onTick(const Tick&) = 0;
     };
 
     virtual ~MarketDataProvider() {}

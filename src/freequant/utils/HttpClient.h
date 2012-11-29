@@ -9,7 +9,7 @@ class HttpClient {
 public:
     HttpClient();
     ~HttpClient();
-    std::string get(std::string url);
+    std::string get(const std::string& url);
 private:
     void *_curl;
 };

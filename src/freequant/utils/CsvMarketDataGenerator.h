@@ -12,15 +12,15 @@ class CsvMarketDataGenerator : public RandomMarketDataGenerator {
 public:
     CsvMarketDataGenerator(const std::string& filename);
     explicit CsvMarketDataGenerator();
-    virtual std::vector<FreeQuant::Bar> generate();
+    virtual std::vector<Bar> generate();
     void addSymbols(const Symbols&);
     void removeSymbols(const Symbols&);
     void setDataDir(const std::string& dir);
 private:
     typedef RandomMarketDataGenerator Base;
-    FreeQuant::CsvParser _parser;
+//    CsvParser _parser;
     std::string _data_dir;
-    std::map<std::string, std::shared_ptr<FreeQuant::CsvParser> > parsers;
+    std::map<std::string, std::shared_ptr<CsvParser> > parsers;
 };
 
 } // namespace FreeQuant

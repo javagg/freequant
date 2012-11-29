@@ -41,24 +41,24 @@ class Instrument;
  */
 class FQ_EXPORT Strategy : public BaseStrategy {
 public:
-    typedef std::shared_ptr<FreeQuant::Exp::Indicator> IndicatorPtr;
+    typedef std::shared_ptr<Exp::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;
 
     typedef std::shared_ptr<Task> TaskPtr;
     typedef std::vector<TaskPtr> Tasks;
 
-    typedef std::shared_ptr<FreeQuant::Order> OrderPtr;
+    typedef std::shared_ptr<Order> OrderPtr;
     typedef std::vector<OrderPtr> Orders;
 
-    typedef std::shared_ptr<FreeQuant::Instrument> InstrumentPtr;
+    typedef std::shared_ptr<Instrument> InstrumentPtr;
     typedef std::vector<InstrumentPtr> Instruments;
 
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
 
 //    typedef FreeQuant::Exp::TimeSeries<Bar> BarSeries;
-    typedef FreeQuant::Exp::TimeSeries<Tick> TickSeries;
-    typedef FreeQuant::Exp::TimeSeries<Trade> TradeSeries;
+    typedef Exp::TimeSeries<Tick> TickSeries;
+    typedef Exp::TimeSeries<Trade> TradeSeries;
 
     typedef std::map<std::string, BarSeries> BarSeriesMap;
     typedef std::vector<std::string> Symbols;

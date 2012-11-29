@@ -9,7 +9,6 @@ template <typename Tick, typename Bar>
 class TickCompressor {
 public:
     enum BarPeriod { Second, Miniute, Hour, Day, Week, Month };
-//    typedef std::function<void(const Bar&)> OnBar;
     typedef std::function<void(const std::vector<Tick>&)> AccumulateFunc;
 
     DateTime barBeginTime;
@@ -67,7 +66,6 @@ public:
 
 private:
     const AccumulateFunc& accumu;
-//    const OnBar& onBar;
     BarPeriod period;
     int k;
     std::vector<Tick> ticksInBar;

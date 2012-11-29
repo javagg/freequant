@@ -12,9 +12,8 @@ using namespace boost;
 
 namespace FreeQuant {
 
-CsvMarketDataGenerator::CsvMarketDataGenerator(const std::string& filename) :
-    _parser(',', '\n', '\"') {
-    _parser.load(filename);
+CsvMarketDataGenerator::CsvMarketDataGenerator(const string& filename) {
+//    _parser.load(filename);
 }
 
 CsvMarketDataGenerator::CsvMarketDataGenerator() :
@@ -38,12 +37,12 @@ void CsvMarketDataGenerator::removeSymbols(const Symbols& symbols) {
     Base::removeSymbols(symbols);
 }
 
-void CsvMarketDataGenerator::setDataDir(const std::string& dir) {
+void CsvMarketDataGenerator::setDataDir(const string& dir) {
     _data_dir = dir;
 }
 
-std::vector<FreeQuant::Bar> CsvMarketDataGenerator::generate() {
-    std::vector<FreeQuant::Bar> bars(symbols().size());
+vector<Bar> CsvMarketDataGenerator::generate() {
+    vector<Bar> bars(symbols().size());
     for (auto i = parsers.begin(); i != parsers.end(); ++i) {
         const string& symbol = i->first;
         auto parser = i->second;

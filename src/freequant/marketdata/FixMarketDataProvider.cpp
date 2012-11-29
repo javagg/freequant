@@ -256,9 +256,7 @@ private:
             }
         }
 
-
-//        Bar bar(1,2,1,1,1);
-        Bar bar(symbol, FreeQuant::DateTime(), open, 1, 1, close, 1);
+        Bar bar(symbol, DateTime(), open, 1, 1, close, 1);
         if (_callback) {
             _callback->onBar(bar);
         }

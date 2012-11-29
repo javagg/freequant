@@ -21,7 +21,7 @@ HttpClient::~HttpClient() {
     curl_easy_cleanup(_curl);
 }
 
-string HttpClient::get(string url) {
+string HttpClient::get(const string& url) {
     std::string buffer;
     CURLcode res;
     res = curl_easy_setopt(_curl, CURLOPT_URL, url.c_str());
