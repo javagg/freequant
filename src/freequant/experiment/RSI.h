@@ -18,13 +18,13 @@ public:
         return _data.size();
     }
 
-    void add(const FreeQuant::DateTime& datetime, const std::map<std::string, double>& values) {
+    void add(const DateTime& datetime, const std::map<std::string, double>& values) {
 
     }
 
-    void onCalculate(const FreeQuant::Bar& bar);
+    void onCalculate(const Bar& bar);
 
-    void add(const FreeQuant::DateTime& datetime, std::vector<double>& values) {
+    void add(const DateTime& datetime, std::vector<double>& values) {
 
     }
 
@@ -34,7 +34,7 @@ public:
 
 private:
     MA _ma;
-    FreeQuant::TimeSeries<std::tuple<double, double, double> > _data;
+    TimeSeries<std::tuple<double, double, double> > _data;
 };
 
 }}

@@ -94,8 +94,8 @@ public:
      */
     double cumQty() const { return 0; }
 
-    const FreeQuant::DateTime& dateTime() const {}
-    const FreeQuant::DateTime& expireTime() const {}
+    const DateTime& dateTime() const {}
+    const DateTime& expireTime() const {}
     double stopPrice() const { return _stopPrice; }
     double limitPrice() const { return _limitPrice; }
     std::string currency() const { return _currency; }

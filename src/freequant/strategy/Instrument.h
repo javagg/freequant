@@ -64,9 +64,12 @@ private:
     double _multiplier;
     double _tickSize;
     double _margin;
+    double _longMargin;
+    double _shortMargin;
     Type _type;
     std::string _currency;
     int _minTradeVolume;
+    int _maxTradeVolume;
 };
 
 } // namespace FreeQuant

@@ -22,7 +22,7 @@ public:
     std::size_t size() const {
         return _data.size();
     }
-    FreeQuant::DateTime cross(TimeSeries&);
+    DateTime cross(TimeSeries&);
 
     T& first(long long pos = 1) const {
         long long r = pos % size();
@@ -40,26 +40,26 @@ public:
 
     T& max() { return _max; }
     T& min() { return _min; }
-    T& operator[](const FreeQuant::DateTime& at) const;
+    T& operator[](const DateTime& at) const;
     T& operator[](long long pos) const;
 
-    const FreeQuant::DateTime& beginTime() const {
+    const DateTime& beginTime() const {
         auto i = _data.begin();
         return i->first;
     }
 
-    const FreeQuant::DateTime& endTime() const {
+    const DateTime& endTime() const {
         auto i = _data.end();
         return (i--)->first;
     }
 
-    bool contains(const FreeQuant::DateTime&) const;
+    bool contains(const DateTime&) const;
 
     void append(const T& value) {
-        append(FreeQuant::DateTime::now(), value);
+        append(DateTime::now(), value);
     }
 
-    void append(const FreeQuant::DateTime& datetime, const T& value) {
+    void append(const DateTime& datetime, const T& value) {
         _data.insert(std::make_pair(datetime, value));
     }
 //    FreeQuant::TimeSeries& between(const FreeQuant::DateTime<T>& from, const FreeQuant::DateTime<T>& to);
@@ -71,7 +71,7 @@ public:
 
     friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
 private:
-    typedef std::pair<FreeQuant::DateTime, T> Pair;
+    typedef std::pair<DateTime, T> Pair;
     struct Comp {
         bool operator()(const Pair& s1, const Pair& s2) const {
             return s1.first < s2.first;

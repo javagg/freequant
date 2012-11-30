@@ -8,8 +8,7 @@ namespace FreeQuant {
 
 class DateTime {
 public:
-    DateTime() : _datetime(boost::posix_time::min_date_time) {}
-    DateTime(int year, int month, int day, int hour = 0, int minute = 0, int second = 0,
+    DateTime(int year = 1970, int month = 1, int day = 1, int hour = 0, int minute = 0, int second = 0,
         long msec = 0) : _datetime(boost::gregorian::date(year, month, day),
         boost::posix_time::time_duration(hour, minute, second)
         + boost::posix_time::milliseconds(msec)) {}

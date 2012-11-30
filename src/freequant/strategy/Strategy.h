@@ -39,7 +39,7 @@ class Instrument;
  *
  *  Detailed description starts here.
  */
-class FQ_EXPORT Strategy : public BaseStrategy {
+class Strategy : public BaseStrategy {
 public:
     typedef std::shared_ptr<Exp::Indicator> IndicatorPtr;
     typedef std::vector<IndicatorPtr> Indicators;
@@ -157,6 +157,8 @@ public:
     const BarSeries& barSeries(const std::string symbol) {
         return _barSeriesMap[symbol];
     }
+
+    Trade *lastTrade(const std::string& symbol);
 
     long position(std::string symbol) { return 0; }
     void clearPositions();

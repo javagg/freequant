@@ -18,13 +18,13 @@ public:
         return _data.size();
     }
 
-    void add(const FreeQuant::DateTime& datetime, const std::map<std::string, double>& values) {
+    void add(const DateTime& datetime, const std::map<std::string, double>& values) {
 
     }
 
-    void onCalculate(const FreeQuant::Bar& bar);
+    void onCalculate(const Bar& bar);
 
-    void add(const FreeQuant::DateTime& datetime, std::vector<double>& values) {
+    void add(const DateTime& datetime, std::vector<double>& values) {
         if (!values.empty()) {
             acc(values.front());
             double calculated = boost::accumulators::rolling_mean(acc);
@@ -33,7 +33,7 @@ public:
     }
 
     void add(std::vector<double>& values) {
-        add(FreeQuant::DateTime::now(), values);
+        add(DateTime::now(), values);
     }
 
     void add(double value) {
@@ -51,7 +51,7 @@ public:
     }
 
 private:
-    FreeQuant::TimeSeries<double> _data;
+    TimeSeries<double> _data;
     int _window;
     boost::accumulators::accumulator_set<double,
         boost::accumulators::stats<boost::accumulators::tag::rolling_mean> > acc;

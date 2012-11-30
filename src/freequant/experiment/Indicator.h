@@ -9,20 +9,24 @@
 
 namespace FreeQuant {
 
-typedef TimeSeries<FreeQuant::Bar> BarSeries;
+typedef TimeSeries<Bar> BarSeries;
 
 namespace Exp {
 
 class Indicator {
 public:
+    enum Item { PriceClose, PriceOpen, PriceHigh, PriceLow, PriceMedian, PriceTypical, PriceWeighted,
+        VolumeTrade, VolumeReal = VolumeTrade, VolumeTick, VolumeOpenInterest };
+
+    enum MaMethod { SMA, EMA, SMMA, LWMA };
     enum Cross { Above, Below, NoCross };
 
     virtual ~Indicator() {}
     virtual std::size_t size() = 0;
-    virtual bool contains(const FreeQuant::DateTime& datetime);
-    virtual bool contains(const FreeQuant::Bar& bar);
-    virtual Cross cross(double level, const FreeQuant::Bar& bar);
-    virtual Cross cross(double level, const FreeQuant::DateTime& datetime);
+    virtual bool contains(const DateTime& datetime);
+    virtual bool contains(const Bar& bar);
+    virtual Cross cross(double level, const Bar& bar);
+    virtual Cross cross(double level, const DateTime& datetime);
     /*!
      *
      * Checks if this indicator crosses another indicator at specified bar
@@ -32,15 +36,15 @@ public:
      * \param bar
      * \return
      */
-    virtual Cross cross(const Indicator& indicator, const FreeQuant::Bar& bar);
-    virtual Cross cross(const TimeSeries<double>& indicator, const FreeQuant::DateTime& datetime);
-    virtual Cross cross(const BarSeries& bars, const FreeQuant::DateTime& datetime);
-    virtual Cross cross(const BarSeries& bars, const FreeQuant::DateTime& datetime, FreeQuant::Bar::Item item);
+    virtual Cross cross(const Indicator& indicator, const Bar& bar);
+    virtual Cross cross(const TimeSeries<double>& indicator, const DateTime& datetime);
+    virtual Cross cross(const BarSeries& bars, const DateTime& datetime);
+    virtual Cross cross(const BarSeries& bars, const DateTime& datetime, Bar::Item item);
 
-    virtual bool crossAbove(const BarSeries& bars, FreeQuant::Bar::Item item);
-    virtual void onCalculate(const FreeQuant::Bar& bar) = 0;
-    virtual void add(const FreeQuant::DateTime& datetime, const std::map<std::string, double>& values) = 0;
-    virtual void add(const FreeQuant::DateTime& datetime, std::vector<double>& values) = 0;
+    virtual bool crossAbove(const BarSeries& bars, Bar::Item item);
+    virtual void onCalculate(const Bar& bar) = 0;
+    virtual void add(const DateTime& datetime, const std::map<std::string, double>& values) = 0;
+    virtual void add(const DateTime& datetime, std::vector<double>& values) = 0;
     virtual double last(const std::string& column, long long pos = 0) = 0;
 };
 
