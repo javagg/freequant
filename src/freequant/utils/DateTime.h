@@ -8,6 +8,8 @@ namespace FreeQuant {
 
 class DateTime {
 public:
+    enum WeekDays { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
+
     DateTime(int year = 1970, int month = 1, int day = 1, int hour = 0, int minute = 0, int second = 0,
         long msec = 0) : _datetime(boost::gregorian::date(year, month, day),
         boost::posix_time::time_duration(hour, minute, second)
@@ -26,7 +28,8 @@ public:
     int minute() const;
     int second() const;
     long msec() const;
-
+    int dayOfWeek() const;
+    int dayOfYear() const;
     bool valid() const { return !_datetime.is_not_a_date_time(); }
 
     DateTime& addYears(int years);

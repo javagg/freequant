@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include <freequant/utils/DateTime.h>
+
 namespace FreeQuant {
 
 class Position {
@@ -14,10 +16,13 @@ public:
     std::string symbol;
     Direction direction;
     double volume;
-    double openPrice;
-    double stopLossPrice;
-    double takeProfitPrice;
+    double price;
+    double stopLoss;
+    double takeProfit;
     double commission;
+    double swap;
+    double profit;
+    DateTime datetime;
 
     double getPnL();
     double getNetPnL();

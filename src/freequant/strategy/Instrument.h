@@ -64,6 +64,7 @@ private:
     double _multiplier;
     double _tickSize;
     double _margin;
+    double _initialMargin;
     double _longMargin;
     double _shortMargin;
     Type _type;

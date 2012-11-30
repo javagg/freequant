@@ -27,14 +27,14 @@ public:
     DateTime cross(TimeSeries&);
 
     T& first(long long pos = 1) const {
-        double r = pos % size();
+        auto r = pos % size();
         auto i = _data.begin();
         for (r--; r != 0; r--) i++;
         return const_cast<T&>(i->second);
     }
 
     T& last(long long pos = 1) const {
-        double r = pos % size();
+        auto r = pos % size();
         auto i = _data.end();
         for (; r != 0; r--) i--;
         return const_cast<T&>(i->second);

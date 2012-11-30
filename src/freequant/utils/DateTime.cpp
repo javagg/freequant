@@ -52,6 +52,14 @@ long DateTime::msec() const {
     return static_cast<long>(td.total_milliseconds() - td.total_seconds()*1000);
 }
 
+DateTime::WeekDays DateTime::dayOfWeek() const {
+    return static_cast<WeekDays>(_datetime.date().day_of_week());
+}
+
+int DateTime::dayOfYear() const {
+    return static_cast<int>(_datetime.date().day_of_year());
+}
+
 DateTime DateTime::now() {
     DateTime dt;
     dt._datetime = boost::posix_time::microsec_clock::local_time();
