@@ -28,7 +28,7 @@ public:
     int minute() const;
     int second() const;
     long msec() const;
-    int dayOfWeek() const;
+    WeekDays dayOfWeek() const;
     int dayOfYear() const;
     bool valid() const { return !_datetime.is_not_a_date_time(); }
 
