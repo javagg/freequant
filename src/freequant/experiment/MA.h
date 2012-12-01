@@ -2,6 +2,7 @@
 #define FQ_EXP_MA_H
 
 #include <vector>
+#include <limits>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/rolling_mean.hpp>

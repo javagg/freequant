@@ -53,7 +53,11 @@ long DateTime::msec() const {
 }
 
 DateTime::WeekDays DateTime::dayOfWeek() const {
-    return static_cast<WeekDays>(_datetime.date().day_of_week());
+//    _datetime.date().day_of_week();
+//    boost::date_time::weekdays
+
+//    return static_cast<WeekDays>(_datetime.date().day_of_week());
+    return Sunday;
 }
 
 int DateTime::dayOfYear() const {
