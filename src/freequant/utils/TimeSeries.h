@@ -2,6 +2,9 @@
 #define FQ_UTILS_TIMESERIES_H
 
 #include <set>
+
+#include <boost/atomic.hpp>
+
 #include <freequant/utils/DateTime.h>
 
 #ifdef max

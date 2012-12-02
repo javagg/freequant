@@ -23,6 +23,19 @@ Bar& Bar::operator=(const Bar& bar) {
     return *this;
 }
 
+double Bar::price(Bar::Price which) {
+    double px = 0.0;
+    switch (which) {
+    case Open:
+        px = _open;
+        break;
+    default:
+        break;
+    }
+
+    return px;
+}
+
 std::ostream& operator<<(std::ostream& os, const FreeQuant::Bar& bar) {
     os << "Symbol: " << bar.symbol() << "[open=" << bar.open() << "]" << std::endl;
     return os;

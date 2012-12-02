@@ -40,7 +40,6 @@ endif()
 # Find external dependencies
 set(Boost_USE_STATIC_LIBS on)
 find_package(Boost REQUIRED COMPONENTS date_time chrono system filesystem thread unit_test_framework)
-find_package(CURL REQUIRED)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
