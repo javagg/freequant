@@ -8,6 +8,7 @@ namespace FreeQuant {
 
 class Bar {
 public:
+    enum Price { Close, Open, High, Low, Median, Typical, Weighted };
     enum Item { Close, Open, High, Low, Median, Typical, Weighted, Volume, OpenInterest };
     Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0);
     Bar(std::string symbol, DateTime dateTime, double open, double high,
@@ -46,7 +47,7 @@ public:
     double median() const { return (high()+low())/2; }
     double typical() const { return (high()+low()+close())/3; }
     double weighted() const { return (high()+low()+2*close())/4; }
-
+    double price(Price);
 private:
     std::string _symbol;
     DateTime _begin;
