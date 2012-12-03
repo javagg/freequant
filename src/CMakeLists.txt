@@ -1,4 +1,4 @@
-file(GLOB_RECURSE HEADERS *.h)
+file(GLOB_RECURSE HEADERS *.h *.hpp)
 file(GLOB_RECURSE SOURCES *.cpp)
 file(GLOB_RECURSE TWS_SRC ${PROJECT_SOURCE_DIR}/vendors/tws/*.cpp)
 

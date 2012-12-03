@@ -26,6 +26,10 @@ public:
     }
     DateTime cross(TimeSeries&);
 
+    T& operator[](long index) {
+        return _data1[index].second;
+    }
+
     T& first(long long pos = 1) const {
         auto r = pos % size();
         auto i = _data.begin();
@@ -87,6 +91,7 @@ public:
 private:
     Set _data;
 
+    std::vector<std::pair<DateTime, T> > _data1;
     T _max;
     T _min;
 };

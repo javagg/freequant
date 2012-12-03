@@ -91,8 +91,8 @@ struct DefaultTickAccumulation {
         double low = 0.0;
         double close = 0.0;
         long volume = 0;
-        for_each(ticks.begin(), ticks.end(), [](Tick tick){
-            price = tick.price();
+        for_each(ticks.begin(), ticks.end(), [&](Tick tick){
+            double price = tick.price();
             if (price < low) {
                 low = price;
             }
@@ -100,9 +100,9 @@ struct DefaultTickAccumulation {
                 high = price;
             }
             close = price;
-            volume += tick.volume()
+            volume += tick.volume();
         });
-        reurn Bar();
+        return Bar();
     }
 };
 
