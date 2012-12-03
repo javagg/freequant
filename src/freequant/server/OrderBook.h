@@ -21,6 +21,8 @@ class Fill {};
 
 class OrderBook {
 public:
+    enum Action { Insert, Update, Delete, Reset, Undefined };
+
     OrderBook() {}
     OrderBook(std::string symbol) : _symbol(symbol) {}
     virtual ~OrderBook() {}

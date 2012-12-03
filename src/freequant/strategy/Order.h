@@ -40,6 +40,9 @@ public:
         Suspended
     };
 
+    enum StopMode { Absolute, Percent };
+    enum StopType { Fixed, Trailing, Timed };
+
     explicit Order();
     explicit Order(const std::string& symbol, Type type, Side side, double price, long qty);
 	virtual ~Order();

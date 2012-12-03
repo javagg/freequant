@@ -9,6 +9,8 @@ namespace FreeQuant {
 
 class Position {
 public:
+    enum PositionSide { PSLong, PSShort };
+
     enum Direction { Net, Long, Short };
 
     Position();

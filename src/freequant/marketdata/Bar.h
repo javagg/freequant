@@ -8,7 +8,7 @@ namespace FreeQuant {
 
 class Bar {
 public:
-    enum Price { Close, Open, High, Low, Median, Typical, Weighted };
+    enum Price { PriceClose, PriceOpen, PriceHigh, PriceLow, PriceMedian, PriceTypical, PriceWeighted };
     enum Item { Close, Open, High, Low, Median, Typical, Weighted, Volume, OpenInterest };
     Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0);
     Bar(std::string symbol, DateTime dateTime, double open, double high,

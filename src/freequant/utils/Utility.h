@@ -21,7 +21,7 @@ struct Tick;
 std::string toGuidString();
 std::string createGuid();
 std::map<std::string, std::string> parseParamsFromString(const std::string& str);
-
+std::map<std::string, std::string> parseConnectionString(const std::string& str);
 
 FreeQuant::Order orderFrom(const FIX44::NewOrderSingle&);
 FIX44::NewOrderSingle messageFrom(const FreeQuant::Order&);

@@ -21,6 +21,12 @@ public:
         MultiLeg
     };
 
+    enum OptionPosition	{ InTheMoney, AtTheMoney, OutOfTheMoney	};
+    enum OptionPrice { BlackScholes, Binomial, Trinomial, MonteCarlo };
+    enum OptionType { European, American, Exotic, Bermudian, Digial };
+
+    enum PutCall { Put, Call };
+
     explicit Instrument(std::string symbol, Instrument::Type type = Instrument::Stock);
     virtual ~Instrument() {}
     void setExchange(std::string exchange) {

@@ -63,6 +63,9 @@ public:
     typedef std::map<std::string, BarSeries> BarSeriesMap;
     typedef std::vector<std::string> Symbols;
 
+    enum CommissionType { PerShare, Percent, Absolute };
+    enum MarketDataType	{ MdTrade, MdTick, MdBar, MdMarketDepth };
+
     explicit Strategy();
 	virtual ~Strategy();
 

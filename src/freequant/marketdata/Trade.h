@@ -9,9 +9,13 @@
 namespace FreeQuant {
 
 struct Trade {
+    enum Side { Bull, Sell };
+
     std::string symbol;
     FreeQuant::DateTime dateTime;
     double price;
+    double cost;
+    double pnl;
     long size;
 };
 

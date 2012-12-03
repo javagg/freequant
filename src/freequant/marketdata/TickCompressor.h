@@ -64,11 +64,46 @@ public:
         ticksInBar.push_back(tick);
     }
 
+    void add(Tick& tick) {
+//        if (item.Price < this.bar.Low)
+//        {
+//            this.bar.bar.Low = item.Price;
+//        }
+//        if (item.Price > this.bar.High)
+//        {
+//            this.bar.bar.High = item.Price;
+//        }
+//        this.bar.bar.Close = item.Price;
+//        this.bar.bar.Volume += (long)item.Size;
+    }
+
 private:
     const AccumulateFunc& accumu;
     BarPeriod period;
     int k;
     std::vector<Tick> ticksInBar;
+};
+
+template<typename Tick, typename Bar>
+struct DefaultTickAccumulation {
+    Bar operator()(const std::vector<Tick>& ticks) {
+        double high = 0.0;
+        double low = 0.0;
+        double close = 0.0;
+        long volume = 0;
+        for_each(ticks.begin(), ticks.end(), [](Tick tick){
+            price = tick.price();
+            if (price < low) {
+                low = price;
+            }
+            if (price > high) {
+                high = price;
+            }
+            close = price;
+            volume += tick.volume()
+        });
+        reurn Bar();
+    }
 };
 
 } // namespace FreeQuant
