@@ -54,9 +54,7 @@ public:
     bool crossAbove(const BarSeries& bars, BarItem item);
     bool crossBelow(const BarSeries& bars, BarItem item);
     virtual void onCalculate(const Bar& bar) = 0;
-    virtual void append(const DT& datetime, const std::map<std::string, double>& values) = 0;
-    virtual void append(const DT& datetime, const std::vector<double>& values) = 0;
-    virtual double last(const std::string& column, std::size_t pos = 0) = 0;
+    virtual double last(const std::string& column, std::size_t pos = 1) = 0;
 };
 
 }}

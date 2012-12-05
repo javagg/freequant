@@ -11,14 +11,17 @@ class TradeProvider;
 class Order {
 public:
     typedef std::string OrderId;
-    enum Type {
+    enum OrderType {
         Market,
         Limit,
+        LimitOnClose,
         Stop,
         StopLoss,
         StopLimit,
         Trail,
         TrailLimit,
+        TrailingStop,
+        MarketOnOpen,
         MarketOnClose
     };
 
@@ -26,7 +29,7 @@ public:
 
     enum TimeInForce { DAY, GTC, OPG, IOC, FOK, GTX, GTD, ATC, GFS };
 
-    enum Status {
+    enum OrderStatus {
         PendingNew,
         New,
         PartiallyFilled,
@@ -44,7 +47,7 @@ public:
     enum StopType { Fixed, Trailing, Timed };
 
     explicit Order();
-    explicit Order(const std::string& symbol, Type type, Side side, double price, long qty);
+    explicit Order(const std::string& symbol, OrderType type, Side side, double price, long qty);
 	virtual ~Order();
 
     /*!
@@ -62,14 +65,14 @@ public:
     bool isPendingReplace();
 
     const OrderId& orderId() const { return _id; }
-    Type type() const { return _type; }
-    void setType(Type type);
+    OrderType type() const { return _type; }
+    void setType(OrderType type);
     const std::string& symbol() const { return _symbol; }
     double price() const { return _price; }
     double qty() const { return _qty; }
     double tickSize() const { return _tickSize; }
     Side side() const { return _side; }
-    Status status() const { return _status; }
+    OrderStatus status() const { return _status; }
 
     /*!
      *  Gets last fill (partial fill) price for this order
@@ -108,7 +111,7 @@ public:
 
 private:
     OrderId _id;
-    Type _type;
+    OrderType _type;
     std::string _symbol;
     std::string _currency;
     double _price;
@@ -118,7 +121,7 @@ private:
     double _limitPrice;
     double _avgPrice;
     Side _side;
-    Status _status;
+    OrderStatus _status;
     TimeInForce _timeInForce;
 };
 

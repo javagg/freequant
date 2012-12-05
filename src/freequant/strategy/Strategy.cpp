@@ -176,7 +176,7 @@ void Strategy::sellStopLimit() {}
 void Strategy::buyLimit() {}
 void Strategy::sellLimit() {}
 
-FreeQuant::Order *createOrder(FreeQuant::Order::Type type, FreeQuant::Order::Side side,
+FreeQuant::Order *createOrder(FreeQuant::Order::OrderType type, FreeQuant::Order::Side side,
     double price, long qty) {
     FreeQuant::Order *order = new FreeQuant::Order;
     return order;

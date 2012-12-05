@@ -35,7 +35,7 @@ public:
     void updateIntrument(const std::string& symbol, bool block = false);
     void updateIntrument(FreeQuant::Instrument& instrument) {}
 
-    bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
+    bool orderTypeSupported(FreeQuant::Order::OrderType type) { return true; }
 private:
     class Impl;
     std::unique_ptr<Impl> _impl;

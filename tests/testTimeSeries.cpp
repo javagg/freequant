@@ -24,11 +24,10 @@ BOOST_AUTO_TEST_CASE(TimeSeries) {
 
 BOOST_AUTO_TEST_CASE(ExpTimeSeries) {
     FreeQuant::Exp::TimeSeries<double> ts;
-    ts.append(2);
-    ts.append(3);
-    ts.append(4);
+    ts.append(FreeQuant::DateTime::now(), 2);
+    ts.append(FreeQuant::DateTime::now(), 3);
+    ts.append(FreeQuant::DateTime::now(), 4);
 
     BOOST_CHECK_EQUAL(ts.last(1), 4);
     BOOST_CHECK_EQUAL(ts.last(2), 3);
-    BOOST_CHECK_EQUAL(ts.first(1), 2);
 }

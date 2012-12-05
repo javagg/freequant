@@ -5,28 +5,42 @@
 #include <map>
 
 #include <freequant/marketdata/Bar.h>
-#include <freequant/utils/TimeSeries.h>
+//#include <freequant/utils/TimeSeries.h>
+#include <freequant/experiment/TimeSeries.h>
 
 namespace FreeQuant {
 
-typedef TimeSeries<Bar> BarSeries;
+typedef Exp::TimeSeries<Bar> BarSeries;
 
 namespace Exp {
 
 class Indicator {
 public:
-    enum Item { PriceClose, PriceOpen, PriceHigh, PriceLow, PriceMedian, PriceTypical, PriceWeighted,
-        VolumeTrade, VolumeReal = VolumeTrade, VolumeTick, VolumeOpenInterest };
-
     enum MaMethod { SMA, EMA, SMMA, LWMA };
-    enum Cross { Above, Below, NoCross };
+    enum Cross { CrossAbove, CrossBelow, NoCross };
 
     virtual ~Indicator() {}
     virtual std::size_t size() = 0;
     virtual bool contains(const DateTime& datetime);
     virtual bool contains(const Bar& bar);
-    virtual Cross cross(double level, const Bar& bar);
-    virtual Cross cross(double level, const DateTime& datetime);
+    Cross cross(double level, std::size_t pos = 1) {
+
+//        if (pos >= 0 &&  tsize = pos + 2) {
+
+//            double num = level - this.Ago(agoN + 1);
+//            double num2 = level - this.Ago(agoN);
+//            if (num < 0.0 && num2 > 0.0)
+//            {
+//                return CrossBelow;
+//            }
+//            if (num > 0.0 && num2 < 0.0)
+//            {
+//                return CrossAbove;
+//            }
+//        }
+        return NoCross;
+    }
+
     /*!
      *
      * Checks if this indicator crosses another indicator at specified bar
@@ -36,16 +50,12 @@ public:
      * \param bar
      * \return
      */
-    virtual Cross cross(const Indicator& indicator, const Bar& bar);
-    virtual Cross cross(const TimeSeries<double>& indicator, const DateTime& datetime);
-    virtual Cross cross(const BarSeries& bars, const DateTime& datetime);
-    virtual Cross cross(const BarSeries& bars, const DateTime& datetime, Bar::Item item);
-
-    virtual bool crossAbove(const BarSeries& bars, Bar::Item item);
+    Cross cross(const Indicator& indicator, std::size_t pos = 1);
+    Cross cross(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
+    bool crossAbove(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
+    bool crossBelow(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
     virtual void onCalculate(const Bar& bar) = 0;
-    virtual void add(const DateTime& datetime, const std::map<std::string, double>& values) = 0;
-    virtual void add(const DateTime& datetime, std::vector<double>& values) = 0;
-    virtual double last(const std::string& column, long long pos = 0) = 0;
+    virtual double last(std::size_t pos = 1) = 0;
 };
 
 }} // namespace FreeQuant

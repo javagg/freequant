@@ -43,7 +43,7 @@ public:
 
     virtual void updateAccount(bool block = false) = 0;
 
-    virtual bool orderTypeSupported(FreeQuant::Order::Type type) = 0;
+    virtual bool orderTypeSupported(FreeQuant::Order::OrderType type) = 0;
 };
 
 class DefaultTradeProviderCallback : public TradeProvider::Callback {

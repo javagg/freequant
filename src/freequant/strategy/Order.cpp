@@ -43,7 +43,7 @@ Order::Order() {}
 
 Order::~Order() {}
 
-Order::Order(const std::string& symbol, Type type, Side side, double price, long qty) :
+Order::Order(const std::string& symbol, OrderType type, Side side, double price, long qty) :
     _symbol(symbol), _type(type), _side(side), _price(price), _qty(qty) {
 }
 

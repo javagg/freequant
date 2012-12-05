@@ -18,22 +18,14 @@ public:
         return _data.size();
     }
 
-    void add(const DateTime& datetime, const std::map<std::string, double>& values) {
-
-    }
-
     void onCalculate(const Bar& bar);
-
-    void add(const DateTime& datetime, std::vector<double>& values) {
-
-    }
 
     double last(const std::string& column, long long pos = 1) {
         return 0;
     }
 
 private:
-    MA _ma;
+    Exp::MA _ma;
     TimeSeries<std::tuple<double, double, double> > _data;
 };
 

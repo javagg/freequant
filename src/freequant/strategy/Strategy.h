@@ -56,7 +56,6 @@ public:
     typedef FreeQuant::MarketDataProvider MarketDataProvider;
     typedef FreeQuant::TradeProvider TradeProvider;
 
-//    typedef FreeQuant::Exp::TimeSeries<Bar> BarSeries;
     typedef Exp::TimeSeries<Tick> TickSeries;
     typedef Exp::TimeSeries<Trade> TradeSeries;
 
@@ -64,6 +63,9 @@ public:
     typedef std::vector<std::string> Symbols;
 
     enum CommissionType { PerShare, Percent, Absolute };
+
+    enum TradeType { TradeTypeBuy, TradeTypeSell, TradeTypeShort, TradeTypeCover };
+
     enum MarketDataType	{ MdTrade, MdTick, MdBar, MdMarketDepth };
 
     explicit Strategy();
@@ -147,7 +149,7 @@ public:
 
     const Instruments& instruments() const { return _instruments; }
     const Orders& orders() const { return _orders; }
-    const Orders& orders(Order::Status status) const { return _orders; }
+    const Orders& orders(Order::OrderStatus status) const { return _orders; }
     const Orders& orders(std::string symbol) const { return _orders; }
 
     bool hasPosition() const { return false; }
@@ -168,6 +170,9 @@ public:
     void clearPosition(std::string symbol);
     void cancelOrders();
 
+    // Calculate
+    double calculateCommission(TradeType tradeType, Order::OrderType orderType, double orderPrice, double shares, BarSeries bars);
+
     // Low-level order management functions
     Order *createMarketOrder();
     Order *createStopOrder();
@@ -187,7 +192,7 @@ public:
     Account *account() { return nullptr; }
 
 private:
-    Order *createOrder(Order::Type type, Order::Side side, double price, long qty);
+    Order *createOrder(Order::OrderType type, Order::Side side, double price, long qty);
     void onStep();
     virtual void onMarketDataProviderConnected();
     void onMarketDataProviderTick(const Tick&);

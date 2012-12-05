@@ -41,7 +41,7 @@ public:
     void updateIntrument(FreeQuant::Instrument& instrument);
 
     void updateAccount(bool block = false) {}
-    bool orderTypeSupported(FreeQuant::Order::Type type) { return true; }
+    bool orderTypeSupported(FreeQuant::Order::OrderType type) { return true; }
 private:
     class Impl;
     Impl *_impl;

@@ -4,3 +4,5 @@
 #include "ATR.hpp"
 #include "MACD.hpp"
 
+#include <boost/network/uri.hpp>
+

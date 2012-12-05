@@ -8,6 +8,23 @@ namespace FreeQuant {
 
 class Bar {
 public:
+    enum BarSize {
+        Second = 1,
+        Minute = 60,
+        FiveMinute = 300,
+        FifteenMinute = 900,
+        ThirtyMinute = 1800,
+        Hour = 3600,
+        FourHour = 14400,
+        Day = 86400,
+        Week = 604800,
+        Month = 2419200,
+        Year = 29030400
+    };
+
+    enum BarItem { BarItemClose, BarItemOpen, BarItemHigh, BarItemLow, BarItemMedian, BarItemTypical, BarItemWeighted,
+        BarItemVolume, BarItemOpenInterest };
+
     enum Price { PriceClose, PriceOpen, PriceHigh, PriceLow, PriceMedian, PriceTypical, PriceWeighted };
     enum Item { Close, Open, High, Low, Median, Typical, Weighted, Volume, OpenInterest };
     Bar(double open = 0, double high = 0, double low = 0, double close = 0, long volume = 0);

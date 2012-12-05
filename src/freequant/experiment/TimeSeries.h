@@ -9,43 +9,19 @@ namespace FreeQuant { namespace Exp {
 template<typename T>
 class TimeSeries {
 public:
-    typedef std::pair<DateTime, T> Pair;
-    struct Comp {
-        bool operator()(const Pair& s1, const Pair& s2) const {
-            return s1.first < s2.first;
-        }
-    };
-    typedef std::set<Pair, Comp> Set;
-    typedef typename Set::iterator Iterator;
-    typedef typename Set::const_iterator ConstIterator;
-
-    TimeSeries() {}
-    virtual ~TimeSeries() {}
     std::size_t size() const {
         return _data.size();
     }
-    DateTime cross(TimeSeries&);
 
-    T& operator[](long index) {
-        return _data1[index].second;
+    T& operator[](std::size_t pos) {
+        return _data[pos].second;
     }
 
-    T& first(long long pos = 1) const {
-        auto r = pos % size();
-        auto i = _data.begin();
-        for (r--; r != 0; r--) i++;
-        return const_cast<T&>(i->second);
+    T& last(std::size_t pos = 1) {
+        return _data[_data.size()-pos].second;
     }
 
-    T& last(long long pos = 1) const {
-        auto r = pos % size();
-        auto i = _data.end();
-        for (; r != 0; r--) i--;
-        return const_cast<T&>(i->second);
-    }
-
-    T& operator[](const DateTime& at) const;
-    T& operator[](long long pos) const;
+    T& operator[](const DateTime& dt) const;
 
     const DateTime& beginTime() const {
         auto i = _data.begin();
@@ -57,22 +33,20 @@ public:
         return (i--)->first;
     }
 
-    bool contains(const DateTime&) const;
-
-    void append(const T& value) {
-        append(DateTime::now(), value);
+    bool contains(const DateTime& dt) const {
+        auto i = find_if(_data.begin(), _data.end(), [&](std::pair<DateTime, T>& pair) {
+            return pair.first == dt;
+        });
+        return i != _data.end();
     }
 
     void append(const DateTime& datetime, const T& value) {
-        _data.insert(std::make_pair(datetime, value));
+        _data.push_back(std::make_pair(datetime, value));
     }
 
     void clear() {
         _data.clear();
     }
-
-    Iterator begin() const { return _data.begin(); }
-    Iterator end() const { return _data.end(); }
 
     T max();
     T min();
@@ -85,15 +59,10 @@ public:
     T kurtosis();
     T skewness();
 
-    friend bool crossesAbove(const TimeSeries&, const TimeSeries&);
     template<typename U>
     friend std::ostream& operator<<(std::ostream& os, const TimeSeries<U>& dateTime);
 private:
-    Set _data;
-
-    std::vector<std::pair<DateTime, T> > _data1;
-    T _max;
-    T _min;
+    std::vector<std::pair<DateTime, T> > _data;
 };
 
 template <typename T>
