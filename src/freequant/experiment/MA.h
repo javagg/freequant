@@ -28,14 +28,14 @@ public:
         _data.append(bar.dateTime(), calculated);
     }
 
-    double last(std::size_t pos = 1) {
+    double last(int which = 0, std::size_t pos = 1) const {
         return _data.last(pos);
     }
 
 private:
+    int _window;
     Bar::BarItem _barItem;
     TimeSeries<double> _data;
-    int _window;
     boost::accumulators::accumulator_set<double,
         boost::accumulators::stats<boost::accumulators::tag::rolling_mean> > acc;
 

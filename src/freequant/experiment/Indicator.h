@@ -20,9 +20,9 @@ public:
     enum Cross { CrossAbove, CrossBelow, NoCross };
 
     virtual ~Indicator() {}
-    virtual std::size_t size() = 0;
-    virtual bool contains(const DateTime& datetime);
-    virtual bool contains(const Bar& bar);
+    virtual std::size_t size() const = 0;
+    bool contains(const DateTime& datetime);
+    bool contains(const Bar& bar);
     Cross cross(double level, std::size_t pos = 1) {
 
 //        if (pos >= 0 &&  tsize = pos + 2) {
@@ -55,7 +55,7 @@ public:
     bool crossAbove(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
     bool crossBelow(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
     virtual void onCalculate(const Bar& bar) = 0;
-    virtual double last(std::size_t pos = 1) = 0;
+    virtual double last(int which = 0, std::size_t pos = 1) const = 0;
 };
 
 }} // namespace FreeQuant
