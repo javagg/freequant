@@ -31,10 +31,14 @@
 #endif
 
 #ifdef _MSC_VER
-#  define FQ_EXPORT __declspec(dllexport)
-#else
-#  define FQ_EXPORT __declspec(dllimport)
-#endif
+#  if defined(FQ_SHARED)
+#    define FQ_EXPORT __declspec(dllexport)
+#  else
+#    define FQ_EXPORT __declspec(dllimport)
+#  endif
+#else /* !_MSC_VER */
+#  define FQ_EXPORT
+#endif /* _MSC_VER */
 
 #if defined(FQ_COMPILER_MSVC)
 #  define FQ_ATTRIBUTE_NORETURN __declspec(noreturn)

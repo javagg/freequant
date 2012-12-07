@@ -40,9 +40,9 @@ public:
     void onBar(const FreeQuant::Bar& bar) {
         std::cout << "bar: "<< bar << " sma: " << ma->last() << std::endl;
         auto bars = barSeries(bar.symbol());
-        if (ma->crossAbove(bars, FreeQuant::Bar::Close)) {
+//        if (ma->crossAbove(bars, FreeQuant::Bar::Close)) {
 
-        }
+//        }
     }
 };
 

@@ -65,6 +65,7 @@ public:
     double typical() const { return (high()+low()+close())/3; }
     double weighted() const { return (high()+low()+2*close())/4; }
     double price(Price);
+//    double value(BarItem);
 private:
     std::string _symbol;
     DateTime _begin;

@@ -80,18 +80,28 @@ BOOST_AUTO_TEST_CASE(Indicators) {
     sma.append(19);
     sma.append(19);
 
-    FreeQuant::Exp::RSI rsi;
+//    FreeQuant::Exp::RSI rsi;
     FreeQuant::Exp::MA ma(4);
-    ma.add(1);
-    ma.add(2);
-    ma.add(3);
-    ma.add(6);
-    ma.add(4);
-    ma.add(8);
-    ma.add(6);
+
+    FreeQuant::Bar bar1(0, 0, 0, 1, 0);
+    FreeQuant::Bar bar2(0, 0, 0, 2, 0);
+    FreeQuant::Bar bar3(0, 0, 0, 3, 0);
+    FreeQuant::Bar bar4(0, 0, 0, 6, 0);
+    FreeQuant::Bar bar5(0, 0, 0, 4, 0);
+    FreeQuant::Bar bar6(0, 0, 0, 8, 0);
+    FreeQuant::Bar bar7(0, 0, 0, 6, 0);
+
+    ma.onCalculate(bar1);
+    ma.onCalculate(bar2);
+    ma.onCalculate(bar3);
+    ma.onCalculate(bar4);
+    ma.onCalculate(bar5);
+    ma.onCalculate(bar6);
+    ma.onCalculate(bar7);
+
     BOOST_CHECK_CLOSE(ma.last(1), 6.0, 1e-6);
     BOOST_CHECK_CLOSE(ma.last(2), 5.25, 1e-6);
-
+    BOOST_CHECK_CLOSE(ma.last(3), 3.75, 1e-6);
 }
 
 BOOST_AUTO_TEST_CASE(DispatchIndicators) {

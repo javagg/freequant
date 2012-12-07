@@ -18,7 +18,9 @@ public:
         return _data.size();
     }
 
-    void onCalculate(const Bar& bar);
+    void onCalculate(const Bar& bar) {
+
+    }
 
     double last(const std::string& column, long long pos = 1) {
         return 0;

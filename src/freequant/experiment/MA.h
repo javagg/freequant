@@ -13,19 +13,19 @@ namespace FreeQuant { namespace Exp {
 
 class MA : public Indicator {
 public:
-    MA(int window = 10, Bar::BarItem = Bar::BarItemClose) : _window(window), acc(boost::accumulators::tag::rolling_window::window_size = window) {}
+    MA(int window = 10, Bar::BarItem barItem = Bar::BarItemClose) :
+        _window(window), _barItem(barItem),
+        acc(boost::accumulators::tag::rolling_window::window_size = window) {}
 
     virtual std::size_t size() {
         return _data.size();
     }
 
     void onCalculate(const Bar& bar) {
-//        add(bar.close());
-//        if (!values.empty()) {
-//            acc(values.front());
-//            double calculated = boost::accumulators::rolling_mean(acc);
-//            _data.append(datetime, calculated);
-//        }
+        double value = bar.close();
+        acc(value);
+        double calculated = boost::accumulators::rolling_mean(acc);
+        _data.append(bar.dateTime(), calculated);
     }
 
     double last(std::size_t pos = 1) {
