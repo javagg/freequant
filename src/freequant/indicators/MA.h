@@ -12,11 +12,6 @@ namespace FreeQuant {
 class MA : public Indicator {
 public:
     MA() : acc(boost::accumulators::tag::rolling_window::window_size = 5) {}
-//    void onBar(const FreeQuant::Bar& bar) {
-//        acc(bar.typical());
-//        _data.push_back(bar.typical());
-//    }
-
     void append(double value) {}
     double value() const {
         return boost::accumulators::rolling_mean(acc);
