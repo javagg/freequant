@@ -5,6 +5,7 @@
 
 #include <freequant/experiment/MA.h>
 #include <freequant/experiment/RSI.h>
+#include <freequant/experiment/Others.h>
 
 const char *msft[][19] = {
     "Date","MSFT.Open","MSFT.High","MSFT.Low","MSFT.Close","MSFT.Volume","MSFT.Adjusted","sma","ema","tr","atr","trueHigh","trueLow","macd","signal","dn","mavg","up","pctB",

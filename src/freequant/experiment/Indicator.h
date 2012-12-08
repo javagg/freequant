@@ -5,7 +5,6 @@
 #include <map>
 
 #include <freequant/marketdata/Bar.h>
-//#include <freequant/utils/TimeSeries.h>
 #include <freequant/experiment/TimeSeries.h>
 
 namespace FreeQuant {
@@ -16,11 +15,12 @@ namespace Exp {
 
 class Indicator {
 public:
+    enum Type { TypeOscillator, TypePrice, TypeVolume };
     enum MaMethod { SMA, EMA, SMMA, LWMA };
     enum Cross { CrossAbove, CrossBelow, NoCross };
 
     virtual ~Indicator() {}
-    virtual std::size_t size() const = 0;
+
     bool contains(const DateTime& datetime);
     bool contains(const Bar& bar);
     Cross cross(double level, std::size_t pos = 1) {
@@ -54,8 +54,11 @@ public:
     Cross cross(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
     bool crossAbove(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
     bool crossBelow(const BarSeries& bars, Bar::BarItem item, std::size_t pos = 1);
+
+    virtual std::size_t size() const = 0;
     virtual void onCalculate(const Bar& bar) = 0;
-    virtual double last(int which = 0, std::size_t pos = 1) const = 0;
+    virtual double last(std::size_t pos = 1, int which = 0) = 0;
+    virtual void append(const DateTime& datetime, double value, int which = 0) = 0;
 };
 
 }} // namespace FreeQuant

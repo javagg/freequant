@@ -8,52 +8,30 @@ namespace FreeQuant { namespace Exp {
 
 class ATR : public Indicator {
 public:
+    ATR(int n = 14) : _n(n) {}
     void onCalculate(const Bar& bar) {
-//        if (index >= this.fLength + this.fInput.FirstIndex)
-//        {
-//            int num = -(Indicator.SyncIndex ? 0 : 1) * this.fLength;
-//            double data;
-//            if (this.fStyle == EIndicatorStyle.QuantStudio)
-//            {
-//                if (index == this.fLength + this.fInput.FirstIndex)
-//                {
-//                    double num2 = 0.0;
-//                    for (int i = index; i > index - this.fLength; i--)
-//                    {
-//                        num2 += TR.Value(this.fInput, i);
-//                    }
-//                    data = num2 / (double)this.fLength;
-//                }
-//                else
-//                {
-//                    double num3 = TR.Value(this.fInput, index);
-//                    data = (base[index - 1 + num] * (double)this.fLength + num3 - TR.Value(this.fInput, index - this.fLength)) / (double)this.fLength;
-//                }
-//            }
-//            else
-//            {
-//                if (index == this.fLength + this.fInput.FirstIndex)
-//                {
-//                    double num4 = 0.0;
-//                    for (int j = index; j > index - this.fLength; j--)
-//                    {
-//                        num4 += TR.Value(this.fInput, j);
-//                    }
-//                    data = num4 / (double)this.fLength;
-//                }
-//                else
-//                {
-//                    double num3 = TR.Value(this.fInput, index);
-//                    data = (base[this.fInput.GetDateTime(index - 1)] * (double)this.fLength + num3 - TR.Value(this.fInput, index - this.fLength)) / (double)this.fLength;
-//                }
-//            }
-//            this.Add(this.fInput.GetDateTime(index), data);
-//            return;
-//        }
-//        this.Add(this.fInput.GetDateTime(index), double.NaN);
+        _tr.onCalculate(bar);
+        double atr = 0;
+        if (size() > 0) {
+            atr = _tr.last(2)*(_n-1) + last();
+        }
+        append(bar.dateTime(), atr);
     }
+
+    virtual std::size_t size() const {
+        return _data.size();
+    }
+
+    double last(std::size_t pos = 1, int which = 0) {
+        return _data.last(pos);
+    }
+
+    void append(const DateTime& datetime, double value, int which = 0)  {
+         _data.append(datetime, value);
+    }
+
 private:
-    const static int ma_len = 14;
+    int _n;
     TR _tr;
     TimeSeries<double> _data;
 };

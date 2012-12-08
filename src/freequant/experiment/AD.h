@@ -18,11 +18,15 @@ public:
         long volume = bar.volume();
         double clv = ((close-low)-(high-close))/(high-low);
         double value = prev+clv*volume;
-        _data.append(bar.dateTime(), value);
+        append(bar.dateTime(), value);
     }
 
-    void last(int which = 0, std::size_t pos = 1) {
+    double last(std::size_t pos = 1, int which = 0) {
         return _data.last(pos);
+    }
+
+    void append(const DateTime& datetime, double value, int which = 0) {
+        _data.append(datetime, value);
     }
 
 private:

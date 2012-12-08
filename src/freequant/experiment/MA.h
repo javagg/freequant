@@ -17,7 +17,7 @@ public:
         _window(window), _barItem(barItem),
         acc(boost::accumulators::tag::rolling_window::window_size = window) {}
 
-    virtual std::size_t size() {
+    std::size_t size() const {
         return _data.size();
     }
 
@@ -25,11 +25,15 @@ public:
         double value = bar.close();
         acc(value);
         double calculated = boost::accumulators::rolling_mean(acc);
-        _data.append(bar.dateTime(), calculated);
+        append(bar.dateTime(), calculated);
     }
 
-    double last(int which = 0, std::size_t pos = 1) const {
+    double last(std::size_t pos = 1, int which = 0) {
         return _data.last(pos);
+    }
+
+    void append(const DateTime& datetime, double value, int which = 0) {
+        _data.append(datetime, value);
     }
 
 private:

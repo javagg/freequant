@@ -1,6 +1,7 @@
 #ifndef FQ_DATA_TR_H
 #define FQ_DATA_TR_H
 
+#include <limits>
 #include <tuple>
 #include <vector>
 
@@ -11,27 +12,30 @@ namespace FreeQuant { namespace Exp {
 
 class TR : public Indicator {
 public:
-    virtual std::size_t size() {
+    void onCalculate(const Bar& bar) {
+        double value = std::numeric_limits<double>::min();
+        if (size() > 0) {
+            double high = bar.high();
+            double low = bar.low();
+            double v1 = std::abs(high-low);
+            double v2 = std::abs(high-lastClose);
+            double v3 = std::abs(lastClose-low);
+            double value = std::max(v1, std::max(v2, v3));
+        }
+        append(bar.dateTime(), value);
+        lastClose = bar.close();
+    }
+
+    virtual std::size_t size() const {
         return _data.size();
     }
 
-    void onCalculate(const Bar& bar) {
-        lastClose = bar.close();
-        if (_data.size() < 2) {
-            return;
-        }
-        double high = bar.high();
-        double low = bar.low();
-        double v1 = std::abs(high-low);
-        double v2 = std::abs(high-lastClose);
-        double v3 = std::abs(lastClose-low);
-
-        double value = std::max(v1, std::max(v2, v3));
-        _data.append(bar.dateTime(), value);
+    double last(std::size_t pos = 1, int which = 0) {
+        return _data.last(pos);
     }
 
-    double last(int which = 0, std::size_t pos = 1) {
-        return 0;
+    void append(const DateTime& datetime, double value, int which = 0)  {
+         _data.append(datetime, value);
     }
 
 private:

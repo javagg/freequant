@@ -8,31 +8,43 @@ namespace FreeQuant { namespace Exp {
 
 class MACD : public Indicator {
 public:
-    void onCalculate(const Bar& bar) {
-        if (index >= this.fInput.FirstIndex)
-        {
-            double num = this.fEMA1[index];
-            double num2 = this.fEMA2[index];
-            double data = num - num2;
-            this.Add(this.fInput.GetDateTime(index), data);
-            return;
-        }
-        this.Add(this.fInput.GetDateTime(index), double.NaN);
+    MACD(int fast = 12, int slow = 26, int sig = 9, MaMethod method = SMA) {}
+
+    std::size_t size() const {
+       return _data.size();
     }
+
+    virtual void onCalculate(const Bar& bar) {
+        _ma_fast.onCalculate(bar);
+        _ma_slow.onCalculate(bar);
+
+        double macd = 0;
+        if (size() > _slow) {
+            macd = _ma_slow.last() - _ma_fast.last();
+        }
+
+        append(bar.dateTime(), macd);
+    }
+
+    double last(std::size_t pos = 1, int which = 0) const {
+        return _data.last(pos);
+    }
+
+    void append(const DateTime& datetime, double value, int which = 0) {
+        _data.append(datetime, value);
+    }
+
+
 private:
-    int _short;
-    int _long;
-    int _N;
+    int _fast;
+    int _slow;
+    int _sig;
 
-    int _curIdx;
-    double _latestValue;
-    MA<DateTime, double> _ma12;
-    MA<DateTime, double> _ma26;
-    MA<DateTime, double> _signal;
+    MA _ma_fast;
+    MA _ma_slow;
+    MA _ma_sig;
 
-    TimeSeries<DateTime, double> _dif;
-    TimeSeries<DateTime, double> _dea;
-    TimeSeries<DateTime, double> _data;
+    TimeSeries<double> _data;
 };
 
 }} // namespace FreeQuant
