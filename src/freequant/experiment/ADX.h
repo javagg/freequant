@@ -6,6 +6,7 @@
 
 namespace FreeQuant { namespace Exp {
 
+// Average Directional Movement Index
 class ADX : public Indicator {
 public:
     ADX(int n = 14) : _n(n), _dx(n) {}

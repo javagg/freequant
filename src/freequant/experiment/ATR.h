@@ -6,6 +6,11 @@
 
 namespace FreeQuant { namespace Exp {
 
+//True Range is the greatest of the following three values:
+//    difference between the current maximum and minimum (high and low);
+//    difference between the previous closing price and the current maximum;
+//    difference between the previous closing price and the current minimum.
+//The indicator of Average True Range is a moving average of values of the true range.
 class ATR : public Indicator {
 public:
     ATR(int n = 14) : _n(n) {}

@@ -10,7 +10,7 @@ template<typename T>
 class TimeSeries {
 public:
     std::size_t size() const {
-        return _data.size();
+        return _data.size();e
     }
 
     T& operator[](std::size_t pos) {
@@ -43,6 +43,10 @@ public:
     void append(const DateTime& datetime, const T& value) {
         _data.push_back(std::make_pair(datetime, value));
     }
+
+//    void preppend(const DateTime& datetime, const T& value) {
+//        _data.push_front(std::make_pair(datetime, value));
+//    }
 
     void clear() {
         _data.clear();
