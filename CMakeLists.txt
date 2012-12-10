@@ -37,6 +37,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
 endif()
 
+option(BUILD_BINDINGS "Build bindings." ON)
 # Find external dependencies
 set(Boost_USE_STATIC_LIBS on)
 find_package(Boost REQUIRED COMPONENTS date_time chrono system filesystem thread unit_test_framework)
@@ -111,3 +112,7 @@ if(WIN32)
     configure_file(${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/win/lib/thosttraderapi.dll ${PROJECT_BINARY_DIR}/bin/thosttraderapi.dll COPYONLY)
     configure_file(${PROJECT_SOURCE_DIR}/vendors/ctp/api/risk/lib/riskuserapi.dll ${PROJECT_BINARY_DIR}/bin/riskuserapi.dll COPYONLY)
 endif(WIN32)
+
+FIND_PACKAGE(SWIG REQUIRED)
+INCLUDE(${SWIG_USE_FILE})
+
