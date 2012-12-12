@@ -18,7 +18,7 @@ public:
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const;
-    const std::string& name() const { return "TWS"; }
+    std::string name() const { return "TWS"; }
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
     void currentTime() const;

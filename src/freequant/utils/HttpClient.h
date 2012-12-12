@@ -7,8 +7,8 @@ namespace FreeQuant {
 
 class HttpClient {
 public:
-    HttpClient();
-    ~HttpClient();
+    HttpClient() {}
+    ~HttpClient() {}
     const std::string& get(const std::string& url);
 private:
     std::string buffer;

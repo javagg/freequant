@@ -10,7 +10,7 @@ template<typename T>
 class TimeSeries {
 public:
     std::size_t size() const {
-        return _data.size();e
+        return _data.size();
     }
 
     T& operator[](std::size_t pos) {

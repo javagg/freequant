@@ -13,12 +13,12 @@ bool OrderBook::insertOrder(FreeQuant::Order& order) {
         auto type = order.type();
         switch (type) {
         case FreeQuant::Order::Market: {
-            double orderPx = order.price();
-            long orderQty = order.qty();
-            auto quote = lastQuote();
-            double ask = lastQuote().ask();
-            double txnPx = std::max(orderPx, ask);
-            long txnQty = orderQty;
+//            double orderPx = order.price();
+//            long orderQty = order.qty();
+//            auto quote = lastQuote();
+//            double ask = lastQuote().ask();
+//            double txnPx = std::max(orderPx, ask);
+//            long txnQty = orderQty;
 //            Trade trade;
 //            _tradeSeries.append();
             break;

@@ -11,12 +11,15 @@ public:
     explicit CtpSseMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
     ~CtpSseMarketDataProvider();
     void setCallback(Callback *callback);
+    void setCallback(FreeQuant::MarketDataProviderCallback *callback);
     void connect(bool block = true) = 0;
     void disconnect(bool block = true);
     bool isConnected() const = 0;
-    const std::string& name() const = 0;
+    std::string name() const = 0;
     void subscribe(const Symbols& symbols);
     void unsubscribe(const Symbols& symbols);
+    void subscribe(const std::string& symbol);
+    void unsubscribe(const std::string& symbol);
 private:
     class Impl;
     std::unique_ptr<Impl> _impl;

@@ -10,14 +10,17 @@ namespace FreeQuant {
 class YahooMarketDataProvider : public MarketDataProvider {
 public:
     YahooMarketDataProvider();
-    virtual ~YahooMarketDataProvider();
-    virtual void connect();
-    virtual void disconnect();
-    virtual bool isConnected() const { return true; }
-    virtual const std::string& name() const { return "yahoo"; }
+    ~YahooMarketDataProvider();
+    void connect();
+    void disconnect();
+    bool isConnected() const { return true; }
+    std::string name() const { return "Yahoo"; }
 
-    virtual void subscribe(std::vector<std::string> symbols) {}
-    virtual void unsubscribe(std::vector<std::string> symbols) {}
+    void subscribe(std::vector<std::string> symbols) {}
+    void unsubscribe(std::vector<std::string> symbols) {}
+    void subscribe(const std::string& symbol) {}
+    void unsubscribe(const std::string& symbol) {}
+
 private:
     FreeQuant::Timer *timer;
     void getQuota();

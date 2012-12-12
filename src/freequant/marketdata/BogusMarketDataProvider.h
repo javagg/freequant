@@ -15,14 +15,18 @@ public:
     explicit BogusMarketDataProvider(Strategy *strategy = 0);
     ~BogusMarketDataProvider() {}
 
-    void setCallback(MarketDataProvider::Callback *callback) { _callback = callback; }
+    void setCallback(MarketDataProvider::Callback *callback);
+    void setCallback(MarketDataProviderCallback *callback);
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const { return _connected; }
-    const std::string& name() const { return "Bogus"; }
+    std::string name() const { return "Bogus"; }
     void subscribe(const Symbols&);
     void unsubscribe(const Symbols&);
     void generateBars();
+    void subscribe(const std::string& symbol);
+    void unsubscribe(const std::string& symbol);
+
 private:
     bool _connected;
 

@@ -27,13 +27,13 @@ public:
     OrderBook(std::string symbol) : _symbol(symbol) {}
     virtual ~OrderBook() {}
 
-    std::string symbol() const;
+    std::string symbol() const { return _symbol; }
     bool insertOrder(FreeQuant::Order& order);
     bool removeOrder(FreeQuant::Order& order);
     bool match(FreeQuant::Order& bid, FreeQuant::Order& ask);
     bool findOrder(FreeQuant::Order& order);
 
-    const FreeQuant::Quote& lastQuote() const;
+//    const FreeQuant::Quote& lastQuote() const {}
     void processOrders();
 
 private:

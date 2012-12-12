@@ -296,6 +296,10 @@ void FixMarketDataProvider::setCallback(FreeQuant::MarketDataProvider::Callback 
     _impl->setCallback(callback);
 }
 
+void FixMarketDataProvider::setCallback(MarketDataProviderCallback *callback) {
+
+}
+
 void FixMarketDataProvider::connect(bool block) {
     _impl->connect();
 }
@@ -314,6 +318,14 @@ void FixMarketDataProvider::subscribe(const Symbols& symbols) {
 
 void FixMarketDataProvider::unsubscribe(const Symbols& symbols) {
     _impl->unsubscribe(symbols);
+}
+
+void FixMarketDataProvider::subscribe(const std::string& symbol) {
+
+}
+
+void FixMarketDataProvider::unsubscribe(const std::string& symbol) {
+
 }
 
 } // namespace FreeQuant

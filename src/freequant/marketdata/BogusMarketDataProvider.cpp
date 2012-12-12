@@ -14,6 +14,14 @@ BogusMarketDataProvider::BogusMarketDataProvider(Strategy *strategy) :
     _mdGenerator(new RandomMarketDataGenerator()){
 }
 
+void BogusMarketDataProvider::setCallback(MarketDataProvider::Callback *callback) {
+    _callback = callback;
+}
+
+void BogusMarketDataProvider::setCallback(MarketDataProviderCallback *callback) {
+
+}
+
 void BogusMarketDataProvider::connect(bool block) {
     _connected = true;
     if (_callback) {
@@ -34,6 +42,14 @@ void BogusMarketDataProvider::subscribe(const Symbols& symbols) {
 
 void BogusMarketDataProvider::unsubscribe(const Symbols& symbols) {
     _mdGenerator->removeSymbols(symbols);
+}
+
+void BogusMarketDataProvider::subscribe(const std::string& symbol) {
+
+}
+
+void BogusMarketDataProvider::unsubscribe(const std::string& symbol) {
+
 }
 
 void BogusMarketDataProvider::generateBars() {

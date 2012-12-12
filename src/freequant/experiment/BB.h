@@ -1,6 +1,7 @@
 #ifndef FQ_EXP_BB_H
 #define FQ_EXP_BB_H
 
+#include <tuple>
 #include <freequant/experiment/Indicator.h>
 #include <freequant/experiment/MA.h>
 
@@ -8,8 +9,8 @@ namespace FreeQuant { namespace Exp {
 
 class BB : public Indicator {
 public:
-    BB(int n = 20, double _width = 2.0) :
-        _n(n), _sd(sd), _ma(n, Bar::BarItemTypical)
+    BB(int n = 20, double width = 2.0) :
+        _n(n), _width(width), _ma(n, Bar::BarItemTypical)
     {}
     void onCalculate(const Bar& bar) {
         _ma.onCalculate(bar);
@@ -22,7 +23,7 @@ public:
             upper = mid + sd*_width;
             lower = mid - sd*_width;
         }
-        append(bar.dateTime(), make_tuple(mid, upper, lower));
+        append(bar.dateTime(), std::make_tuple(mid, upper, lower));
     }
 
     virtual std::size_t size() const {
@@ -30,11 +31,12 @@ public:
     }
 
     double last(std::size_t pos = 1, int which = 0) {
-        return _data.last(pos);
+        return 0;
+//        return _data.last(pos).get<1>();
     }
 
     void append(const DateTime& datetime, double value, int which = 0)  {
-         _data.append(datetime, value);
+//         _data.append(datetime, value);
     }
 
     void append(const DateTime& datetime, const std::tuple<double, double, double>& value, int which = 0)  {

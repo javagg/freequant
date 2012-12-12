@@ -26,10 +26,12 @@ public:
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const { return _connected; }
-    const std::string& name() const { return "Bogus"; }
+    std::string name() const { return "Bogus"; }
     void subscribe(std::vector<std::string> symbols);
     void unsubscribe(std::vector<std::string> symbols);
     void generateBars();
+    void subscribe(const std::string&) {}
+    void unsubscribe(const std::string&) {}
 private:
     bool _connected;
     std::set<std::string> _symbols;

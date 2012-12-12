@@ -185,6 +185,10 @@ void CtpMarketDataProvider::setCallback(FreeQuant::MarketDataProvider::Callback 
     _impl->setCallback(callback);
 }
 
+void CtpMarketDataProvider::setCallback(MarketDataProviderCallback *callback) {
+//    _impl->setCallback(callback);
+}
+
 void CtpMarketDataProvider::connect(bool block) {
     _impl->connect(block);
 }
@@ -203,6 +207,14 @@ void CtpMarketDataProvider::subscribe(const Symbols& symbols) {
 
 void CtpMarketDataProvider::unsubscribe(const Symbols& symbols) {
     _impl->unsubscribe(symbols);
+}
+
+void CtpMarketDataProvider::subscribe(const std::string& symbol) {
+
+}
+
+void CtpMarketDataProvider::unsubscribe(const std::string& symbol) {
+
 }
 
 } // namespace FreeQuant

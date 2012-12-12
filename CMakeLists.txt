@@ -3,7 +3,8 @@ project(freequant)
 
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(WIN32)
     set(CMAKE_INSTALL_PREFIX $ENV{HOMEPATH})
@@ -37,9 +38,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pthread")
 endif()
 
-option(BUILD_BINDINGS "Build bindings." ON)
 # Find external dependencies
-set(Boost_USE_STATIC_LIBS on)
+#set(Boost_USE_STATIC_LIBS on)
 find_package(Boost REQUIRED COMPONENTS date_time chrono system filesystem thread unit_test_framework)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
@@ -48,15 +48,16 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(WIN32 OR UNIX)
-    option(BUILD_CTP "Build CTP." TRUE)
+    option(BUILD_CTP "Build CTP." ON)
 elseif(APPLE)
-    option(BUILD_CTP "Build CTP." FALSE)
+    option(BUILD_CTP "Build CTP." OFF)
 endif()
 
 option(FQ_ENABLE_SHARED OFF)
 
-option(BUILD_TWS "Build TWS." TRUE)
-option(BUILD_FIX "Build FIX." TRUE)
+option(BUILD_TWS "Build TWS." ON)
+option(BUILD_FIX "Build FIX." ON)
+option(BUILD_BINDINGS "Build bindings." ON)
 
 # Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/tws)
@@ -99,6 +100,7 @@ add_subdirectory(examples)
 add_subdirectory(server)
 add_subdirectory(tools)
 add_subdirectory(providers)
+add_subdirectory(swig)
 
 include_directories(${PROJECT_BINARY_DIR})
 
@@ -112,7 +114,3 @@ if(WIN32)
     configure_file(${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/win/lib/thosttraderapi.dll ${PROJECT_BINARY_DIR}/bin/thosttraderapi.dll COPYONLY)
     configure_file(${PROJECT_SOURCE_DIR}/vendors/ctp/api/risk/lib/riskuserapi.dll ${PROJECT_BINARY_DIR}/bin/riskuserapi.dll COPYONLY)
 endif(WIN32)
-
-FIND_PACKAGE(SWIG REQUIRED)
-INCLUDE(${SWIG_USE_FILE})
-

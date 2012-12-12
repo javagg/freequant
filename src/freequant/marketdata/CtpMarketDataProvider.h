@@ -9,17 +9,23 @@ namespace FreeQuant {
 
 class CtpMarketDataProvider : public MarketDataProvider {
     typedef MarketDataProvider Base;
-//    typedef MarketDataProvider::Callback Callback;
+
 public:
-    explicit CtpMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
+    typedef Base::Symbols Symbols;
+    explicit CtpMarketDataProvider(const std::string& connection, MarketDataProvider::Callback *callback = 0);
+    explicit CtpMarketDataProvider(const std::string& connection, MarketDataProviderCallback *callback);
+
     virtual ~CtpMarketDataProvider();
     void setCallback(FreeQuant::MarketDataProvider::Callback *callback);
+    void setCallback(MarketDataProviderCallback *callback);
     void connect(bool block = true);
     void disconnect(bool block = true);
     bool isConnected() const;
-    const std::string& name() const { return "CTP"; }
-    void subscribe(const Symbols& symbols);
+    std::string name() const { return "CTP"; }
+    void subscribe(const std::vector<std::string>& symbols);
     void unsubscribe(const Symbols& symbols);
+    void subscribe(const std::string& symbol);
+    void unsubscribe(const std::string& symbol);
 
 private:
     class Impl;
