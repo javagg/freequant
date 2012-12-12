@@ -12,7 +12,7 @@ const string& HttpClient::get(const string& url) {
 //    http::client::request request(url);
 //    http::client::response response = client.get(request);
 //    buffer = static_cast<std::string>(body(response));
-//    return buffer;
+    return buffer;
 }
 
 } // namespace FreeQuant
