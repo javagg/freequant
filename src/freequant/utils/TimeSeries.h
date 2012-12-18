@@ -3,8 +3,6 @@
 
 #include <set>
 
-#include <boost/atomic.hpp>
-
 #include <freequant/utils/DateTime.h>
 
 #ifdef max

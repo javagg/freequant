@@ -23,7 +23,7 @@ set(JAVA_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/org/freequant/*.java)
 #    )
 
   # Get the location of the extension directory
-  string(REGEX REPLACE "include" "jre/lib/ext" JAVA_EXTENSION_DIR ${JAVA_INCLUDE_PATH} )
+  string(REGEX REPLACE "include" "jre/lib/ext" JAVA_EXTENSION_DIR ${JAVA_INCLUDE_PATH})
 
   # TODO: add new target to install simpleitk java
   # Add the install target
