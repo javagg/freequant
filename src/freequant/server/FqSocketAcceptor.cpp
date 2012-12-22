@@ -1,6 +1,8 @@
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/algorithm/cxx11/any_of.hpp>
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/stl/container.hpp>
+#include <boost/thread/thread.hpp>
 
 #include <quickfix/HttpServer.h>
 #include <quickfix/Session.h>
@@ -19,36 +21,17 @@ namespace FreeQuant {
 FqSocketAcceptor::FqSocketAcceptor(Application& application,
         MessageStoreFactory& factory, const SessionSettings& settings) throw(ConfigError) :
     Acceptor(application, factory, settings), _settings(settings) {
-    initialize();
 }
 
 FqSocketAcceptor::FqSocketAcceptor(Application& application,
         MessageStoreFactory& factory, const SessionSettings& settings, LogFactory& logFactory)
         throw(ConfigError) :
     Acceptor(application, factory, settings, logFactory),  _settings(settings), m_pLogFactory(&logFactory) {
-    initialize();
 }
 
 FqSocketAcceptor::~FqSocketAcceptor() {
     for (auto i = _connections.begin(); i != _connections.end(); ++i)
         delete i->second;
-}
-
-void FqSocketAcceptor::initialize() throw (ConfigError) {
-    auto sessions = _settings.getSessions();
-    if (!sessions.size())
-        throw ConfigError( "No sessions defined" );
-
-    FIX::SessionFactory factory(getApplication(), getMessageStoreFactory(), m_pLogFactory);
-    for (auto i = sessions.begin(); i != sessions.end(); ++i) {
-        if (_settings.get(*i).getString(CONNECTION_TYPE) == "acceptor") {
-            m_sessionIDs.insert(*i);
-            m_sessions[*i] = factory.create(*i, _settings.get(*i));
-        }
-    }
-
-    if (!m_sessions.size())
-        throw ConfigError("No sessions defined for acceptor");
 }
 
 void FqSocketAcceptor::start() throw (ConfigError, RuntimeError) {
@@ -277,6 +260,309 @@ void FqSocketAcceptor::onError(SocketServer&) {}
 void FqSocketAcceptor::onTimeout(SocketServer&) {
   for (auto i = _connections.begin(); i != _connections.end(); ++i )
     i->second->onTimeout();
+}
+
+void FqSocketAcceptor::createSession() {
+    // create a new session from nothing
+    SessionFactory *f = new SessionFactory(getApplication(), getMessageStoreFactory(), m_pLogFactory);
+    BeginString beginString = "FIX4.4";
+    SenderCompID senderCompID = "senderCompID";
+    TargetCompID targetCompID = "senderCompID";
+    SessionID sId(beginString, senderCompID, targetCompID);
+    FIX::Dictionary dict;
+    _settings.set(sId, dict);
+    Session *s = f->create(sId, dict);
+    delete s;
+    delete f;
+}
+
+SocketAcceptor::SocketAcceptor(FIX::Application& application,
+    FIX::MessageStoreFactory& messageStoreFactory,
+    const FIX::SessionSettings& settings) throw(FIX::ConfigError) :
+    m_application(application), m_messageStoreFactory(messageStoreFactory),
+    m_settings(settings), m_pLogFactory(0), m_pLog(0),
+    m_stop(true),
+    _acceptor(_io_service) {
+    initialize();
+}
+
+SocketAcceptor::SocketAcceptor(FIX::Application& application,
+    FIX::MessageStoreFactory& messageStoreFactory,
+    const FIX::SessionSettings& settings, FIX::LogFactory& logFactory) throw(FIX::ConfigError) :
+    m_application(application), m_messageStoreFactory(messageStoreFactory),
+    m_settings(settings), m_pLogFactory(&logFactory), m_pLog(0),
+    m_stop(true),
+    _acceptor(_io_service) {
+    initialize();
+}
+
+SocketAcceptor::~SocketAcceptor() {}
+
+void SocketAcceptor::initialize() {
+    std::set <SessionID> sessions = m_settings.getSessions();
+    if (!sessions.size())
+        throw ConfigError("No sessions defined");
+    SessionFactory factory(m_application, m_messageStoreFactory, m_pLogFactory);
+
+    std::for_each(sessions.begin(), sessions.end(), [&](const SessionID& id) {
+        if (m_settings.get(id).getString(CONNECTION_TYPE) == "acceptor") {
+            m_sessionIDs.insert(id);
+            m_sessions[id] = factory.create(id, m_settings.get(id));
+        }
+    });
+
+    if (!m_sessions.size())
+        throw ConfigError("No sessions defined for acceptor");
+}
+
+void SocketAcceptor::start() throw (FIX::ConfigError, FIX::RuntimeError) {
+    m_stop = false;
+    onConfigure(m_settings);
+    onInitialize(m_settings);
+
+    // TODO: what's going on?
+    HttpServer::startGlobal( m_settings );
+
+    boost::thread thread([&]() {
+        onStart();
+        _io_service.run();
+    });
+}
+
+void SocketAcceptor::stop(bool force) {
+    if (isStopped()) return;
+
+    // TODO: what's going on?
+    HttpServer::stopGlobal();
+
+    std::vector<Session*> enabledSessions;
+
+    for (auto i = m_sessions.begin(); i != m_sessions.end(); ++i) {
+        Session* pSession = Session::lookupSession(i->first);
+        if (pSession->isEnabled()) {
+            enabledSessions.push_back(pSession);
+            pSession->logout();
+            Session::unregisterSession(pSession->getSessionID());
+        }
+    }
+
+//    if (!force) {
+//        for (int second = 1; second <= 10 && isLoggedOn(); ++second)
+//            process_sleep(1);
+//    }
+
+    m_stop = true;
+//    onStop();
+
+//    if (m_threadid)
+//        thread_join(m_threadid);
+//    m_threadid = 0;
+
+//    std::for_each(enabledSessions.begin(), enabledSessions.end(), [](const Session* s) {
+//        s->logon();
+//    });
+
+//    std::vector<Session*>::iterator session = enabledSessions.begin();
+//      for( ; session != enabledSessions.end(); ++session )
+//       (*session)->logon();
+}
+
+bool SocketAcceptor::isStopped() {
+    return m_stop;
+}
+
+void SocketAcceptor::onConfigure(const FIX::SessionSettings&) throw (FIX::ConfigError) {
+
+}
+
+void SocketAcceptor::onInitialize(const FIX::SessionSettings&) throw (FIX::RuntimeError) {
+
+}
+
+void SocketAcceptor::onStart() {
+    using namespace boost::asio;
+    ip::tcp::endpoint endpoint(ip::tcp::v4(), 7711);
+    _acceptor.open(endpoint.protocol());
+    _acceptor.set_option(ip::tcp::acceptor::reuse_address(true));
+    _acceptor.bind(endpoint);
+    _acceptor.listen();
+    accept();
+}
+
+void SocketAcceptor::onConnect(FIX::SocketServer&, int acceptSocket, int socket) {
+
+}
+
+void SocketAcceptor::onWrite(FIX::SocketServer&, int socket) {
+
+}
+
+bool SocketAcceptor::onData(FIX::SocketServer&, int socket) {
+    return true;
+}
+
+void SocketAcceptor::onDisconnect(FIX::SocketServer&, int socket) {
+
+}
+
+void SocketAcceptor::onError(FIX::SocketServer&) {
+
+}
+
+void SocketAcceptor::onTimeout(FIX::SocketServer&) {
+
+}
+
+class SocketConnection : public boost::enable_shared_from_this<SocketConnection> {
+public:
+    SocketConnection(boost::asio::io_service& io_service) : _socket(io_service) {}
+    boost::asio::ip::tcp::socket& socket() { return _socket; }
+    void start() {
+        _socket.async_read_some(boost::asio::buffer(_data, _data.size()),
+            boost::bind(&SocketConnection::handleRead, this, boost::asio::placeholders::error,
+            boost::asio::placeholders::bytes_transferred));
+    }
+
+    void handleRead(const boost::system::error_code& error, size_t transferred) {
+        if (!error) {
+            std::cout << _data.data() << std::endl;
+//            _parser.addToStream(_data.data(), transferred);
+
+//            std::string message;
+    //        if (!_session) {
+//                if (!readMessage(message)) {
+    //                _session = FIX::Session::lookupSession(message, true);
+    //                if (!_session) {
+    //                   FIX::Message fixMessage;
+    //                   if (fixMessage.setStringHeader(message)) {
+    //                       const FIX::Header& header = fixMessage.getHeader();
+    //                       const FIX::BeginString& beginString = FIELD_GET_REF(header, BeginString );
+    //                       const FIX::SenderCompID& senderCompID = FIELD_GET_REF(header, SenderCompID );
+    //                       const FIX::TargetCompID& targetCompID = FIELD_GET_REF(header, TargetCompID );
+
+    //                       FIX::SessionID sessionID(beginString, FIX::SenderCompID(targetCompID), FIX::TargetCompID( senderCompID));
+    //                       if (_callback) _callback->onNewSession(sessionID);
+    ////                           new Session(application, MessageStoreFactory&,
+    ////                                    const SessionID&,
+    ////                                    const DataDictionaryProvider&,
+    ////                                    const TimeRange&,
+    ////                                    int heartBtInt, LogFactory* pLogFactory );
+    //                       _session = FIX::Session::lookupSession(message, true);
+    //                   }
+    //                }
+
+    //                if (_session) {
+    //                    FIX::Session::registerSession(_session->getSessionID());
+//                    }
+//                }
+    //        }
+
+//            readMessages();
+            _socket.async_read_some(boost::asio::buffer(_data, _data.size()),
+                boost::bind(&SocketConnection::handleRead, this, boost::asio::placeholders::error,
+                boost::asio::placeholders::bytes_transferred));
+        } else {
+            _socket.close();
+            std::cout << error.message() << std::endl;
+        }
+}
+
+private:
+    boost::asio::ip::tcp::socket _socket;
+    boost::array<char, 4096> _data;
+    FIX::Parser _parser;
+};
+
+void SocketAcceptor::accept() {
+    boost::shared_ptr<SocketConnection> connection(new SocketConnection(_io_service));
+    _acceptor.async_accept(connection->socket(), [&](const boost::system::error_code& error) {
+        if (!error) {
+            connection->start();
+        } else {
+            std::cout << "error in " << __FUNCTION__ << ": " << error.message() << std::endl;
+        }
+        this->accept();
+    });
+}
+
+void SocketAcceptor::handleRead(const boost::system::error_code& error, size_t transferred) {
+//    if (!error) {
+//        std::cout << _data.data() << std::endl;
+//        _parser.addToStream(_data.data(), transferred);
+
+//        std::string message;
+////        if (!_session) {
+//            if (!readMessage(message)) {
+////                _session = FIX::Session::lookupSession(message, true);
+////                if (!_session) {
+////                   FIX::Message fixMessage;
+////                   if (fixMessage.setStringHeader(message)) {
+////                       const FIX::Header& header = fixMessage.getHeader();
+////                       const FIX::BeginString& beginString = FIELD_GET_REF(header, BeginString );
+////                       const FIX::SenderCompID& senderCompID = FIELD_GET_REF(header, SenderCompID );
+////                       const FIX::TargetCompID& targetCompID = FIELD_GET_REF(header, TargetCompID );
+
+////                       FIX::SessionID sessionID(beginString, FIX::SenderCompID(targetCompID), FIX::TargetCompID( senderCompID));
+////                       if (_callback) _callback->onNewSession(sessionID);
+//////                           new Session(application, MessageStoreFactory&,
+//////                                    const SessionID&,
+//////                                    const DataDictionaryProvider&,
+//////                                    const TimeRange&,
+//////                                    int heartBtInt, LogFactory* pLogFactory );
+////                       _session = FIX::Session::lookupSession(message, true);
+////                   }
+////                }
+
+////                if (_session) {
+////                    FIX::Session::registerSession(_session->getSessionID());
+//                }
+//            }
+////        }
+
+//        readMessages();
+//        _socket.async_read_some(boost::asio::buffer(_data, _data.size()),
+//            boost::bind(&SocketAcceptor::handleRead, this, boost::asio::placeholders::error,
+
+//                        boost::asio::placeholders::bytes_transferred));
+
+////    } else {
+////        std::cout << error.message() << std::endl;
+////    }
+}
+
+void SocketAcceptor::handleWrite(const boost::system::error_code& error, size_t bytes_transferred) {
+//    if (error) {
+////            close();
+//    }
+////        if (!error) {
+////        socket_.async_read_some(boost::asio::buffer(data_, max_length),
+////            boost::bind(&session::handle_read, this,
+////              boost::asio::placeholders::error,
+////              boost::asio::placeholders::bytes_transferred));
+////      }
+////      else
+////      {
+////        delete this;
+////      }
+}
+
+bool SocketAcceptor::readMessage(std::string& message) {
+//    try {
+//        return _parser.readFixMessage(message);
+//    } catch (FIX::MessageParseError&) {}
+    return true;
+}
+
+void SocketAcceptor::readMessages() {
+//    std::string message;
+//    while (readMessage(message)) {
+//        try {
+////            _session->next(message, FIX::UtcTimeStamp());
+//        } catch (FIX::InvalidMessage&) {
+////            if (!_session->isLoggedOn()) {
+//            }
+//        }
+//    }
 }
 
 } // namespace FreeQuant

@@ -4,7 +4,7 @@ project(freequant)
 set(BUILD_SHARED_LIBS true)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(WIN32)
@@ -97,11 +97,11 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 link_directories(${Boost_LIBRARY_DIRS})
 
 add_subdirectory(src)
-add_subdirectory(examples)
+#add_subdirectory(examples)
 add_subdirectory(server)
-add_subdirectory(tools)
-add_subdirectory(providers)
-add_subdirectory(swig)
+#add_subdirectory(tools)
+#add_subdirectory(providers)
+#add_subdirectory(swig)
 
 include_directories(${PROJECT_BINARY_DIR})
 

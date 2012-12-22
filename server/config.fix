@@ -12,6 +12,8 @@ SenderCompID=FQMarketDataServer
 TargetCompID=ME
 
 [SESSION]
+BeginString=FIX.4.2
+DataDictionary=FIX42.xml
 SocketAcceptPort=7714
-SenderCompID=FQTradeServer
+SenderCompID=FixGW
 TargetCompID=ME
