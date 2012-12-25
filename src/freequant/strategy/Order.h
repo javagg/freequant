@@ -43,6 +43,16 @@ public:
         Suspended
     };
 
+    enum OrderCapacity {
+        Unknown,
+        Agency,
+        Proprietary,
+        Individual,
+        Principal,
+        RisklessPrincipal,
+        AgentOtherMember
+    };
+
     enum StopMode { Absolute, Percent };
     enum StopType { Fixed, Trailing, Timed };
 

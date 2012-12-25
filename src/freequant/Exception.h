@@ -37,6 +37,12 @@ public:
     explicit InvalidPath(const std::string& message) : Exception(message) {}
 };
 
+class FileNotFound : public Exception {
+public:
+    explicit FileNotFound(const std::string& message) : Exception(message) {}
+};
+
+
 class ConnectionTimeout : public std::runtime_error {
 public:
     explicit ConnectionTimeout(const std::string& message) : std::runtime_error(message) {}

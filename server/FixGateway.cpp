@@ -8,8 +8,7 @@
 #include <quickfix/SessionSettings.h>
 
 #include <freequant/server/Executor.h>
-#include <freequant/server/FqSocketAcceptor.h>
-#include <freequant/server/SimpleSocketAcceptor.h>
+#include <freequant/fix/SocketAcceptor.h>
 
 class Application : public FreeQuant::Executor {};
 
@@ -21,13 +20,10 @@ int main(int argc, char** argv) {
     std::string filename = argv[1];
     try {
         FIX::SessionSettings settings(filename);
-//        std::cout << settings << std::endl;
         Application application;
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
-//        FIX::SocketAcceptor acceptor(application, storeFactory, settings, logFactory);
         FreeQuant::SocketAcceptor acceptor(application, storeFactory, settings, logFactory);
-
         acceptor.start();
         std::cout << "Type Ctrl-C to quit" << std::endl;
         while (true) {

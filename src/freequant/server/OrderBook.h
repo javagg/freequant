@@ -33,7 +33,6 @@ public:
     bool match(FreeQuant::Order& bid, FreeQuant::Order& ask);
     bool findOrder(FreeQuant::Order& order);
 
-//    const FreeQuant::Quote& lastQuote() const {}
     void processOrders();
 
 private:

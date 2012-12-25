@@ -3,15 +3,20 @@
 
 #include <quickfix/FileStore.h>
 #include <quickfix/SocketAcceptor.h>
-#include <quickfix/Log.h>
-#include <quickfix/ThreadedSocketAcceptor.h>
 #include <quickfix/SessionSettings.h>
-
 #include <freequant/server/Executor.h>
-#include <freequant/server/FqSocketAcceptor.h>
-#include <freequant/server/SimpleSocketAcceptor.h>
 
-class Application : public FreeQuant::Executor {};
+class Application : public FIX::NullApplication {
+public:
+    void onLogon(const FIX::SessionID& sessionID) {
+        std::cout << __FUNCTION__ << ": " << sessionID << std::endl;
+    }
+    void onLogout(const FIX::SessionID& sessionID) {
+        std::cout << __FUNCTION__ << ": " << sessionID << std::endl;
+    }
+};
+
+//class Application : public FreeQuant::Executor {};
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -24,9 +29,7 @@ int main(int argc, char** argv) {
         Application application;
         FIX::FileStoreFactory storeFactory(settings);
         FIX::ScreenLogFactory logFactory(settings);
-//        FreeQuant::FQSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
         FIX::SocketAcceptor acceptor(application, storeFactory, settings, logFactory);
-//        FreeQuant::SimpleSocketAcceptor acceptor(application, storeFactory, settings, logFactory);
         acceptor.start();
         std::cout << "Type Ctrl-C to quit" << std::endl;
         while (true) {

@@ -37,8 +37,10 @@ string createGuid() {
 
 map<string, string> parseParamsFromString(const string& str) {
     vector<string> parts;
-    boost::split(parts, str, boost::is_any_of(";"), boost::token_compress_on);
     map<string, string> params;
+    if (str.empty()) return params;
+
+    boost::split(parts, str, boost::is_any_of(";"), boost::token_compress_on);
 
     struct func {
         pair<string, string> operator()(string& part) const {

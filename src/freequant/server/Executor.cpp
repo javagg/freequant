@@ -5,6 +5,9 @@
 
 #include <boost/phoenix.hpp>
 
+#include <quickfix/Message.h>
+#include <quickfix/fix42/Message.h>
+
 #include <quickfix/Exceptions.h>
 #include <quickfix/FixFields.h>
 #include <quickfix/fix44/ExecutionReport.h>
@@ -40,6 +43,7 @@
 #include <freequant/utils/RandomMarketDataGenerator.h>
 #include <freequant/utils/Utility.h>
 #include <freequant/server/OrderBook.h>
+#include <freequant/marketdata/CtpMarketDataProvider.h>
 
 #include "Executor.h"
 
@@ -49,27 +53,49 @@ using namespace boost::phoenix;
 
 namespace FreeQuant {
 
+class Executor::MdCallback : public MarketDataProviderCallback {
+public:
+    Executor *executor;
+    MdCallback(Executor *executor) : executor(executor) {}
+    void onConnected() {
+        std::cout << "MdProvider Connected." << std::endl;
+    }
+    void onDisconnected() {}
+    void onSubscribed() {}
+    void onUnsubscribed(){}
+    void onBar(const Bar&) {
+
+    }
+
+    void onTick(const Tick&) {
+
+    }
+};
+
+
 Executor::Executor() {
     _mdGenerator.reset(new FreeQuant::RandomMarketDataGenerator());
     _timerMd.reset(new FreeQuant::Timer(1000, boost::bind(&Executor::generateBars, this)));
     _timerMd->start();
+    _mdCallback.reset(new MdCallback(this));
+    string conn = "protocal=tcp;host=180.168.212.79;port=31213;userid=40022870;password=141537;brokerid=4000";
+    _mdProvider.reset(new CtpMarketDataProvider(conn));
+    _mdProvider->setCallback(_mdCallback.get());
+    _mdProvider->connect();
 }
 
-Executor::~Executor() {
-}
+Executor::~Executor() {}
 
 void Executor::onCreate(const FIX::SessionID& sessionID) {
     cout << __FUNCTION__ << ": " << sessionID << endl;
 }
 
-
 void Executor::onLogon(const FIX::SessionID& sessionID) {
     cout << __FUNCTION__ << ": " << sessionID << endl;
 }
 
-
 void Executor::onLogout(const FIX::SessionID& sessionID) {
-//    _sessionIDs.remove(sessionID);
+
 }
 
 void Executor::toAdmin(FIX::Message& message, const FIX::SessionID& sessionID) {
@@ -161,15 +187,15 @@ void Executor::onMessage(const FIX44::NewOrderSingle& message, const FIX::Sessio
 }
 
 void Executor::onMessage(const FIX44::Logon& message, const FIX::SessionID& sessionID) {
-    FIX::Username username;
-    FIX::Password password;
-    message.get(username);
-    message.get(password);
+//    FIX::Username username;
+//    FIX::Password password;
+//    message.get(username);
+//    message.get(password);
 
-    string expected = "simuser";
-    if (password != expected) {
-         throw FIX::RejectLogon();
-    }
+//    string expected = "simuser";
+//    if (password != expected) {
+//         throw FIX::RejectLogon();
+//    }
 }
 
 void Executor::onMessage(const FIX44::MarketDataRequest& message, const FIX::SessionID& sessionID) {
@@ -353,6 +379,9 @@ void Executor::sendBar(const FIX::SessionID& sessionID, const FreeQuant::Bar& ba
     try {
         FIX::Session::sendToTarget(message, sessionID);
     } catch(FIX::SessionNotFound&) {}
+
+
+
 }
 
 } // namespace FreeQuant
