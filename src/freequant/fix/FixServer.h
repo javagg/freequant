@@ -20,6 +20,7 @@ public:
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::RejectLogon);
     void fromApp(const FIX::Message&, const FIX::SessionID&)
         throw(FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType);
+
 };
 
 }

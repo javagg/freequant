@@ -2,7 +2,7 @@ file(GLOB_RECURSE HEADERS *.h *.hpp)
 file(GLOB_RECURSE SOURCES *.cpp)
 file(GLOB_RECURSE TWS_SRC ${PROJECT_SOURCE_DIR}/vendors/tws/*.cpp)
 
-add_library(${PROJECT_NAME} STATIC ${SOURCES} ${TWS_SRC})
+add_library(${PROJECT_NAME} ${SOURCES} ${TWS_SRC})
 
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} ${CURL_LIBRARIES} ${QUICKFIX_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${CTP_LIBRARIES})

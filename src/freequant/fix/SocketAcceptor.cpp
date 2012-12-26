@@ -51,4 +51,8 @@ void SocketAcceptor::accept() {
     });
 }
 
+bool SocketAcceptor::isLoggedOn() {
+    return false;
+}
+
 }

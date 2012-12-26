@@ -5,6 +5,8 @@ string(REPLACE "." "/" _package_dir ${_package_name})
 set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/${_package_dir})
 set(CMAKE_SWIG_FLAGS "-package" ${_package_name})
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CtpMdTester.java ${CMAKE_SWIG_OUTDIR}/CtpMdTester.java COPYONLY)
+
 set(WRAPPER_FILES java.i)
 set_source_files_properties(${WRAPPER_FILES} PROPERTIES CPLUSPLUS ON)
 
@@ -20,14 +22,13 @@ file(MAKE_DIRECTORY ${BINARY_DIR})
 
 set(JAVA_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/org/freequant/*.java)
 
-foreach(_file ${CTP_DLLS})
+foreach(_file ${CTP_SHAREDLIBFILES})
     file(COPY ${_file} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
     get_filename_component(_rfile ${_file} NAME)
     list(APPEND _ctpfiles ${_rfile})
 endforeach()
 get_target_property(_target_location freequant-java LOCATION)
 get_filename_component(_target_name ${_target_location} NAME)
-message(STATUS ${_target_location})
 
 add_custom_command(OUTPUT freequant_java_jar
     COMMENT "Creating jar file..."
@@ -50,5 +51,5 @@ if(MAVEN_EXECUTABLE)
         COMMAND ${MAVEN_EXECUTABLE} install:install-file -Dfile=${CMAKE_CURRENT_BINARY_DIR}/freequant.jar -DgroupId=${_package_name} -DartifactId=freequant -Dversion=0.0.1 -Dpackaging=jar
         DEPENDS freequant_java_jar
     )
-    add_custom_target(install_jar ALL DEPENDS do_trofiles)
+    add_custom_target(install_jar ALL DEPENDS do_trofiles freequant_java_install)
 endif()

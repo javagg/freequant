@@ -40,17 +40,23 @@ private:
     std::shared_ptr<MarketDataGenerator> _mdGenerator;
 };
 
-class Strategy::MdProviderCallback : public DefaultMarketDataProviderCallback {
+class Strategy::MdProviderCallback : public MarketDataProvider::Callback {
 public:
     Strategy *_strategy;
     MdProviderCallback(Strategy *strategy) : _strategy(strategy) {}
 
-    void onTick(const FreeQuant::Tick& tick) {
+    void onTick(const Tick& tick) {
         _strategy->onMarketDataProviderTick(tick);
     }
+
     void onConnected() {
         _strategy->onMarketDataProviderConnected();
     }
+
+    void onDisconnected() {}
+    void onSubscribed() {}
+    void onUnsubscribed() {}
+    void onBar(const Bar&) {}
 };
 
 class Strategy::TradeProviderCallback : public DefaultTradeProviderCallback {

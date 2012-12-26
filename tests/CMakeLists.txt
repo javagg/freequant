@@ -1,6 +1,7 @@
 add_subdirectory(test_provider)
 add_subdirectory(test_timer)
 add_subdirectory(test_strategy)
+add_subdirectory(swig)
 
 file(GLOB SOURCES *.cpp)
 

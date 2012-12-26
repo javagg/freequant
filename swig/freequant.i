@@ -1,11 +1,12 @@
 %module(directors="1") freequant
 
+%include "typemaps.i"
 %include "std_string.i"
+%include "std_vector.i"
 
 %{
 #include <freequant/utils/DateTime.h>
-#include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/marketdata/CtpMarketDataProvider1.h>
+#include <freequant/marketdata/CtpMarketDataProvider.h>
 using namespace FreeQuant;
 %}
 
@@ -16,6 +17,4 @@ using namespace FreeQuant;
 %feature("director") MarketDataProvider;
 %feature("director") MarketDataProviderCallback;
 %include <freequant/marketdata/MarketDataProvider.h>
-%include <freequant/marketdata/CtpMarketDataProvider1.h>
-
-
+%include <freequant/marketdata/CtpMarketDataProvider.h>

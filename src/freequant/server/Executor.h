@@ -46,30 +46,25 @@ public:
     void onMessage(const FIX42::Logon&, const FIX::SessionID&) {}
     void onMessage(const FIX42::Logout&, const FIX::SessionID&) {}
     void onMessage(const FIX42::NewOrderSingle&, const FIX::SessionID&) {}
-    void onMessage(const FIX42::OrderCancelRequest&, const FIX::SessionID&) {}
-    void onMessage(const FIX42::OrderCancelReject&, const FIX::SessionID&) {}
-    void onMessage(const FIX42::OrderCancelReplaceRequest&, const FIX::SessionID&) {}
-
-
     void onMessage(const FIX42::MarketDataRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::MarketDataSnapshotFullRefresh&, const FIX::SessionID&) {}
     void onMessage(const FIX42::MarketDataIncrementalRefresh&, const FIX::SessionID&) {}
+    void onMessage(const FIX42::OrderCancelRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX42::OrderCancelReject&, const FIX::SessionID&) {}
+    void onMessage(const FIX42::OrderCancelReplaceRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::OrderStatusRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::TradingSessionStatusRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::SecurityDefinitionRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::ResendRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::ExecutionReport&, const FIX::SessionID&) {}
     void onMessage(const FIX42::Reject&, const FIX::SessionID&) {}
-    void onMessage(const FIX42::OrderStatusRequest&, const FIX::SessionID&) {}
-    void onMessage(const FIX42::SecurityDefinitionRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::TradingSessionStatus&, const FIX::SessionID&) {}
-    void onMessage(const FIX42::TradingSessionStatusRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX42::TestRequest&, const FIX::SessionID&) {}
 
     void onMessage(const FIX43::SecurityListRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX43::DerivativeSecurityListRequest&, const FIX::SessionID&) {}
 
-
+    void onMessage(const FIX44::ConfirmationRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::Logon&, const FIX::SessionID&);
     void onMessage(const FIX44::NewOrderSingle&, const FIX::SessionID&);
     void onMessage(const FIX44::OrderCancelRequest&, const FIX::SessionID&);
@@ -79,9 +74,18 @@ public:
     void onMessage(const FIX44::SettlementInstructionRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::TradeCaptureReportRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::TradingSessionStatusRequest&, const FIX::SessionID&) {}
-    void onMessage(const FIX44::UserRequest&, const FIX::SessionID&) {}
     void onMessage(const FIX44::SecurityDefinitionRequest&, const FIX::SessionID&);
     void onMessage(const FIX44::SecurityListRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::UserRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::UserResponse&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::NetworkCounterpartySystemStatusRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::NetworkCounterpartySystemStatusResponse&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::CollateralAssignment&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::CollateralInquiry&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::CollateralInquiryAck&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::CollateralReport&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::CollateralRequest&, const FIX::SessionID&) {}
+    void onMessage(const FIX44::CollateralResponse&, const FIX::SessionID&) {}
 
 private:
     void generateBars();

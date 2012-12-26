@@ -6,7 +6,6 @@
 
 #include <freequant/marketdata/Tick.h>
 #include <freequant/utils/Utility.h>
-#include <freequant/detail/Atomic.hpp>
 #include <freequant/detail/Notifier.h>
 
 #include "CtpMarketDataProvider.h"
@@ -18,7 +17,6 @@ namespace FreeQuant {
 
 static int requestId = 0;
 
-using Detail::Atomic;
 using Detail::Notifier;
 
 class CtpMarketDataProvider::Impl : private CThostFtdcMdSpi {
@@ -26,7 +24,18 @@ public:
     typedef CThostFtdcMdSpi Spi;
     typedef CThostFtdcMdApi Api;
 
-    Impl(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0) :
+    Impl(const std::string& connection, MarketDataProviderCallback *callback) :
+        _callback(0), callback(callback), _api(0), _connected(false)
+    {
+        auto params = FreeQuant::parseParamsFromString(connection);
+        _front = params["protocal"] + "://" + params["host"] + ":"  + params["port"];
+        _userId = params["userid"];
+        _password = params["password"];
+        _brokerId = params["brokerid"];
+    }
+
+
+    Impl(const std::string& connection, MarketDataProvider::Callback *callback = 0) :
         _callback(callback), _api(0), _connected(false)
     {
         auto params = FreeQuant::parseParamsFromString(connection);
@@ -84,6 +93,7 @@ public:
     }
 
     FreeQuant::MarketDataProvider::Callback *_callback;
+    MarketDataProviderCallback *callback;
 
     std::string _front;
     std::string _userId;
@@ -92,7 +102,7 @@ public:
 
     Api *_api;
 
-    Atomic<bool> __connected;
+//    Atomic<bool> __connected;
     boost::mutex _connected_mutex;
     bool _connected;
 
@@ -120,9 +130,10 @@ public:
         if (!errorOccurred(rspInfo) && last) {
             cerr << "--->>> TradingDay " << _api->GetTradingDay() << endl;
             _connected = true;
-            __connected.set(true);
+//            __connected.set(true);
 
             if (_callback) _callback->onConnected();
+            if (callback) callback->onConnected();
 
             _notifier.complete1();
          }
@@ -164,6 +175,7 @@ public:
         tick.ask = data->AskPrice1;
 
         if (_callback) _callback->onTick(tick);
+        if (callback) callback->onTick(tick);
     }
 
     bool errorOccurred(CThostFtdcRspInfoField *rspInfo) {
@@ -175,8 +187,13 @@ public:
     }
 };
 
-CtpMarketDataProvider::CtpMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback) :
+CtpMarketDataProvider::CtpMarketDataProvider(const std::string& connection, MarketDataProvider::Callback *callback) :
     _impl(new CtpMarketDataProvider::Impl(connection, callback)) {
+}
+
+CtpMarketDataProvider::CtpMarketDataProvider(const std::string& connection, MarketDataProviderCallback *callback) :
+    _impl(new CtpMarketDataProvider::Impl(connection, callback)) {
+
 }
 
 CtpMarketDataProvider::~CtpMarketDataProvider() {}
@@ -210,11 +227,15 @@ void CtpMarketDataProvider::unsubscribe(const Symbols& symbols) {
 }
 
 void CtpMarketDataProvider::subscribe(const std::string& symbol) {
-
+    vector<string> symbols;
+    symbols.push_back(symbol);
+    _impl->subscribe(symbols);
 }
 
 void CtpMarketDataProvider::unsubscribe(const std::string& symbol) {
-
+    vector<string> symbols;
+    symbols.push_back(symbol);
+    _impl->unsubscribe(symbols);
 }
 
 } // namespace FreeQuant

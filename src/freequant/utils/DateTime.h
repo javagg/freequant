@@ -15,7 +15,7 @@ public:
         boost::posix_time::time_duration(hour, minute, second)
         + boost::posix_time::milliseconds(msec)) {}
     DateTime(const DateTime& other) : _datetime(other._datetime) {}
-    DateTime(const std::time_t& t) : _datetime(boost::posix_time::from_time_t(t)) {}
+//    DateTime(const std::time_t& t) : _datetime(boost::posix_time::from_time_t(t)) {}
     DateTime(const std::string& s) : _datetime(boost::posix_time::time_from_string(s)) {}
     DateTime& operator=(const DateTime& other);
     ~DateTime() {}

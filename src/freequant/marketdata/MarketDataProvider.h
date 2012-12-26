@@ -49,15 +49,15 @@ public:
     virtual void unsubscribe(const std::string&) = 0;
 };
 
-class DefaultMarketDataProviderCallback : public MarketDataProvider::Callback {
-public:
-    void onConnected() {}
-    void onDisconnected() {}
-    void onSubscribed() {}
-    void onUnsubscribed() {}
-    void onBar(const Bar&) {}
-    void onTick(const Tick&) {}
-};
+//class DefaultMarketDataProviderCallback : public MarketDataProvider::Callback {
+//public:
+//    void onConnected() {}
+//    void onDisconnected() {}
+//    void onSubscribed() {}
+//    void onUnsubscribed() {}
+//    void onBar(const Bar&) {}
+//    void onTick(const Tick&) {}
+//};
 
 } // namespace FreeQuant
 

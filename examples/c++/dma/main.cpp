@@ -28,7 +28,7 @@ public:
         _tradeProvider.reset(new FreeQuant::CtpTradeProvider(connection));
 
         vector<string> symbols;
-        symbols.push_back("IF1212");
+        symbols.push_back("IF1301");
         symbols.push_back("GOOG");
         addSymbols(symbols);
 

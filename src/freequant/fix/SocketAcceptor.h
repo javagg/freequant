@@ -17,6 +17,13 @@ public:
     void start();
     void stop(bool force = true);
     bool isStopped() { return m_stop; }
+
+    /// Check to see if any sessions are currently logged on
+    /**
+     * Check if we have at least one session and that all the sessions are logged on
+     * @return false if no session or at least one session is not logged on
+     */
+    bool isLoggedOn();
 private:
     void accept();
 
