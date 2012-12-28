@@ -6,11 +6,20 @@
 #include <quickfix/Log.h>
 #include <quickfix/ThreadedSocketAcceptor.h>
 #include <quickfix/SessionSettings.h>
+#include <quickfix/Application.h>
 
 #include <freequant/server/Executor.h>
 #include <freequant/fix/SocketAcceptor.h>
 
-class Application : public FreeQuant::Executor {};
+class Application : public FIX::NullApplication {
+public:
+    void onLogon(const FIX::SessionID& sessionID) {
+        std::cout << __FUNCTION__ << ": " << sessionID << std::endl;
+    }
+    void onLogout(const FIX::SessionID& sessionID) {
+        std::cout << __FUNCTION__ << ": " << sessionID << std::endl;
+    }
+};
 
 int main(int argc, char** argv) {
     if (argc != 2) {

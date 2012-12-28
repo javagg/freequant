@@ -23,7 +23,7 @@ SocketAcceptor::~SocketAcceptor() {}
 
 void SocketAcceptor::start() {
     m_stop = false;
-    FIX::HttpServer::startGlobal(_settings);
+//    FIX::HttpServer::startGlobal(_settings);
 
     ip::tcp::endpoint endpoint(ip::tcp::v4(), 7714);
     _acceptor.open(endpoint.protocol());
@@ -36,7 +36,7 @@ void SocketAcceptor::start() {
 
 void SocketAcceptor::stop(bool force) {
     if (isStopped()) return;
-    FIX::HttpServer::stopGlobal();
+//    FIX::HttpServer::stopGlobal();
     _acceptor.close();
 }
 
@@ -46,6 +46,8 @@ void SocketAcceptor::accept() {
     _acceptor.async_accept(connection->socket(),[=](const boost::system::error_code& error) {
         if (!error) {
           connection->start();
+        } else {
+            std::cout << "Error in " << __FUNCTION__ << ": " << error.message() << std::endl;
         }
         accept();
     });

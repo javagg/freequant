@@ -76,12 +76,13 @@ public:
 
     const OrderId& orderId() const { return _id; }
     OrderType type() const { return _type; }
-    void setType(OrderType type);
+    void setType(OrderType type) { _type = type; }
     const std::string& symbol() const { return _symbol; }
     double price() const { return _price; }
     double qty() const { return _qty; }
     double tickSize() const { return _tickSize; }
     Side side() const { return _side; }
+    void setSide(Side side) { _side = side; }
     OrderStatus status() const { return _status; }
 
     /*!

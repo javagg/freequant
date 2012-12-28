@@ -23,6 +23,31 @@ static TThostFtdcOrderRefType orderRef = {};
 static long requestId = 0;
 static const char *flowPath = "fqctptrader";
 
+class CtpTradeProvider::StructConvertor {
+public:
+    static inline void convert(const Order& order, CThostFtdcOrderField& field) {
+        order.symbol().copy(field.InstrumentID, order.symbol().size());
+//        order.type()
+    }
+
+    static inline void convert(const CThostFtdcOrderField& field, Order& order) {
+
+    }
+};
+
+class CtpTradeProvider::FieldConvertor {
+public:
+    static inline void convert(TThostFtdcDirectionType from, Order::Side to) {
+        switch (from) {
+        case THOST_FTDC_D_Buy:
+            to = Order::Buy; break;
+        case THOST_FTDC_D_Sell:
+            to = Order::Sell; break;
+        default:break;
+        }
+    }
+};
+
 class CtpTradeProvider::Impl : public CThostFtdcTraderSpi {
 public:
     typedef std::vector<Trade> Trades;

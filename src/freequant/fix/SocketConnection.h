@@ -34,6 +34,7 @@ private:
     boost::asio::ip::tcp::socket _socket;
     boost::array<char, 4096> _data;
     FIX::Parser _parser;
+    // TODO:memory leak
     FIX::Session *_session;
 
     FIX::Application& _application;

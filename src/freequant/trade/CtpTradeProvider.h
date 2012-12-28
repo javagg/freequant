@@ -39,6 +39,13 @@ public:
 private:
     class Impl;
     std::unique_ptr<Impl> _impl;
+
+    friend class FieldConvertor;
+    class FieldConvertor;
+
+    friend class StructConvertor;
+    class StructConvertor;
+
 };
 
 } // namespace FreeQuant

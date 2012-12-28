@@ -56,10 +56,12 @@ endif()
 
 option(FQ_ENABLE_SHARED OFF)
 
+option(BUILD_FIX_PROVIDER "Build FIX Provider." ON)
 option(BUILD_CTP_PROVIDER "Build CTP Provider." ON)
-option(BUILD_TWS "Build TWS." ON)
-option(BUILD_FIX "Build FIX." ON)
-option(BUILD_BINDINGS "Build bindings." ON)
+option(BUILD_CTPSSE_PROVIDER "Build CTPSSE Provider." ON)
+option(BUILD_TWS_PROVIDER "Build TWS Provider." ON)
+
+#option(BUILD_BINDINGS "Build bindings." ON)
 
 # Find in-the-source dependencies
 set(TWS_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/vendors/tws)
@@ -106,8 +108,8 @@ add_subdirectory(src)
 #add_subdirectory(examples)
 add_subdirectory(server)
 add_subdirectory(tools)
-#add_subdirectory(providers)
-#add_subdirectory(swig)
+add_subdirectory(providers)
+add_subdirectory(swig)
 
 include_directories(${PROJECT_BINARY_DIR})
 

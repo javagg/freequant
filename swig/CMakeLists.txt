@@ -49,8 +49,7 @@ if(SWIG_FOUND)
     if(OCTAVE_FOUND)
         add_subdirectory(octave)
     endif(OCTAVE_FOUND)
-
 endif()
-
+add_subdirectory(ctpraw)
 
 

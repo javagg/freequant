@@ -12,6 +12,13 @@ namespace FreeQuant {
 class Instrument;
 class Bar;
 
+class TradeProviderCallback {
+public:
+    virtual ~TradeProviderCallback() {}
+    virtual void onConnected() = 0;
+    virtual void onDisconnected() = 0;
+};
+
 class TradeProvider {
 public:
     typedef std::map<std::string, std::string> Params;
