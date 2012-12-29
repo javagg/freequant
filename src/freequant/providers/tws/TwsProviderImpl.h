@@ -15,7 +15,6 @@
 #include <freequant/trade/TradeProvider.h>
 #include <freequant/strategy/Instrument.h>
 #include <freequant/utils/Utility.h>
-#include <freequant/detail/TwsProviderImpl.h>
 
 #ifdef _WIN32
 #  include <Winsock2.h>
@@ -30,11 +29,6 @@ public:
         _socket.reset(new EPosixClientSocket(this));
         _callback = callback;
     }
-
-//    TwsProviderImpl(FreeQuant::TradeProvider::Callback *callback) :
-//        _socket(new EPosixClientSocket(this)),
-//        _callback(callback) {
-//    }
 
     ~TwsProviderImpl() {}
 

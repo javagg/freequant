@@ -1,6 +1,5 @@
-#include <freequant/detail/TwsProviderImpl.h>
-
 #include "TwsTradeProvider.h"
+#include "TwsProviderImpl.h"
 
 namespace FreeQuant {
 

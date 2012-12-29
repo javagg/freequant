@@ -9,9 +9,10 @@ namespace FreeQuant { namespace Ext {
 class CtpSseMarketDataProvider : public FreeQuant::MarketDataProvider {
 public:
     explicit CtpSseMarketDataProvider(const std::string& connection, FreeQuant::MarketDataProvider::Callback *callback = 0);
+    explicit CtpSseMarketDataProvider(const std::string& connection, MarketDataProviderCallback *callback);
     ~CtpSseMarketDataProvider();
     void setCallback(Callback *callback);
-    void setCallback(FreeQuant::MarketDataProviderCallback *callback);
+    void setCallback(MarketDataProviderCallback *callback);
     void connect(bool block = true) = 0;
     void disconnect(bool block = true);
     bool isConnected() const = 0;

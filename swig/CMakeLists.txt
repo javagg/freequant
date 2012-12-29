@@ -6,7 +6,7 @@ if(SWIG_FOUND)
     find_package(Ruby)
     find_package(PythonLibs)
     find_package(R)
-    #find_package(CSharp)
+    find_package(CSharp)
     find_package(Mono)
     # use $ENV{LUA_DIR}
     #find_package(Lua51)

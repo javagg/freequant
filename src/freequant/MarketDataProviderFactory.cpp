@@ -1,4 +1,4 @@
-#include <freequant/marketdata/CtpMarketDataProvider.h>
+#include <freequant/providers/ctp/CtpMarketDataProvider.h>
 
 #include "MarketDataProviderFactory.h"
 

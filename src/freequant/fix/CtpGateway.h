@@ -19,6 +19,7 @@ public:
     void onMessage(const FIX50SP2::NewOrderSingle&, const FIX::SessionID&);
 
 private:
+
     friend class TradeCallback;
     class TradeCallback;
     std::unique_ptr<TradeCallback> _tradeCallback;

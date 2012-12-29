@@ -34,11 +34,12 @@
 #include <quickfix/fix44/NewOrderSingle.h>
 #include <quickfix/fix44/OrderCancelRequest.h>
 
-#include "FixTradeProvider.h"
+
 #include <freequant/utils/Utility.h>
 #include <freequant/strategy/Instrument.h>
 
-#include <freequant/detail/FixProviderImpl.h>
+#include "FixTradeProvider.h"
+#include "FixProviderImpl.h"
 
 using namespace std;
 

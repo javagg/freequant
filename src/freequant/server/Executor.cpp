@@ -43,7 +43,7 @@
 #include <freequant/utils/RandomMarketDataGenerator.h>
 #include <freequant/utils/Utility.h>
 #include <freequant/server/OrderBook.h>
-#include <freequant/marketdata/CtpMarketDataProvider.h>
+#include <freequant/providers/ctp/CtpMarketDataProvider.h>
 
 #include "Executor.h"
 

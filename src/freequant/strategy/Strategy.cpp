@@ -6,7 +6,7 @@
 #include <boost/assign.hpp>
 #include <boost/assign/std/vector.hpp>
 #include <freequant/indicators/Indicator.h>
-#include <freequant/trade/CtpTradeProvider.h>
+#include <freequant/providers/ctp/CtpTradeProvider.h>
 #include <freequant/marketdata/BogusMarketDataProvider.h>
 #include <freequant/utils/TimeSeries.h>
 

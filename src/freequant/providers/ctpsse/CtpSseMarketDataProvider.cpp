@@ -28,9 +28,19 @@ CtpSseMarketDataProvider::CtpSseMarketDataProvider(const std::string& connection
 
 }
 
+CtpSseMarketDataProvider::CtpSseMarketDataProvider(const std::string& connection,
+    MarketDataProviderCallback *callback) {
+//    _impl(new CtpSseMarketDataProvider::Impl(connection, callback))
+
+}
+
 CtpSseMarketDataProvider::~CtpSseMarketDataProvider() {}
 
 void CtpSseMarketDataProvider::setCallback(Callback *callback) {
+
+}
+
+void CtpSseMarketDataProvider::setCallback(MarketDataProviderCallback *callback) {
 
 }
 

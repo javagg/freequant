@@ -5,7 +5,10 @@ set(BUILD_SHARED_LIBS true)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
 
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+#include(UseQt5)
 
 if(WIN32)
     set(CMAKE_INSTALL_PREFIX $ENV{HOMEPATH})
@@ -40,7 +43,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 # Find external dependencies
-#set(Boost_USE_STATIC_LIBS on)
+if(WIN32)
+    set(Boost_USE_STATIC_LIBS on)
+endif(WIN32)
 find_package(Boost REQUIRED COMPONENTS date_time chrono system filesystem thread unit_test_framework)
 find_package(QuickFIX REQUIRED)
 find_package(Doxygen)
@@ -108,7 +113,7 @@ add_subdirectory(src)
 #add_subdirectory(examples)
 add_subdirectory(server)
 add_subdirectory(tools)
-add_subdirectory(providers)
+
 add_subdirectory(swig)
 
 include_directories(${PROJECT_BINARY_DIR})

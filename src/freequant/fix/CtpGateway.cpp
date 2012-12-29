@@ -1,14 +1,38 @@
 #include "CtpGateway.h"
-#include <freequant/marketdata/CtpMarketDataProvider.h>
-#include <freequant/trade/CtpTradeProvider.h>
+#include <freequant/providers/ctp/CtpMarketDataProvider.h>
+#include <freequant/providers/ctp/CtpTradeProvider.h>
 #include <freequant/utils/Utility.h>
 #include <freequant/fix/MessageFactory.h>
 
 #include <quickfix/fix50sp2/NewOrderSingle.h>
-
+#include "ThostFtdcTraderApi.h"
 using namespace FIX;
 
 namespace FreeQuant {
+
+struct CtpFfunctionality {
+    void updateUserPassword(const std::string& oldPassword, const std::string& newPassword);
+    void updateAccountPassword(const std::string& oldPassword, const std::string& newPassword);
+    void queryOrderMaxVol();
+    void queryOrder();
+    void queryTrade();
+    void confirmSettlement();
+    void queryPosition();
+    void queryInstrument();
+    void queryExchange();
+    void queryBank();
+    void queryBrokers();
+    void queryTradingCode();
+    void queryBrokerTradingParams();
+    void queryBrokerTradingAlgos();
+    void queryTradingAccount();
+    void queryInvestor();
+    void queryInstrumentMarginRate();
+    void queryDepthMarketData();
+    void queryTransferBank();
+    void queryNotice();
+    void queryTradingNotice();
+};
 
 class CtpGateway::TradeCallback {
 public:

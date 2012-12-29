@@ -47,9 +47,6 @@ public:
 
     bool orderTypeSupported(FreeQuant::Order::OrderType type) { return true; }
 private:
-//    class Impl;
-//    Impl *_impl;
-
     std::unique_ptr<FreeQuant::Detail::TwsProviderImpl> _impl;
 };
 

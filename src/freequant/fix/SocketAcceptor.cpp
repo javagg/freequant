@@ -49,7 +49,7 @@ void SocketAcceptor::accept() {
         } else {
             std::cout << "Error in " << __FUNCTION__ << ": " << error.message() << std::endl;
         }
-        accept();
+        this->accept();
     });
 }
 
