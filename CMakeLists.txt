@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(freequant)
 
-set(BUILD_SHARED_LIBS true)
+#set(BUILD_SHARED_LIBS true)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_VERBOSE_MAKEFILE true)
 
@@ -110,18 +110,18 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 link_directories(${Boost_LIBRARY_DIRS})
 
 add_subdirectory(src)
-#add_subdirectory(examples)
+add_subdirectory(examples)
 add_subdirectory(server)
-add_subdirectory(tools)
+#add_subdirectory(tools)
 
-add_subdirectory(swig)
+#add_subdirectory(swig)
 
 include_directories(${PROJECT_BINARY_DIR})
 
 option(BUILD_TESTS "Build tests." TRUE)
 if (BUILD_TESTS)
     enable_testing()
-    add_subdirectory(tests)
+#    add_subdirectory(tests)
 endif()
 if(WIN32)
     configure_file(${PROJECT_SOURCE_DIR}/vendors/ctp/api/trade/win/lib/thostmduserapi.dll ${PROJECT_BINARY_DIR}/bin/thostmduserapi.dll COPYONLY)

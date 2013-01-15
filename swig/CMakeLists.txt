@@ -50,6 +50,3 @@ if(SWIG_FOUND)
         add_subdirectory(octave)
     endif(OCTAVE_FOUND)
 endif()
-add_subdirectory(ctpraw)
-
-

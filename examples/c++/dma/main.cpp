@@ -5,10 +5,10 @@
 #include <freequant/indicators/Indicator.h>
 #include <freequant/indicators/MA.h>
 #include <freequant/marketdata/MarketDataProvider.h>
-#include <freequant/marketdata/FixMarketDataProvider.h>
-#include <freequant/marketdata/CtpMarketDataProvider.h>
+#include <freequant/providers/fix/FixMarketDataProvider.h>
+#include <freequant//providers/ctp/CtpMarketDataProvider.h>
 #include <freequant/trade/TradeProvider.h>
-#include <freequant/trade/CtpTradeProvider.h>
+#include <freequant/providers/ctp/CtpTradeProvider.h>
 
 using namespace std;
 
@@ -28,7 +28,7 @@ public:
         _tradeProvider.reset(new FreeQuant::CtpTradeProvider(connection));
 
         vector<string> symbols;
-        symbols.push_back("IF1301");
+        symbols.push_back("IF1302");
         symbols.push_back("GOOG");
         addSymbols(symbols);
 
